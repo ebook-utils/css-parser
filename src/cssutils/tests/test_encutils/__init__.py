@@ -203,7 +203,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 #('utf-8', u'\u1111'.encode('utf-8'))
                 ]
         for exp, test in tests:
-            self.assertEqual(exp, encutils.tryEncodings(test))
+            self.assertEqual(exp.lower(), encutils.tryEncodings(test).lower())
 
 
     def test_getEncodingInfo(self):

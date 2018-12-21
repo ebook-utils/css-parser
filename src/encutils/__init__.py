@@ -479,7 +479,7 @@ def tryEncodings(text, log=None):
     except ImportError:
         msg = 'Using simplified encoding detection, you might want to install chardet.'
         if log:
-            log.warn(msg)
+            log.warning(msg)
         else:
             print(msg)
 
@@ -673,7 +673,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
     if encinfo.http_encoding and encinfo.xml_encoding and\
        encinfo.http_encoding != encinfo.xml_encoding:
         encinfo.mismatch = True
-        log.warn('"%s" (HTTP) != "%s" (XML) encoding mismatch' %
+        log.warning('"%s" (HTTP) != "%s" (XML) encoding mismatch' %
                  (encinfo.http_encoding, encinfo.xml_encoding))
     # HTTP + Meta
     if encinfo.http_encoding and encinfo.meta_encoding and\
