@@ -14,7 +14,7 @@ import itertools
 import re
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     unichr = chr
 
 _TOKENIZER_CACHE = {}

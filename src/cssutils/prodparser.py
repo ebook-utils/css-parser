@@ -24,11 +24,10 @@ from .helper import pushtoken
 import cssutils
 import itertools
 import re
-import string
 import sys
 import types
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     text_type = str
     string_type = str
 else:

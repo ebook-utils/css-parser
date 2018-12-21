@@ -10,7 +10,7 @@ import cssutils
 import xml.dom
 
 import sys
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     string_type = str
 else:
     string_type = basestring
@@ -24,7 +24,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
 
     Format::
 
-      : MEDIA_SYM S* medium [ COMMA S* medium ]* 
+      : MEDIA_SYM S* medium [ COMMA S* medium ]*
 
           STRING? # the name
 

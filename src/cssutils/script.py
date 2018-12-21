@@ -13,7 +13,7 @@ __version__ = '$Id: parse.py 1323 2008-07-06 18:13:57Z cthedot $'
 
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     from html.parser import HTMLParser as htmlparser_HTMLParser
     from urllib.parse import urlsplit as urllib_urlsplit
     from urllib.parse import urljoin as urllib_urljoin

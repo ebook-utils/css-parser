@@ -12,7 +12,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssfontfacerule.py 1818 2009-07-30 21:39:00Z cthedot $'
 
 import sys
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     string_type = str
 else:
     string_type = basestring

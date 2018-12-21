@@ -13,7 +13,7 @@ import cssutils
 import os
 
 import sys
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     string_type = str
     from urllib.parse import urljoin as urllib_urljoin
 else:

@@ -13,7 +13,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     string_type = str
 else:
     string_type = basestring

@@ -12,7 +12,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     text_type = str
 else:
     text_type = unicode

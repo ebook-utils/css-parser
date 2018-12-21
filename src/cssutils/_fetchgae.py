@@ -6,7 +6,7 @@ from google.appengine.api import urlfetch
 
 
 import sys
-PY3 = sys.version_info[0] == 3
+PY3 = sys.version_info[0] >= 3
 
 __all__ = ['_defaultFetcher']
 __docformat__ = 'restructuredtext'

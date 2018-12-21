@@ -24,7 +24,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import sys
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     text_type = str
     from urllib.parse import urljoin as urllib_urljoin
 else:

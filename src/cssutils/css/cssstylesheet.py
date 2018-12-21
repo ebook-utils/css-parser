@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import sys
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     string_type = str
 else:
     string_type = basestring

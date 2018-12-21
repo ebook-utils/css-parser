@@ -16,7 +16,7 @@ __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     text_type = str
     string_type = str
 else:

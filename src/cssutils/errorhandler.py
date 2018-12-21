@@ -24,7 +24,7 @@ __version__ = '$Id$'
 
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     from urllib.error import HTTPError as urllib_HTTPError
     from urllib.error import URLError as urllib_URLError
 else:

@@ -106,7 +106,7 @@ __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     text_type = str
     from urllib.parse import urlsplit as urllib_urlsplit
     from urllib.request import pathname2url as urllib_pathname2url

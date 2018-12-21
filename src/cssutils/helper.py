@@ -9,7 +9,7 @@ import os
 import re
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     from urllib.request import pathname2url as urllib_pathname2url
 else:
     from urllib import pathname2url as urllib_pathname2url
