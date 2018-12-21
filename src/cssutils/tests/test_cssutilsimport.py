@@ -1,8 +1,8 @@
 import unittest
-from cssutils import *
 """Testcase for cssutils imports"""
 
 before = len(locals())  # to check is only exp amount is imported
+from cssutils import *
 after = len(locals())  # to check is only exp amount is imported
 
 
