@@ -3,6 +3,7 @@
 import basetest
 import cssutils
 
+
 class CSSRuleListTestCase(basetest.BaseTestCase):
 
     def test_init(self):
@@ -10,7 +11,7 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
         r = cssutils.css.CSSRuleList()
         self.assertEqual(0, r.length)
         self.assertEqual(None, r.item(2))
-        
+
         # subclasses list but all setting options like append, extend etc
         # need to be added to an instance of this class by a using class!
         self.assertRaises(NotImplementedError, r.append, 1)
@@ -22,7 +23,7 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
         @namespace "a";
         a { color: red}
         b { left: 0 }''')
-        
+
         c = list(s.cssRules.rulesOfType(cssutils.css.CSSRule.COMMENT))
         self.assertEqual(1, len(c))
         self.assertEqual('/*c*/', c[0].cssText)

@@ -16,8 +16,9 @@ from . import tokenize2
 
 from cssutils import css
 
-if sys.version_info < (2,6):
+if sys.version_info < (2, 6):
     bytes = str
+
 
 class CSSParser(object):
     """Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
@@ -31,6 +32,7 @@ class CSSParser(object):
         sheet = parser.parseFile('test1.css', 'ascii')
         print sheet.cssText
     """
+
     def __init__(self, log=None, loglevel=None, raiseExceptions=None,
                  fetcher=None, parseComments=True,
                  validate=True):
@@ -181,7 +183,7 @@ class CSSParser(object):
         f.close()
 
         return self.parseString(css,
-                                encoding=encoding, # read returns a str
+                                encoding=encoding,  # read returns a str
                                 href=href, media=media, title=title,
                                 validate=validate)
 

@@ -7,7 +7,7 @@ from StringIO import StringIO
 import sys
 import unittest
 
-PY2x = sys.version_info < (3,0)
+PY2x = sys.version_info < (3, 0)
 
 try:
     import cssutils.encutils as encutils
@@ -16,6 +16,7 @@ except ImportError:
 
 # helper log
 log = encutils.buildlog(stream=StringIO())
+
 
 class AutoEncodingTestCase(unittest.TestCase):
 
@@ -59,7 +60,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/plain': encutils._TEXT_TYPE,
             'x/x': encutils._OTHER_TYPE,
             'ANYTHING': encutils._OTHER_TYPE
-            }
+        }
         for test, exp in tests.items():
             self.assertEqual(
                 exp, encutils._getTextTypeByMediaType(test, log=log))
@@ -80,7 +81,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             u'\xef\xbb\xbfanything': encutils._OTHER_TYPE,
             u'x/x': encutils._OTHER_TYPE,
             u'ANYTHING': encutils._OTHER_TYPE
-            }
+        }
         for test, exp in tests.items():
             self.assertEqual(
                 exp, encutils._getTextType(test, log=log))
@@ -100,7 +101,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             'text/css': 'utf-8',
             'text/plain': 'iso-8859-1',
             'ANYTHING': None
-            }
+        }
         for test, exp in tests.items():
             self.assertEqual(exp,
                              encutils.encodingByMediaType(test, log=log))
@@ -161,7 +162,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 </ >
                 <meta content="text/html;charset=ascii" http-equiv="cONTENT-type">""":
                 ('text/html', None)
-            }
+        }
         for test, exp in tests.items():
             self.assertEqual(exp, encutils.getMetaInfo(test, log=log))
 
@@ -181,7 +182,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             # default
             ('utf-8'): '<?xml version="1.0" ?>',
             ('utf-8'): '<?xml version="1.0"?><x encoding="ascii"/>'
-            }
+        }
         for exp, test in tests.items():
             self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
 
@@ -193,7 +194,7 @@ class AutoEncodingTestCase(unittest.TestCase):
                 ('ascii', u'abc'.encode('ascii')),
                 ('windows-1252', u'€'.encode('windows-1252')),
                 ('ascii', u'1'.encode('utf-8'))
-                ]
+            ]
         except ImportError:
             tests = [
                 ('ascii', u'abc'.encode('ascii')),
@@ -201,10 +202,9 @@ class AutoEncodingTestCase(unittest.TestCase):
                 ('iso-8859-1', u'äöüß'.encode('iso-8859-1')),
                 ('iso-8859-1', u'äöüß'.encode('windows-1252')),
                 #('utf-8', u'\u1111'.encode('utf-8'))
-                ]
+            ]
         for exp, test in tests:
             self.assertEqual(exp, encutils.tryEncodings(test))
-
 
     def test_getEncodingInfo(self):
         "encutils.getEncodingInfo"
@@ -274,7 +274,7 @@ class AutoEncodingTestCase(unittest.TestCase):
 
             # no text or not enough text:
             (('iso-h', False), ('Content-Type: application/xml;charset=iso-h',
-                             '1')),
+                                '1')),
             (('utf-8', False), ('Content-Type: application/xml',
                                 None)),
             ((None, False), ('Content-Type: application/xml',

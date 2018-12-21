@@ -9,6 +9,7 @@ from . import cssrule
 import cssutils
 import xml.dom
 
+
 class CSSUnknownRule(cssrule.CSSRule):
     """
     Represents an at-rule not supported by this user agent, so in 
@@ -18,13 +19,14 @@ class CSSUnknownRule(cssrule.CSSRule):
 
         @xxx until ';' or block {...}
     """
-    def __init__(self, cssText='', parentRule=None, 
+
+    def __init__(self, cssText='', parentRule=None,
                  parentStyleSheet=None, readonly=False):
         """
         :param cssText:
             of type string
         """
-        super(CSSUnknownRule, self).__init__(parentRule=parentRule, 
+        super(CSSUnknownRule, self).__init__(parentRule=parentRule,
                                              parentStyleSheet=parentStyleSheet)
         self._atkeyword = None
         if cssText:
@@ -34,14 +36,14 @@ class CSSUnknownRule(cssrule.CSSRule):
 
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__,
-                self.cssText)
-        
+            self.__class__.__name__,
+            self.cssText)
+
     def __str__(self):
         return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
-                self.__class__.__name__,
-                self.cssText,
-                id(self))
+            self.__class__.__name__,
+            self.cssText,
+            id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -67,11 +69,11 @@ class CSSUnknownRule(cssrule.CSSRule):
         attoken = self._nexttoken(tokenizer, None)
         if not attoken or self._type(attoken) != self._prods.ATKEYWORD:
             self._log.error('CSSUnknownRule: No CSSUnknownRule found: %s' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
-            new = {'nesting': [], # {} [] or ()
+            new = {'nesting': [],  # {} [] or ()
                    'wellformed': True
                    }
 
@@ -91,10 +93,10 @@ class CSSUnknownRule(cssrule.CSSRule):
                             new['wellformed'] = False
                             self._log.error('CSSUnknownRule: Wrong nesting of '
                                             '{, [ or (.', token=token)
-    
+
                     if val in '};' and not new['nesting']:
-                        expected = 'EOF' 
-    
+                        expected = 'EOF'
+
                     seq.append(val, type_, line=line, col=col)
                     return expected
                 else:
@@ -115,7 +117,7 @@ class CSSUnknownRule(cssrule.CSSRule):
                     new['wellformed'] = False
                     self._log.error('CSSUnknownRule: Expected end of rule.',
                                     token=token)
-                    return expected                
+                    return expected
 
             def EOF(expected, seq, token, tokenizer=None):
                 "close all blocks and return 'EOF'"
@@ -124,7 +126,7 @@ class CSSUnknownRule(cssrule.CSSRule):
                     seq.append(closing, closing)
                 new['nesting'] = []
                 return 'EOF'
-                
+
             def INVALID(expected, seq, token, tokenizer=None):
                 # makes rule invalid
                 self._log.error('CSSUnknownRule: Bad syntax.',
@@ -142,7 +144,7 @@ class CSSUnknownRule(cssrule.CSSRule):
                     new['wellformed'] = False
                     self._log.error('CSSUnknownRule: Expected end of rule.',
                                     token=token)
-                    return expected                
+                    return expected
 
             def URI(expected, seq, token, tokenizer=None):
                 type_, val, line, col = token
@@ -154,7 +156,7 @@ class CSSUnknownRule(cssrule.CSSRule):
                     new['wellformed'] = False
                     self._log.error('CSSUnknownRule: Expected end of rule.',
                                     token=token)
-                    return expected                
+                    return expected
 
             def default(expected, seq, token, tokenizer=None):
                 type_, val, line, col = token
@@ -165,26 +167,26 @@ class CSSUnknownRule(cssrule.CSSRule):
                     new['wellformed'] = False
                     self._log.error('CSSUnknownRule: Expected end of rule.',
                                     token=token)
-                    return expected                
+                    return expected
 
             # unknown : ATKEYWORD S* ... ; | }
             newseq = self._tempSeq()
             wellformed, expected = self._parse(expected=None,
-                seq=newseq, tokenizer=tokenizer,
-                productions={'CHAR': CHAR,
-                             'EOF': EOF,
-                             'FUNCTION': FUNCTION,
-                             'INVALID': INVALID,
-                             'STRING': STRING,
-                             'URI': URI,
-                             'S': default # overwrite default default!
-                }, 
-                default=default,
-                new=new)
+                                               seq=newseq, tokenizer=tokenizer,
+                                               productions={'CHAR': CHAR,
+                                                            'EOF': EOF,
+                                                            'FUNCTION': FUNCTION,
+                                                            'INVALID': INVALID,
+                                                            'STRING': STRING,
+                                                            'URI': URI,
+                                                            'S': default  # overwrite default default!
+                                                            },
+                                               default=default,
+                                               new=new)
 
             # wellformed set by parse
             wellformed = wellformed and new['wellformed']
-            
+
             # post conditions
             if expected != 'EOF':
                 wellformed = False
@@ -202,10 +204,9 @@ class CSSUnknownRule(cssrule.CSSRule):
 
     cssText = property(fget=_getCssText, fset=_setCssText,
                        doc="(DOM) The parsable textual representation.")
-    
-    type = property(lambda self: self.UNKNOWN_RULE, 
+
+    type = property(lambda self: self.UNKNOWN_RULE,
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
-    
+
     wellformed = property(lambda self: bool(self.atkeyword))
-    

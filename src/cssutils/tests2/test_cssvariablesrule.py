@@ -5,6 +5,7 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -13,7 +14,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.rRO = cssutils.css.CSSVariablesRule(readonly=True)
         self.r_type = cssutils.css.CSSPageRule.VARIABLES_RULE
         self.r_typeString = 'VARIABLES_RULE'
-        
+
         cssutils.ser.prefs.resolveVariables = False
 
     def test_init(self):
@@ -21,7 +22,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSVariablesRuleTestCase, self).test_init()
 
         r = cssutils.css.CSSVariablesRule()
-        self.assertEqual(cssutils.css.CSSVariablesDeclaration, 
+        self.assertEqual(cssutils.css.CSSVariablesDeclaration,
                          type(r.variables))
         self.assertEqual(r, r.variables.parentRule)
 
@@ -29,7 +30,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(u'', r.cssText)
 
         # only possible to set @... similar name
-        self.assertRaises(xml.dom.InvalidModificationErr, 
+        self.assertRaises(xml.dom.InvalidModificationErr,
                           self.r._setAtkeyword, 'x')
 
     def test_InvalidModificationErr(self):
@@ -37,38 +38,38 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self._test_InvalidModificationErr(u'@variables')
         tests = {
             u'@var {}': xml.dom.InvalidModificationErr,
-            }
+        }
         self.do_raise_r(tests)
 
     def test_incomplete(self):
         "CSSVariablesRule (incomplete)"
         tests = {
             u'@variables { ':
-                u'', # no } and no content
+                u'',  # no } and no content
             u'@variables { x: red':
-                u'@variables {\n    x: red\n    }', # no }
+                u'@variables {\n    x: red\n    }',  # no }
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests)  # parse
 
     def test_cssText(self):
         "CSSVariablesRule"
         EXP = u'@variables {\n    margin: 0\n    }'
         tests = {
-             u'@variables {}': u'',
-             u'@variables     {margin:0;}': EXP,
-             u'@variables     {margin:0}': EXP,
-             u'@VaRIables {   margin    :   0   ;    }': EXP,
+            u'@variables {}': u'',
+            u'@variables     {margin:0;}': EXP,
+            u'@variables     {margin:0}': EXP,
+            u'@VaRIables {   margin    :   0   ;    }': EXP,
             u'@\\VaRIables {    margin : 0    }': EXP,
 
-            u'@variables {a:1;b:2}': 
+            u'@variables {a:1;b:2}':
                 u'@variables {\n    a: 1;\n    b: 2\n    }',
 
             # comments
-            u'@variables   /*1*/   {margin:0;}': 
+            u'@variables   /*1*/   {margin:0;}':
                 u'@variables /*1*/ {\n    margin: 0\n    }',
-            u'@variables/*1*/{margin:0;}': 
+            u'@variables/*1*/{margin:0;}':
                 u'@variables /*1*/ {\n    margin: 0\n    }',
-            }
+        }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
 
@@ -77,11 +78,11 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSVariablesRule()
         self.assertRaises(AttributeError, r.__getattribute__, 'media')
         self.assertRaises(AttributeError, r.__setattr__, 'media', '?')
-        
+
     def test_variables(self):
-        "CSSVariablesRule.variables"                
+        "CSSVariablesRule.variables"
         r = cssutils.css.CSSVariablesRule(
-                 variables=cssutils.css.CSSVariablesDeclaration('x: 1'))
+            variables=cssutils.css.CSSVariablesDeclaration('x: 1'))
         self.assertEqual(r, r.variables.parentRule)
 
         # cssText
@@ -92,7 +93,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(vars1, r.variables)
         self.assertEqual(r.variables.cssText, u'x: 1')
         self.assertEqual(r.cssText, u'@variables {\n    x: 1\n    }')
-        
+
         r.cssText = u'@variables {y:2}'
         self.assertEqual(r, r.variables.parentRule)
         self.assertNotEqual(vars1, r.variables)
@@ -100,7 +101,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.cssText, u'@variables {\n    y: 2\n    }')
 
         vars2 = r.variables
-        
+
         # fail
         try:
             r.cssText = u'@variables {$:1}'
@@ -137,8 +138,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r, r.variables.parentRule)
         self.assertEqual(r.variables.cssText, u'a: x')
         self.assertEqual(r.cssText, u'@variables {\n    a: x\n    }')
-        
-        
+
     def test_reprANDstr(self):
         "CSSVariablesRule.__repr__(), .__str__()"
         r = cssutils.css.CSSVariablesRule()

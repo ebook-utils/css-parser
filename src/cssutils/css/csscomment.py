@@ -13,6 +13,7 @@ from . import cssrule
 import cssutils
 import xml.dom
 
+
 class CSSComment(cssrule.CSSRule):
     """
     Represents a CSS comment (cssutils only).
@@ -21,9 +22,10 @@ class CSSComment(cssrule.CSSRule):
 
         /*...*/
     """
-    def __init__(self, cssText=None, parentRule=None, 
+
+    def __init__(self, cssText=None, parentRule=None,
                  parentStyleSheet=None, readonly=False):
-        super(CSSComment, self).__init__(parentRule=parentRule, 
+        super(CSSComment, self).__init__(parentRule=parentRule,
                                          parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
@@ -34,14 +36,14 @@ class CSSComment(cssrule.CSSRule):
 
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__, 
-                self.cssText)
+            self.__class__.__name__,
+            self.cssText)
 
     def __str__(self):
         return "<cssutils.css.%s object cssText=%r at 0x%x>" % (
-                self.__class__.__name__, 
-                self.cssText, 
-                id(self))
+            self.__class__.__name__,
+            self.cssText,
+            id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -73,17 +75,17 @@ class CSSComment(cssrule.CSSRule):
            self._type(commenttoken) != self._prods.COMMENT or\
            unexpected:
             self._log.error('CSSComment: Not a CSSComment: %r' %
-                self._valuestr(cssText),
-                error=xml.dom.InvalidModificationErr)
+                            self._valuestr(cssText),
+                            error=xml.dom.InvalidModificationErr)
         else:
             self._cssText = self._tokenvalue(commenttoken)
 
     cssText = property(_getCssText, _setCssText,
-        doc="The parsable textual representation of this rule.")
+                       doc="The parsable textual representation of this rule.")
 
-    type = property(lambda self: self.COMMENT, 
+    type = property(lambda self: self.COMMENT,
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
-    
+
     # constant but needed:
     wellformed = property(lambda self: True)

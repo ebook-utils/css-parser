@@ -5,6 +5,7 @@ __all__ = ['StyleSheetList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+
 class StyleSheetList(list):
     """Interface `StyleSheetList` (introduced in DOM Level 2)
 
@@ -17,6 +18,7 @@ class StyleSheetList(list):
     This Python implementation is based on a standard Python list so e.g.
     allows ``examplelist[index]`` usage.
     """
+
     def item(self, index):
         """
         Used to retrieve a style sheet by ordinal `index`. If `index` is
@@ -29,6 +31,5 @@ class StyleSheetList(list):
             return None
 
     length = property(lambda self: len(self),
-        doc="The number of :class:`StyleSheet` objects in the list. The range"
-        "  of valid child stylesheet indices is 0 to length-1 inclusive.")
-
+                      doc="The number of :class:`StyleSheet` objects in the list. The range"
+                      "  of valid child stylesheet indices is 0 to length-1 inclusive.")

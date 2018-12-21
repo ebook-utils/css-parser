@@ -5,6 +5,7 @@ import xml.dom.minidom
 import unittest
 import cssutils
 
+
 class DOMImplementationTestCase(unittest.TestCase):
 
     def setUp(self):

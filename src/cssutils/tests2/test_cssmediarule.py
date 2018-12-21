@@ -4,6 +4,7 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -15,7 +16,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # for tests
         self.stylerule = cssutils.css.CSSStyleRule()
         self.stylerule.cssText = u'a {}'
-        
+
     def test_init(self):
         "CSSMediaRule.__init__()"
         super(CSSMediaRuleTestCase, self).test_init()
@@ -63,7 +64,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         r.cssText = '@media all {a {color: blue}}'
         # not anymore: self.assertEqual(rules, r.cssRules)
 
-        # set cssRules 
+        # set cssRules
         r.cssRules = cssutils.parseString('''
             /**/
             @x;
@@ -73,7 +74,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         for i, sr in enumerate(r.cssRules):
             self.assertEqual(sr.parentStyleSheet, s)
             self.assertEqual(sr.parentRule, r)
-            
+
     def test_cssRules(self):
         "CSSMediaRule.cssRules"
         r = cssutils.css.CSSMediaRule()
@@ -93,9 +94,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(2, m.cssRules.length)
         m.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
         self.assertEqual(4, m.cssRules.length)
-        self.assertEqual(u'@media all {\n    a {\n        x: 1\n        }\n    /*2*/\n    /*3*/\n    x {\n        y: 2\n        }\n    }', 
+        self.assertEqual(u'@media all {\n    a {\n        x: 1\n        }\n    /*2*/\n    /*3*/\n    x {\n        y: 2\n        }\n    }',
                          m.cssText)
-        
+
         for rule in m.cssRules:
             self.assertEqual(rule.parentStyleSheet, s)
             self.assertEqual(rule.parentRule, m)
@@ -119,14 +120,14 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u' only tv and (color: red) and (width: 100px) ': None,
             u' only tv and (color: red) and (width: 100px), tv ': None,
             u' only tv and (color: red) and (width: 100px), tv and (width: 20px) ': None,
-            u' only tv and(color :red)and(  width :100px  )  ,tv and(width: 20px) ': 
+            u' only tv and(color :red)and(  width :100px  )  ,tv and(width: 20px) ':
                 u' only tv and (color: red) and (width: 100px), tv and (width: 20px) ',
             u' (color: red) and (width: 100px), (width: 20px) ': None,
             u' /*1*/ only /*2*/ tv /*3*/ and /*4*/ (/*5*/ width) /*5*/ /*6*/, (color) and (height) ': None,
             u'(color)and(width),(height)': u' (color) and (width), (height) '
         }
         tests = {}
-        for b, a in mls.items(): 
+        for b, a in mls.items():
             if a is None:
                 a = b
             tests[u'@media%s%s' % (b, style)] = u'@media%s%s' % (a, style)
@@ -169,7 +170,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media only tv and (width)  ,  (color) and (height){}': u'',
             u'@media only tv and (width) and (color){}': u'',
 
-            
+
 
             u'@media all "name"{}': u'',
             u'@media all {}': u'',
@@ -189,15 +190,15 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
     }''',
             u'@media all { @x{}}': u'@media all {\n    @x {\n        }\n    }',
-            u'@media all "n" /**/ { @x{}}': 
+            u'@media all "n" /**/ { @x{}}':
                 u'@media all "n" /**/ {\n    @x {\n        }\n    }',
             # comments
-            u'@media/*1*//*2*/all/*3*//*4*/{/*5*/a{x:1}}': 
+            u'@media/*1*//*2*/all/*3*//*4*/{/*5*/a{x:1}}':
                 u'@media /*1*/ /*2*/ all /*3*/ /*4*/ {\n    /*5*/\n    a {\n        x: 1\n        }\n    }',
-            u'@media  /*1*/  /*2*/  all  /*3*/  /*4*/  {  /*5*/  a{ x: 1} }': 
+            u'@media  /*1*/  /*2*/  all  /*3*/  /*4*/  {  /*5*/  a{ x: 1} }':
                 u'@media /*1*/ /*2*/ all /*3*/ /*4*/ {\n    /*5*/\n    a {\n        x: 1\n        }\n    }',
             # WS
-            u'@media\n\t\f all\n\t\f {\n\t\f a{ x: 1}\n\t\f }': 
+            u'@media\n\t\f all\n\t\f {\n\t\f a{ x: 1}\n\t\f }':
                 u'@media all {\n    a {\n        x: 1\n        }\n    }',
             # @page rule inside @media
             u'@media all { @page { margin: 0; } }':
@@ -206,7 +207,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media all { @media all { p { color: red; } } }':
                 u'@media all {\n    @media all {\n        p {\n            '
                 'color: red\n            }\n        }\n    }',
-            }
+        }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
 
@@ -232,14 +233,14 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@media (:){}': xml.dom.SyntaxErr,
             u'@media color:red){}': xml.dom.SyntaxErr,
 
-            }
+        }
         self.do_raise_p(tests)
         self.do_raise_r(tests)
 
         tests = {
             # extra stuff
             '@media all { x{} } a{}': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests)
 
         m = cssutils.css.CSSMediaRule()
@@ -276,7 +277,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('\\n"ame', r.name)
         r.name = "n"
         self.assertEqual('n', r.name)
-        self.assertEqual(u'@media all "n" {\n    a {\n        left: 0\n        }\n    }', 
+        self.assertEqual(u'@media all "n" {\n    a {\n        left: 0\n        }\n    }',
                          r.cssText)
         r.name = '"'
         self.assertEqual('"', r.name)
@@ -292,7 +293,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(None, r.name)
         self.assertEqual(u'@media all {\n    a {\n        left: 0\n        }\n    }',
                          r.cssText)
-                
+
         self.assertRaises(xml.dom.SyntaxErr, r._setName, 0)
         self.assertRaises(xml.dom.SyntaxErr, r._setName, 123)
 
@@ -336,20 +337,21 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule(rule)"
         m = cssutils.css.CSSMediaRule()
-        m.cssText='''@media all {
+        m.cssText = '''@media all {
             a { color: red; }
             b { color: blue; }
             c { color: green; }
         }'''
         s1, s2, s3 = m.cssRules
-        
+
         r = cssutils.css.CSSStyleRule()
         self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, r)
 
         self.assertEqual(3, m.cssRules.length)
         m.deleteRule(s2)
         self.assertEqual(2, m.cssRules.length)
-        self.assertEqual(m.cssText, '@media all {\n    a {\n        color: red\n        }\n    c {\n        color: green\n        }\n    }')
+        self.assertEqual(
+            m.cssText, '@media all {\n    a {\n        color: red\n        }\n    c {\n        color: green\n        }\n    }')
         self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, s2)
 
     def test_add(self):
@@ -407,9 +409,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         # index
         self.assertRaises(xml.dom.IndexSizeErr,
-                  r.insertRule, stylerule, -1)
+                          r.insertRule, stylerule, -1)
         self.assertRaises(xml.dom.IndexSizeErr,
-                  r.insertRule, stylerule, r.cssRules.length + 1)
+                          r.insertRule, stylerule, r.cssRules.length + 1)
 
     def test_InvalidModificationErr(self):
         "CSSMediaRule.cssText InvalidModificationErr"
@@ -418,23 +420,23 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_incomplete(self):
         "CSSMediaRule (incomplete)"
         tests = {
-            u'@media all { @unknown;': # no }
-                u'@media all {\n    @unknown;\n    }',
-            u'@media all { a {x:"1"}': # no }
-                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
-            u'@media all { a {x:"1"': # no }}
-                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
-            u'@media all { a {x:"1': # no "}}
-                u'@media all {\n    a {\n        x: "1"\n        }\n    }',
+            u'@media all { @unknown;':  # no }
+            u'@media all {\n    @unknown;\n    }',
+            u'@media all { a {x:"1"}':  # no }
+            u'@media all {\n    a {\n        x: "1"\n        }\n    }',
+            u'@media all { a {x:"1"':  # no }}
+            u'@media all {\n    a {\n        x: "1"\n        }\n    }',
+            u'@media all { a {x:"1':  # no "}}
+            u'@media all {\n    a {\n        x: "1"\n        }\n    }',
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests)  # parse
 
     def test_reprANDstr(self):
         "CSSMediaRule.__repr__(), .__str__()"
-        mediaText='tv, print'
-        
+        mediaText = 'tv, print'
+
         s = cssutils.css.CSSMediaRule(mediaText=mediaText)
-        
+
         self.assertTrue(mediaText in str(s))
 
         s2 = eval(repr(s))

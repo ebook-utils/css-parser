@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals, division, absolute_import, print_function
+import xml.dom
+import logging
 """cssutils ErrorHandler
 
 ErrorHandler
@@ -14,7 +17,6 @@ log
     - raiseExceptions = [False, True]
     - setloglevel(loglevel)
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
@@ -29,14 +31,13 @@ else:
     from urllib2 import HTTPError as urllib_HTTPError
     from urllib2 import URLError as urllib_URLError
 
-import logging
-import xml.dom
 
 class _ErrorHandler(object):
     """
     handles all errors and log messages
     """
-    def __init__(self, log, defaultloglevel=logging.INFO, 
+
+    def __init__(self, log, defaultloglevel=logging.INFO,
                  raiseExceptions=True):
         """
         inits log if none given
@@ -52,7 +53,7 @@ class _ErrorHandler(object):
         """
         # may be disabled during setting of known valid items
         self.enabled = True
-        
+
         if log:
             self._log = log
         else:
@@ -63,7 +64,7 @@ class _ErrorHandler(object):
             hdlr.setFormatter(formatter)
             self._log.addHandler(hdlr)
             self._log.setLevel(defaultloglevel)
-            
+
         self.raiseExceptions = raiseExceptions
 
     def __getattr__(self, name):
@@ -72,6 +73,8 @@ class _ErrorHandler(object):
         other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
         if name in calls:
+            if name == 'warn':
+                name = 'warning'
             self._logcall = getattr(self._log, name)
             return self.__handle
         elif name in other:
@@ -89,7 +92,7 @@ class _ErrorHandler(object):
         if self.enabled:
             if error is None:
                 error = xml.dom.SyntaxErr
-            
+
             line, col = None, None
             if token:
                 if isinstance(token, tuple):
@@ -98,11 +101,11 @@ class _ErrorHandler(object):
                     value, line, col = token.value, token.line, token.col
                 msg = '%s [%s:%s: %s]' % (
                     msg, line, col, value)
-    
+
             if error and self.raiseExceptions and not neverraise:
                 if isinstance(error, urllib_HTTPError) or isinstance(error, urllib_URLError):
                     raise
-                elif issubclass(error, xml.dom.DOMException): 
+                elif issubclass(error, xml.dom.DOMException):
                     error.line = line
                     error.col = col
                 raise error(msg)
@@ -119,10 +122,10 @@ class ErrorHandler(_ErrorHandler):
     instance = None
 
     def __init__(self,
-            log=None, defaultloglevel=logging.INFO, raiseExceptions=True):
+                 log=None, defaultloglevel=logging.INFO, raiseExceptions=True):
 
         if ErrorHandler.instance is None:
             ErrorHandler.instance = _ErrorHandler(log=log,
-                                        defaultloglevel=defaultloglevel,
-                                        raiseExceptions=raiseExceptions)
+                                                  defaultloglevel=defaultloglevel,
+                                                  raiseExceptions=raiseExceptions)
         self.__dict__ = ErrorHandler.instance.__dict__

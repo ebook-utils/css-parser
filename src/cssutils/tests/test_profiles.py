@@ -20,15 +20,15 @@ CSS2_FM3 = (FM3[0], CSS2[0])
 
 class ProfilesTestCase(basetest.BaseTestCase):
     M1 = {
-          'testvalue': 'x'
-          }
+        'testvalue': 'x'
+    }
     P1 = {
-        '-test-tokenmacro': '({num}{w}){1,2}', 
+        '-test-tokenmacro': '({num}{w}){1,2}',
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',
-        # custom validation function 
-        '-test-funcval': lambda v: int(v) > 0 
-        }  
+        # custom validation function
+        '-test-funcval': lambda v: int(v) > 0
+    }
 
     def test_knownNames(self):
         "Profiles.knownNames"
@@ -38,7 +38,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         self.assertEqual(p.knownNames, list(self.P1.keys()))
         p.removeProfile(all=True)
         self.assertEqual(p.knownNames, [])
-        
+
     def test_profiles(self):
         "Profiles.profiles"
         p = cssutils.profiles.Profiles()
@@ -50,22 +50,22 @@ class ProfilesTestCase(basetest.BaseTestCase):
 
     def test_validate2(self):
         "Profiles.validate()"
-        #save
+        # save
         saved = cssutils.profile
-        
-        # test        
+
+        # test
         p = cssutils.profiles.Profiles()
         cssutils.profile = p
-        
+
         pvs = [('color', 'red'),
                ('color', 'rgba(0,0,0,0)'),
                ('color', 'XXX')
                ]
-        
+
         def check(*results):
             for i, pv in enumerate(pvs):
                 self.assertEqual(p.validate(*pv), results[i])
-                        
+
         check(True, True, False)
 
         p.removeProfile(p.CSS3_COLOR)
@@ -78,51 +78,51 @@ class ProfilesTestCase(basetest.BaseTestCase):
         check(False, False, False)
 
         # TODO: validateWithProfile
-        
+
         # restore
         cssutils.profile = saved
 
     def test_addProfile(self):
         "Profiles.addProfile with custom validation function"
         # unknown profile
-        self.assertRaises(cssutils.profiles.NoSuchProfileException, 
-                          lambda: list(cssutils.profile.propertiesByProfile('NOTSET')) )
+        self.assertRaises(cssutils.profiles.NoSuchProfileException,
+                          lambda: list(cssutils.profile.propertiesByProfile('NOTSET')))
 
         # new profile
         cssutils.profile.addProfile('test', self.P1, self.M1)
-        
+
         props = list(self.P1.keys())
         props.sort()
         self.assertEqual(props, list(cssutils.profile.propertiesByProfile('test')))
-        
+
         cssutils.log.raiseExceptions = False
         tests = {
-            ('-test-tokenmacro', '1'): True,     
-            ('-test-tokenmacro', '1 -2'): True,     
-            ('-test-tokenmacro', '1 2 3'): False,     
-            ('-test-tokenmacro', 'a'): False,     
-            ('-test-macro', 'a'): True,     
+            ('-test-tokenmacro', '1'): True,
+            ('-test-tokenmacro', '1 -2'): True,
+            ('-test-tokenmacro', '1 2 3'): False,
+            ('-test-tokenmacro', 'a'): False,
+            ('-test-macro', 'a'): True,
             ('-test-macro', '0.1%'): True,
-            ('-test-custommacro', 'x'): True,     
-            ('-test-custommacro', '1'): False,     
-            ('-test-custommacro', 'y'): False,     
-            ('-test-funcval', '1'): True,     
-            ('-test-funcval', '-1'): False,     
-            ('-test-funcval', 'x'): False     
-            }
+            ('-test-custommacro', 'x'): True,
+            ('-test-custommacro', '1'): False,
+            ('-test-custommacro', 'y'): False,
+            ('-test-funcval', '1'): True,
+            ('-test-funcval', '-1'): False,
+            ('-test-funcval', 'x'): False
+        }
         for test, v in list(tests.items()):
             self.assertEqual(v, cssutils.profile.validate(*test))
-            
-            self.assertEqual((v, v, ['test']), 
+
+            self.assertEqual((v, v, ['test']),
                              cssutils.profile.validateWithProfile(*test))
-            
+
         cssutils.log.raiseExceptions = True
-        
+
         # raises:
-        expmsg = "invalid literal for int() with base 10: 'x'"        
+        expmsg = "invalid literal for int() with base 10: 'x'"
         # Python upto 2.4 and Jython have different msg format...
-        if sys.version_info[0:2] == (2,4):
-            expmsg = "invalid literal for int(): x" 
+        if sys.version_info[0:2] == (2, 4):
+            expmsg = "invalid literal for int(): x"
         elif sys.platform.startswith('java'):
             expmsg = "invalid literal for int() with base 10: x"
         # PyPy adds the u prefix, but only in versions lower than Python 3
@@ -130,8 +130,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
               sys.version_info < (3, 0)):
             expmsg = "invalid literal for int() with base 10: u'x'"
 
-            
-        self.assertRaisesMsg(Exception, expmsg, 
+        self.assertRaisesMsg(Exception, expmsg,
                              cssutils.profile.validate, '-test-funcval', 'x')
 
     def test_removeProfile(self):
@@ -173,13 +172,13 @@ class ProfilesTestCase(basetest.BaseTestCase):
 #        for test, r in tests.items():
 #            self.assertEqual(p.validate(test[0], test[1]), r[0])
 #            self.assertEqual(p.validateWithProfile(*test), r)
-           
+
     def test_propertiesByProfile(self):
         "Profiles.propertiesByProfile"
-        self.assertEqual(['opacity'], #'color',  
+        self.assertEqual(['opacity'],  # 'color',
                          list(cssutils.profile.propertiesByProfile(
-                                            cssutils.profile.CSS3_COLOR)))
-        
+                             cssutils.profile.CSS3_COLOR)))
+
     def test_csscolorlevel3(self):
         "CSS Color Module Level 3"
         # (propname, propvalue): (valid, validprofile)
@@ -187,26 +186,26 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          aqua, black, blue, fuchsia, gray, green, lime, maroon,
                          navy, olive, purple, red, silver, teal, white, yellow'''
         for color in namedcolors.split(','):
-            color = color.strip()            
+            color = color.strip()
             self.assertEqual(True, cssutils.profile.validate('color', color))
-            
-            self.assertEqual((True, True, list(CSS2)), 
+
+            self.assertEqual((True, True, list(CSS2)),
                              cssutils.profile.validateWithProfile('color', color))
 
             # CSS2 only:
         uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
         for color in uicolor.split('|'):
             self.assertEqual(False, cssutils.profile.validate('color', color))
-            
+
             # TODO: Fix
-            #self.assertEqual((True, True, list(CSS2)), 
+            # self.assertEqual((True, True, list(CSS2)),
             #                 cssutils.profile.validateWithProfile('color', color))
-        
+
     def test_validate(self):
         "Profiles.validate()"
         tests = {
             # name, values: valid, matching, profile
-            
+
             # background-position
             ('background-position', ('inherit',
                                      '0',
@@ -238,21 +237,21 @@ class ProfilesTestCase(basetest.BaseTestCase):
                                          '1% -1px',
                                          '1% 0',
                                          )): (True, True, C3BB),
-            ('border-top-right-radius', ('1px 2px 2px', 
+            ('border-top-right-radius', ('1px 2px 2px',
                                          '/ 1px',
                                          'black')): (False, False, C3BB),
 
             ('border-radius', ('1px',
                                '1%',
                                '0',
-                               '1px 1px', 
-                               '1px/ 1px', 
-                               '1px /1px', 
-                               '1px  /  1px', 
+                               '1px 1px',
+                               '1px/ 1px',
+                               '1px /1px',
+                               '1px  /  1px',
                                '1px 1px 1px 1px',
                                '1px 1px 1px 1px / 1px 1px 1px 1px',
                                )): (True, True, C3BB),
-            ('border-radius', ('1px /', 
+            ('border-radius', ('1px /',
                                '/ 1px',
                                '1px / 1px / 1px',
                                '1px 1px 1px 1px 1px',
@@ -268,25 +267,25 @@ class ProfilesTestCase(basetest.BaseTestCase):
                         'red solid 1px',
                         'solid 1px red',
                         'solid red 1px',
-                               )): (True, True, C3BB),
-            ('border', ('1px 1px', 
+                        )): (True, True, C3BB),
+            ('border', ('1px 1px',
                         'red red 1px',
                         )): (False, False, C3BB),
-            
+
             ('box-shadow', ('none',
-                            '1px 1px', 
+                            '1px 1px',
                             '1px 1px 1px',
                             '1px 1px 1px 1px',
                             '1px 1px 1px 1px red',
                             'inset 1px 1px',
                             'inset 1px 1px 1px 1px black')): (True, True, C3BB),
-            ('box-shadow', ('1px', 
+            ('box-shadow', ('1px',
                             '1px 1px 1px 1px 1px',
                             'x 1px 1px',
                             'inset',
                             '1px black',
                             'black')): (False, False, C3BB),
-            
+
             # color
             ('color', ('x',
                        '#',
@@ -315,7 +314,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                        'hsla(1,1,1%, 1)',
                        'hsla(1,1%,1, 1)',
                        'hsla(1,1%,1%, 1%)'
-                       )): (False,False, CSS2_CM3),
+                       )): (False, False, CSS2_CM3),
             ('color', ('inherit',
                        'black',
                        '#000',
@@ -336,31 +335,31 @@ class ProfilesTestCase(basetest.BaseTestCase):
                        'hsl(-1000,555.5%,-61.5%)',
                        'hsla(1,1%,1%,1)',
                        'hsla( 1, 1% , 1% , 1 )',
-                       'hsla(-1000,555.5%,-61.5%, 0.5)'                      
+                       'hsla(-1000,555.5%,-61.5%, 0.5)'
                        )): (True, True, CM3),
             # TODO?:
-            #('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, True, CSS2),
+            # ('color', 'rgb(/**/ 0 /**/ , /**/ 1 /**/ , /**/ 1 /**/ )'): (True, True, CSS2),
 
             # content
-            ('content', ('none', 
+            ('content', ('none',
                          'normal',
                          '""',
                          "'x'",
                          )): (True, True, CSS2),
 
-            ('cursor', ('url(1), auto', 
+            ('cursor', ('url(1), auto',
                         'url(1) 2 3, help',
                         'wait',
                         'inherit',
                         'none')): (True, True, C3BUI),
-            ('cursor', ('url(1), auto, wait', 
+            ('cursor', ('url(1), auto, wait',
                         'url(1) 2, help',
                         '1')): (False, False, C3BUI),
-            
+
             # FONTS
             ('font-family', ('serif, x',
-                             )): (True, True, CSS2), #CSS2_FM3),
-                             
+                             )): (True, True, CSS2),  # CSS2_FM3),
+
             ('font-family', ('inherit',
                              'a, b',
                              'a,b,c',
@@ -369,34 +368,34 @@ class ProfilesTestCase(basetest.BaseTestCase):
                              '"a", "b", "c"',
                              '"x y"',
                              'serif',
-                             '"serif"', # valid but CSS2: font with name serif, CSS3: same as `serif`
-                             'a  b', # should use quotes but valid
+                             '"serif"',  # valid but CSS2: font with name serif, CSS3: same as `serif`
+                             'a  b',  # should use quotes but valid
                              'a, b   b, d',
                              )): (True, True, CSS2),
 
-            ('font-weight', ('normal', 'bold', 'bolder', 'lighter', 'inherit', 
+            ('font-weight', ('normal', 'bold', 'bolder', 'lighter', 'inherit',
                              '100', '200', '300', '400', '500', '600', '700', '800', '900'
                              )): (True, True, CSS2),
 
             ('font-stretch', ('normal', 'wider', 'narrower', 'ultra-condensed',
                               'extra-condensed', 'condensed', 'semi-condensed',
                               'semi-expanded', 'expanded', 'extra-expanded',
-                              'ultra-expanded', 'inherit'                          
-                             )): (True, True, FM3),
+                              'ultra-expanded', 'inherit'
+                              )): (True, True, FM3),
 
             ('font-style', ('normal', 'italic', 'oblique', 'inherit'
-                             )): (True, True, CSS2),
+                            )): (True, True, CSS2),
 
             ('font-variant', ('normal', 'small-caps', 'inherit'
-                             )): (True, True, CSS2),
+                              )): (True, True, CSS2),
             ('font-size', ('-1em',
                            )): (False, False, CSS2),
-            ('font-size', ('xx-small', 'x-small', 'small', 'medium', 'large', 
-                           'x-large', 'xx-large', 'larger', 'smaller', 
+            ('font-size', ('xx-small', 'x-small', 'small', 'medium', 'large',
+                           'x-large', 'xx-large', 'larger', 'smaller',
                            '1em', '1%', 'inherit'
                            )): (True, True, CSS2),
 
-            ('font-size-adjust', ('1.0', 
+            ('font-size-adjust', ('1.0',
                                   'none', 'inherit'
                                   )): (True, True, FM3),
 
@@ -405,15 +404,15 @@ class ProfilesTestCase(basetest.BaseTestCase):
                       '80% sans-serif',
                       'x-large/110% "new century schoolbook", serif',
                       'bold italic large Palatino, serif',
-                      'normal small-caps 120%/120% fantasy',                     
-                      'oblique 12pt "Helvetica Nue", serif', 
+                      'normal small-caps 120%/120% fantasy',
+                      'oblique 12pt "Helvetica Nue", serif',
                       'caption', 'icon', 'menu', 'message-box', 'small-caption',
                       'status-bar', 'inherit'
                       )): (True, True, CSS2),
-            
+
             ('nav-index', ('1', 'auto', 'inherit')): (True, True, C3BUI),
             ('nav-index', ('x', '1 2', '1px')): (False, False, C3BUI),
-            
+
             ('opacity', ('inherit',
                          '0', '0.0', '0.42342', '1', '1.0',
                          # should be clipped but valid
@@ -421,23 +420,23 @@ class ProfilesTestCase(basetest.BaseTestCase):
                          )): (True, True, CM3),
             ('opacity', ('a', '#000', '+1')): (False, False, CM3),
 
-            ('outline', ('red dotted 1px', 
+            ('outline', ('red dotted 1px',
                          'dotted 1px red',
                          '1px red dotted',
                          'red', '1px', 'dotted',
                          'red 1px', '1px dotted', 'red dotted',
                          'inherit'
-                               )): (True, True, C3BUI),
+                         )): (True, True, C3BUI),
             ('outline', ('red #fff', 'solid dotted', 'Url(x)', '1px 1px'
-                               )): (False, False, C3BUI),
+                         )): (False, False, C3BUI),
             ('outline-color', ('red', '#fff', 'inherit'
                                )): (True, True, C3BUI),
             ('outline-color', ('0', '1em'
                                )): (False, False, C3BUI),
             ('outline-offset', ('0', '1em', 'inherit'
-                               )): (True, True, C3BUI),
+                                )): (True, True, C3BUI),
             ('outline-offset', ('1%', 'red'
-                               )): (False, False, C3BUI),
+                                )): (False, False, C3BUI),
             ('outline-style', ('auto', 'dotted', 'inherit'
                                )): (True, True, C3BUI),
             ('outline-style', ('0', '1em', 'red'
@@ -446,30 +445,30 @@ class ProfilesTestCase(basetest.BaseTestCase):
                                )): (True, True, C3BUI),
             ('outline-width', ('auto', 'red', 'dotted'
                                )): (False, False, C3BUI),
-            
-            ('resize', ('none', 
-                        'both', 
-                        'horizontal', 
+
+            ('resize', ('none',
+                        'both',
+                        'horizontal',
                         'vertical',
                         'inherit')): (True, True, C3BUI),
-            ('resize', ('1', 
-                        'auto', 
-                        '1px', 
+            ('resize', ('1',
+                        'auto',
+                        '1px',
                         '2%')): (False, False, C3BUI),
 
             ('size', ('1cm',
                       '1mm 20cm',
                       'auto',
-                      'landscape letter', 
-                      'a4 portrait', 
-                      'landscape', 
-                      'a5', 
-                      #'inherit'
+                      'landscape letter',
+                      'a4 portrait',
+                      'landscape',
+                      'a5',
+                      # 'inherit'
                       )): (True, True, C3PM),
-            ('size', ( 
-                      'portrait landscape', 
-                      'a5 letter', 
-                      '2%')): (False, False, C3PM),
+            ('size', (
+                'portrait landscape',
+                'a5 letter',
+                '2%')): (False, False, C3PM),
 
             ('src', ('url(  a  )',
                      'local(  x  )',
@@ -482,64 +481,64 @@ class ProfilesTestCase(basetest.BaseTestCase):
                      'local(Gentium), url(/fonts/Gentium.ttf)',
                      'local("Gentium"), url("/fonts/Gentium.ttf")',
                      'local(Futura-Medium), url(fonts.svg#MyGeometricModern) format("svg")',
-                    )): (True, True, FM3FF),
+                     )): (True, True, FM3FF),
 
 
             ('text-shadow', ('none',
-                            '1px 1px', 
-                            '1px 1px 1px',
-                            '1px 1px 1px 1px',
-                            '1px 1px 1px 1px red',
-                            'inset 1px 1px',
-                            'inset 1px 1px 1px 1px black')): (True, True, C3T),
-            ('text-shadow', ('1px', 
-                            '1px 1px 1px 1px 1px',
-                            'x 1px 1px',
-                            'inset',
-                            '1px black',
-                            'black')): (False, False, C3T),
+                             '1px 1px',
+                             '1px 1px 1px',
+                             '1px 1px 1px 1px',
+                             '1px 1px 1px 1px red',
+                             'inset 1px 1px',
+                             'inset 1px 1px 1px 1px black')): (True, True, C3T),
+            ('text-shadow', ('1px',
+                             '1px 1px 1px 1px 1px',
+                             'x 1px 1px',
+                             'inset',
+                             '1px black',
+                             'black')): (False, False, C3T),
 
             ('unicode-range', ('u+1', 'U+111111-ffffff',
                                'u+123456  ,  U+1-f'
                                )): (True, True, FM3FF),
-        
+
         }
         # TODO!!!
-        for (name, values), (valid, matching, profile) in list(tests.items()): 
+        for (name, values), (valid, matching, profile) in list(tests.items()):
             for value in values:
                 self.assertEqual(valid, cssutils.profile.validate(name, value))
-                
-                
+
+
 #                if (valid, matching, list(profile)) != cssutils.profile.validateWithProfile(name, value):
 #                    print
 #                    print '###############', name, value
 #                    print (valid, matching, list(profile)), cssutils.profile.validateWithProfile(name, value)
-             
-             # TODO: fix                       
-#                self.assertEqual((valid, matching, list(profile)), 
+
+             # TODO: fix
+#                self.assertEqual((valid, matching, list(profile)),
 #                                 cssutils.profile.validateWithProfile(name, value))
 
-     # TODO: fix                       
+     # TODO: fix
 #    def test_validateByProfile(self):
 #        "Profiles.validateByProfile()"
 #        # testing for valid values overwritten in a profile
 #        tests = {
 #            (FM3FF, 'font-family', ('y', '"y"' # => name should be "y"!!!
-#                                     )): (True, True, FM3FF),    
+#                                     )): (True, True, FM3FF),
 #            (FM3FF, 'font-family', ('"y", "a"', 'a, b', 'a a'
-#                                     )): (True, False, CSS2),    
+#                                     )): (True, False, CSS2),
 #            (FM3FF, 'font-stretch', ('normal', 'wider', 'narrower', 'inherit'
-#                                     )): (True, False, FM3),    
+#                                     )): (True, False, FM3),
 #            (FM3FF, 'font-style', ('inherit',
-#                                     )): (True, False, CSS2),    
+#                                     )): (True, False, CSS2),
 #            (FM3FF, 'font-weight', ('bolder', 'lighter', 'inherit',
-#                                     )): (True, False, CSS2),    
+#                                     )): (True, False, CSS2),
 #            }
-#        for (profiles, name, values), (v, m, p) in tests.items():            
+#        for (profiles, name, values), (v, m, p) in tests.items():
 #            for value in values:
-#                self.assertEqual((v, m, list(p)), 
-#                                 cssutils.profile.validateWithProfile(name, 
-#                                                                      value, 
+#                self.assertEqual((v, m, list(p)),
+#                                 cssutils.profile.validateWithProfile(name,
+#                                                                      value,
 #                                                                      profiles))
 
 

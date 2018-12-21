@@ -5,6 +5,7 @@ import xml.dom
 from . import basetest
 import cssutils.stylesheets
 
+
 class MediaQueryTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -37,17 +38,17 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             'not tv and (color)': None,
             'only tv and (color)': None,
             'print and(color)': 'print and (color)'
-            }
+        }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
             '': xml.dom.SyntaxErr,
             'two values': xml.dom.SyntaxErr,
             'or even three': xml.dom.SyntaxErr,
-            'aural': xml.dom.SyntaxErr, # a dimension
-            '3d': xml.dom.SyntaxErr, # a dimension
-            }
-        self.do_raise_r(tests, att='_setMediaText')        
+            'aural': xml.dom.SyntaxErr,  # a dimension
+            '3d': xml.dom.SyntaxErr,  # a dimension
+        }
+        self.do_raise_r(tests, att='_setMediaText')
 
     def test_mediaType(self):
         "MediaQuery.mediaType"
@@ -85,12 +86,12 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             '/*0* /not /*1*/ tv /*2*/': None,
             '/*x*/ only /*x*/ print /*x*/ and /*x*/ (/*x*/ min-width /*x*/: /*x*/ 100px /*x*/)': None,
             'print and/*1*/(color)': 'print and /*1*/ (color)'
-            }
+        }
         self.do_equal_r(tests, att='mediaText')
 
     def test_reprANDstr(self):
         "MediaQuery.__repr__(), .__str__()"
-        mediaText='tv and (color)'
+        mediaText = 'tv and (color)'
         s = cssutils.stylesheets.MediaQuery(mediaText=mediaText)
         self.assertTrue(mediaText in str(s))
         s2 = eval(repr(s))

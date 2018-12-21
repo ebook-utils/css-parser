@@ -1,5 +1,9 @@
-"""Property is a single CSS property in a CSSStyleDeclaration."""
 from __future__ import unicode_literals, division, absolute_import, print_function
+import xml.dom
+import cssutils
+from .value import PropertyValue
+from cssutils.helper import Deprecated
+"""Property is a single CSS property in a CSSStyleDeclaration."""
 
 __all__ = ['Property']
 __docformat__ = 'restructuredtext'
@@ -11,10 +15,6 @@ if sys.version_info[0] == 3:
 else:
     string_type = basestring
 
-from cssutils.helper import Deprecated
-from .value import PropertyValue
-import cssutils
-import xml.dom
 
 class Property(cssutils.util.Base):
     """A CSS property in a StyleDeclaration of a CSSStyleRule (cssutils).
@@ -51,6 +51,7 @@ class Property(cssutils.util.Base):
           ;
 
     """
+
     def __init__(self, name=None, value=None, priority='',
                  _mediaQuery=False, parent=None):
         """
@@ -88,10 +89,10 @@ class Property(cssutils.util.Base):
 
     def __repr__(self):
         return "cssutils.css.%s(name=%r, value=%r, priority=%r)" % (
-                self.__class__.__name__,
-                self.literalname,
-                self.propertyValue.cssText,
-                self.priority)
+            self.__class__.__name__,
+            self.literalname,
+            self.propertyValue.cssText,
+            self.priority)
 
     def __str__(self):
         return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" \
@@ -151,7 +152,7 @@ class Property(cssutils.util.Base):
             elif not nametokens:
                 wellformed = False
                 self._log.error('Property: No property name found: %s' %
-                            self._valuestr(cssText), colontoken)
+                                self._valuestr(cssText), colontoken)
 
             if valuetokens:
                 if self._tokenvalue(valuetokens[-1]) == '!':
@@ -178,7 +179,7 @@ class Property(cssutils.util.Base):
                             self._valuestr(cssText))
 
     cssText = property(fget=_getCssText, fset=_setCssText,
-        doc="A parsable textual representation.")
+                       doc="A parsable textual representation.")
 
     def _setName(self, name):
         """
@@ -220,7 +221,7 @@ class Property(cssutils.util.Base):
         if not new['literalname']:
             wellformed = False
             self._log.error('Property: No name found: %s' %
-                self._valuestr(name), token=token)
+                            self._valuestr(name), token=token)
 
         if wellformed:
             self.wellformed = True
@@ -270,7 +271,6 @@ class Property(cssutils.util.Base):
     propertyValue = property(lambda self: self.seqs[1],
                              _setPropertyValue,
                              doc="(cssutils) PropertyValue object of property")
-
 
     def _getValue(self):
         if self.propertyValue:
@@ -370,17 +370,17 @@ class Property(cssutils.util.Base):
                                 self._priority)
 
     priority = property(lambda self: self._priority, _setPriority,
-        doc="Priority of this property.")
+                        doc="Priority of this property.")
 
     literalpriority = property(lambda self: self._literalpriority,
-        doc="Readonly literal (not normalized) priority of this property")
+                               doc="Readonly literal (not normalized) priority of this property")
 
     def _setParent(self, parent):
         self._parent = parent
 
     parent = property(lambda self: self._parent, _setParent,
-        doc="The Parent Node (normally a CSSStyledeclaration) of this "
-            "Property")
+                      doc="The Parent Node (normally a CSSStyledeclaration) of this "
+                      "Property")
 
     def validate(self):
         """Validate value against `profiles` which are checked dynamically.
@@ -451,7 +451,7 @@ class Property(cssutils.util.Base):
             if rule is not None:
                 if rule.type == rule.FONT_FACE_RULE:
                     profiles = [cssutils.profile.CSS3_FONT_FACE]
-                #TODO: same for @page
+                # TODO: same for @page
 
         if self.name and self.value:
 
@@ -477,7 +477,7 @@ class Property(cssutils.util.Base):
                                     neverraise=True)
 
                 # TODO: remove logic to profiles!
-                elif valid and not matching:#(profiles and profiles not in validprofiles):
+                elif valid and not matching:  # (profiles and profiles not in validprofiles):
                     if not profiles:
                         notvalidprofiles = '/'.join(cssutils.profile.defaultProfiles)
                     else:
@@ -486,15 +486,15 @@ class Property(cssutils.util.Base):
                                    'but valid "%s" value: %s '
                                    % (notvalidprofiles, '/'.join(validprofiles),
                                       self.value),
-                                   token = self.__nametoken,
+                                   token=self.__nametoken,
                                    neverraise=True)
                     valid = False
 
                 elif valid:
                     self._log.debug('Property: Found valid "%s" value: %s'
-                                   % ('/'.join(validprofiles), self.value),
-                                   token = self.__nametoken,
-                                   neverraise=True)
+                                    % ('/'.join(validprofiles), self.value),
+                                    token=self.__nametoken,
+                                    neverraise=True)
 
         if self._priority not in ('', 'important'):
             valid = False
@@ -503,7 +503,6 @@ class Property(cssutils.util.Base):
 
     valid = property(validate, doc="Check if value of this property is valid "
                                    "in the properties context.")
-
 
     @Deprecated('Use ``property.propertyValue`` instead.')
     def _getCSSValue(self):
@@ -514,4 +513,4 @@ class Property(cssutils.util.Base):
         self._setPropertyValue(cssText)
 
     cssValue = property(_getCSSValue, _setCSSValue,
-                   doc="(DEPRECATED) Use ``property.propertyValue`` instead.")
+                        doc="(DEPRECATED) Use ``property.propertyValue`` instead.")

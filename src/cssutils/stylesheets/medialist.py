@@ -17,8 +17,10 @@ from .mediaquery import MediaQuery
 import cssutils
 import xml.dom
 
-#class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
-class MediaList(cssutils.util._NewListBase): 
+# class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
+
+
+class MediaList(cssutils.util._NewListBase):
     """Provides the abstraction of an ordered collection of media,
     without defining or constraining how this collection is
     implemented.
@@ -32,6 +34,7 @@ class MediaList(cssutils.util._NewListBase):
 
 
     """
+
     def __init__(self, mediaText=None, parentRule=None, readonly=False):
         """
         :param mediaText:
@@ -49,10 +52,10 @@ class MediaList(cssutils.util._NewListBase):
             mediaText = ','.join(mediaText)
 
         self._parentRule = parentRule
-        
+
         if mediaText:
             self.mediaText = mediaText
-            
+
         self._readonly = readonly
 
     def __repr__(self):
@@ -61,15 +64,13 @@ class MediaList(cssutils.util._NewListBase):
     def __str__(self):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (self.__class__.__name__, self.mediaText, id(self))
 
-
     def __iter__(self):
         for item in self._seq:
             if item.type == 'MediaQuery':
                 yield item
 
     length = property(lambda self: len(list(self)),
-        doc="The number of media in the list (DOM readonly).")
-
+                      doc="The number of media in the list (DOM readonly).")
 
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_medialist(self)
@@ -88,13 +89,12 @@ class MediaList(cssutils.util._NewListBase):
         """
         self._checkReadonly()
 
-
-        mediaquery = lambda: Prod(name='MediaQueryStart',
-                                  match=lambda t, v: t == 'IDENT' or v == '(',
-                                  toSeq=lambda t, tokens: ('MediaQuery', 
-                                                           MediaQuery(pushtoken(t, tokens),
-                                                                      _partof=True))
-                                  )
+        def mediaquery(): return Prod(name='MediaQueryStart',
+                                      match=lambda t, v: t == 'IDENT' or v == '(',
+                                      toSeq=lambda t, tokens: ('MediaQuery',
+                                                               MediaQuery(pushtoken(t, tokens),
+                                                                          _partof = True))
+                                      )
         prods = Sequence(Sequence(PreDef.comment(parent=self),
                                   minmax=lambda: (0, None)
                                   ),
@@ -115,11 +115,11 @@ class MediaList(cssutils.util._NewListBase):
         for item in seq:
             v = item.value
             if isinstance(v, MediaQuery):
-               if not v.wellformed:
-                   ok = False
-                   break
-               else:
-                   atleastone = True
+                if not v.wellformed:
+                    ok = False
+                    break
+                else:
+                    atleastone = True
 
         # must be at least one value!
         if not atleastone:
@@ -130,7 +130,7 @@ class MediaList(cssutils.util._NewListBase):
 
         self._wellformed = ok
 
-        if ok: 
+        if ok:
             mediaTypes = []
             finalseq = cssutils.util.Seq(readonly=False)
             commentseqonly = cssutils.util.Seq(readonly=False)
@@ -149,14 +149,14 @@ class MediaList(cssutils.util._NewListBase):
                         else:
                             mediaTypes.append(mediaType)
                 elif isinstance(item.value, cssutils.css.csscomment.CSSComment):
-                    commentseqonly.append(item) 
-                
+                    commentseqonly.append(item)
+
                 finalseq.append(item)
 
             self._setSeq(finalseq)
 
     mediaText = property(_getMediaText, _setMediaText,
-        doc="The parsable textual representation of the media list.")
+                         doc="The parsable textual representation of the media list.")
 
     def __prepareset(self, newMedium):
         # used by appendSelector and __setitem__
@@ -181,7 +181,7 @@ class MediaList(cssutils.util._NewListBase):
     def appendMedium(self, newMedium):
         """Add the `newMedium` to the end of the list. 
         If the `newMedium` is already used, it is first removed.
-        
+
         :param newMedium:
             a string or a :class:`~cssutils.stylesheets.MediaQuery`
         :returns: Wellformedness of `newMedium`.
@@ -206,8 +206,9 @@ class MediaList(cssutils.util._NewListBase):
             self._seq._readonly = False
 
             if 'all' in mts:
-                self._log.info('MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' % newMedium, error=xml.dom.InvalidModificationErr)
-            
+                self._log.info('MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
+                               newMedium, error=xml.dom.InvalidModificationErr)
+
             elif newmt and newmt in mts:
                 # might be empty
                 self.deleteMedium(newmt)
@@ -265,5 +266,5 @@ class MediaList(cssutils.util._NewListBase):
     parentRule = property(lambda self: self._parentRule,
                           doc="The CSSRule (e.g. an @media or @import rule "
                               "this list is part of or None")
-    
+
     wellformed = property(lambda self: self._wellformed)

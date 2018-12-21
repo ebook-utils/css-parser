@@ -4,20 +4,21 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSPageRuleTestCase, self).setUp()
-        
+
         cssutils.ser.prefs.useDefaults()
         self.r = cssutils.css.CSSPageRule()
         self.rRO = cssutils.css.CSSPageRule(readonly=True)
-        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE#
+        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE
         self.r_typeString = 'PAGE_RULE'
 
     def tearDown(self):
         cssutils.ser.prefs.useDefaults()
-            
+
     def test_init(self):
         "CSSPageRule.__init__()"
         super(CSSPageRuleTestCase, self).test_init()
@@ -37,14 +38,14 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(ff, ff.style.parentRule)
             for p in ff.style:
                 self.assertEqual(ff.style, p.parent)
-                
+
         checkrefs(cssutils.css.CSSPageRule(
-                    style=cssutils.css.CSSStyleDeclaration('font-family: x')))
-        
+            style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+
         r = cssutils.css.CSSPageRule()
         r.cssText = '@page { font-family: x }'
         checkrefs(r)
-        
+
         r = cssutils.css.CSSPageRule()
         r.style.setProperty('font-family', 'y')
         checkrefs(r)
@@ -62,18 +63,18 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self._test_InvalidModificationErr(u'@page')
         tests = {
             u'@pag {}': xml.dom.InvalidModificationErr,
-            }
+        }
         self.do_raise_r(tests)
 
     def test_incomplete(self):
         "CSSPageRule (incomplete)"
         tests = {
             u'@page :left { ':
-                u'', # no } and no content
+                u'',  # no } and no content
             u'@page :left { color: red':
-                u'@page :left {\n    color: red\n    }', # no }
+                u'@page :left {\n    color: red\n    }',  # no }
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests)  # parse
 
     def test_cssText(self):
         "CSSPageRule.cssText"
@@ -105,7 +106,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
                 u'@page :left {\n    margin: 0\n    }',
             u'@page\n\r\f\t :left\n\r\f\t {margin:0;}':
                 u'@page :left {\n    margin: 0\n    }',
-                
+
             # MarginRule
             u'@page {    @top-right {        content: "2"        }    }':
                 u'@page {\n    @top-right {\n        content: "2"\n        }\n    }',
@@ -119,7 +120,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         content: "2";
         y: 2
         }\n    }''',
-        
+
         }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
@@ -128,7 +129,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             # auto is not allowed
             u'@page AUto {}': xml.dom.SyntaxErr,
             u'@page AUto:left {}': xml.dom.SyntaxErr,
-            
+
             u'@page : {}': xml.dom.SyntaxErr,
             u'@page :/*1*/left {}': xml.dom.SyntaxErr,
             u'@page : left {}': xml.dom.SyntaxErr,
@@ -139,27 +140,27 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             u'@page :left;': xml.dom.SyntaxErr,
             u'@page :left }': xml.dom.SyntaxErr,
-            }
-        self.do_raise_p(tests) # parse
+        }
+        self.do_raise_p(tests)  # parse
         tests.update({
             # false selector
-            u'@page :right :left {}': xml.dom.SyntaxErr, # no }
-            u'@page :right X {}': xml.dom.SyntaxErr, # no }
-            u'@page X Y {}': xml.dom.SyntaxErr, # no }
-            
-            u'@page :left {': xml.dom.SyntaxErr, # no }
+            u'@page :right :left {}': xml.dom.SyntaxErr,  # no }
+            u'@page :right X {}': xml.dom.SyntaxErr,  # no }
+            u'@page X Y {}': xml.dom.SyntaxErr,  # no }
+
+            u'@page :left {': xml.dom.SyntaxErr,  # no }
             # trailing
-            u'@page :left {}1': xml.dom.SyntaxErr, # no }
-            u'@page :left {}/**/': xml.dom.SyntaxErr, # no }
-            u'@page :left {} ': xml.dom.SyntaxErr, # no }
-            })
-        self.do_raise_r(tests) # set cssText
+            u'@page :left {}1': xml.dom.SyntaxErr,  # no }
+            u'@page :left {}/**/': xml.dom.SyntaxErr,  # no }
+            u'@page :left {} ': xml.dom.SyntaxErr,  # no }
+        })
+        self.do_raise_r(tests)  # set cssText
 
     def test_cssText2(self):
         "CSSPageRule.cssText 2"
         r = cssutils.css.CSSPageRule()
         s = u'a:left'
-        r.selectorText = s 
+        r.selectorText = s
         self.assertEqual(r.selectorText, s)
 
         st = 'size: a4'
@@ -175,7 +176,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.selectorText, s)
         self.assertEqual(r.style.cssText, st)
 
-
         # invalid style
         self.assertRaises(xml.dom.SyntaxErr, r._setSelectorText, '$')
         self.assertEqual(r.selectorText, s)
@@ -190,7 +190,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         r = cssutils.css.CSSPageRule()
         r.selectorText = u'a:left'
         self.assertEqual(r.selectorText, u'a:left')
-        
+
         tests = {
             u'': u'',
             u'name': None,
@@ -205,7 +205,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'/*1*/ :left /*a*/ /*b*/': None,
             u':left/*a*/': u':left /*a*/',
             u'/*1*/:left': u'/*1*/ :left',
-            }
+        }
         self.do_equal_r(tests, att='selectorText')
 
         tests = {
@@ -215,7 +215,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             u':left :right': xml.dom.SyntaxErr,
             u':left a': xml.dom.SyntaxErr,
             u'name :left': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests, att='_setSelectorText')
 
     def test_specificity(self):
@@ -236,7 +236,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         for sel, exp in tests.items():
             r.selectorText = sel
             self.assertEqual(r.specificity, exp)
-            
+
             r = cssutils.css.CSSPageRule()
             r.cssText = u'@page %s {}' % sel
             self.assertEqual(r.specificity, exp)
@@ -245,9 +245,9 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSPageRule.cssRules"
         s = cssutils.parseString(u'@page {}')
         p = s.cssRules[0]
-        
+
         self.assertEqual(len(p.cssRules), 0)
-        
+
         # add and insert
         m1 = cssutils.css.MarginRule(u'@top-left', u'color: red')
         i = p.add(m1)
@@ -278,20 +278,20 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         color: blue
         }
     }''')
-        
+
         # keys and dict index
         self.assertEqual(u'@top-left' in p, True)
         self.assertEqual(u'@bottom-left' in p, False)
-        
-        self.assertEqual(p.keys(), [u'@top-left', 
-                                    u'@top-center', 
+
+        self.assertEqual(p.keys(), [u'@top-left',
+                                    u'@top-center',
                                     u'@top-right'])
-        
+
         self.assertEqual(p[u'@bottom-left'], None)
         self.assertEqual(p[u'@top-left'].cssText, u'color: red')
         p[u'@top-left'] = u'color: #f00'
         self.assertEqual(p[u'@top-left'].cssText, u'color: #f00')
-        
+
         # delete
         p.deleteRule(m2)
         self.assertEqual(len(p.cssRules), 2)
@@ -305,7 +305,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     }''')
 
         p.deleteRule(0)
-        self.assertEqual(len(p.cssRules), 1)        
+        self.assertEqual(len(p.cssRules), 1)
         self.assertEqual(m3, p.cssRules[0])
         self.assertEqual(p.cssText, u'''@page {
     @top-right {
@@ -315,15 +315,14 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         del p['@top-right']
         self.assertEqual(len(p.cssRules), 0)
-                
-    
+
     def test_style(self):
         "CSSPageRule.style (and references)"
         r = cssutils.css.CSSPageRule()
         s1 = r.style
         self.assertEqual(r, s1.parentRule)
         self.assertEqual(u'', s1.cssText)
-        
+
         # set rule.cssText
         r.cssText = '@page { font-family: x1 }'
         self.assertNotEqual(r.style, s1)
@@ -332,9 +331,9 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.style.cssText, u'font-family: x1')
         self.assertEqual(s1.cssText, u'')
         s2 = r.style
-        
+
         # set invalid rule.cssText
-        try: 
+        try:
             r.cssText = '@page { $ }'
         except xml.dom.SyntaxErr, e:
             pass
@@ -360,23 +359,23 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.cssText, u'@page {\n    font-family: y1\n    }')
         self.assertEqual(s2.cssText, u'font-family: y1')
         self.assertEqual(r.style.cssText, u'font-family: y1')
-        self.assertEqual(s3.cssText, u'font-family: x2') # old
+        self.assertEqual(s3.cssText, u'font-family: x2')  # old
 
         # set s2.cssText
         s2.cssText = 'font-family: y2'
         self.assertEqual(r.style, s2)
         self.assertEqual(r.cssText, u'@page {\n    font-family: y2\n    }')
         self.assertEqual(r.style.cssText, u'font-family: y2')
-        self.assertEqual(s3.cssText, u'font-family: x2') # old
+        self.assertEqual(s3.cssText, u'font-family: x2')  # old
         # set invalid s2.cssText
-        try: 
+        try:
             s2.cssText = '$'
         except xml.dom.SyntaxErr, e:
             pass
         self.assertEqual(r.style, s2)
         self.assertEqual(r.cssText, u'@page {\n    font-family: y2\n    }')
         self.assertEqual(r.style.cssText, u'font-family: y2')
-        self.assertEqual(s3.cssText, u'font-family: x2') # old
+        self.assertEqual(s3.cssText, u'font-family: x2')  # old
 
         # set r.style with text
         r.style = 'font-family: z'
@@ -417,10 +416,10 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_reprANDstr(self):
         "CSSPageRule.__repr__(), .__str__()"
-        sel=u':left'
-        
+        sel = u':left'
+
         s = cssutils.css.CSSPageRule(selectorText=sel)
-        
+
         self.assertTrue(sel in str(s))
 
         s2 = eval(repr(s))

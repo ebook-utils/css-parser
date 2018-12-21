@@ -4,13 +4,14 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSFontFaceRuleTestCase, self).setUp()
         self.r = cssutils.css.CSSFontFaceRule()
         self.rRO = cssutils.css.CSSFontFaceRule(readonly=True)
-        self.r_type = cssutils.css.CSSFontFaceRule.FONT_FACE_RULE#
+        self.r_type = cssutils.css.CSSFontFaceRule.FONT_FACE_RULE
         self.r_typeString = 'FONT_FACE_RULE'
 
     def test_init(self):
@@ -33,12 +34,12 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
                 self.assertEqual(ff.style, p.parent)
 
         checkrefs(cssutils.css.CSSFontFaceRule(
-                    style=cssutils.css.CSSStyleDeclaration('font-family: x')))
-        
+            style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+
         r = cssutils.css.CSSFontFaceRule()
         r.cssText = '@font-face { font-family: x }'
         checkrefs(r)
-        
+
         r = cssutils.css.CSSFontFaceRule()
         r.style.setProperty('font-family', 'y')
         checkrefs(r)
@@ -69,25 +70,25 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@font-face/*1*//*2*/{font-family: x;}':
                 u'@font-face /*1*/ /*2*/ {\n    font-family: x\n    }',
             # WS
-            u'@font-face\n\t\f {\n\t\f font-family:x;\n\t\f }': 
+            u'@font-face\n\t\f {\n\t\f font-family:x;\n\t\f }':
                 u'@font-face {\n    font-family: x\n    }',
-            }
+        }
         self.do_equal_r(tests)
         self.do_equal_p(tests)
 
         tests = {
             u'@font-face;': xml.dom.SyntaxErr,
             u'@font-face }': xml.dom.SyntaxErr,
-            }
-        self.do_raise_p(tests) # parse
+        }
+        self.do_raise_p(tests)  # parse
         tests.update({
-            u'@font-face {': xml.dom.SyntaxErr, # no }
+            u'@font-face {': xml.dom.SyntaxErr,  # no }
             # trailing
-            u'@font-face {}1': xml.dom.SyntaxErr, 
-            u'@font-face {}/**/': xml.dom.SyntaxErr, 
-            u'@font-face {} ': xml.dom.SyntaxErr, 
-            })
-        self.do_raise_r(tests) # set cssText
+            u'@font-face {}1': xml.dom.SyntaxErr,
+            u'@font-face {}/**/': xml.dom.SyntaxErr,
+            u'@font-face {} ': xml.dom.SyntaxErr,
+        })
+        self.do_raise_r(tests)  # set cssText
 
     def test_style(self):
         "CSSFontFaceRule.style (and references)"
@@ -95,7 +96,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         s1 = r.style
         self.assertEqual(r, s1.parentRule)
         self.assertEqual(u'', s1.cssText)
-        
+
         # set rule.cssText
         r.cssText = '@font-face { font-family: x1 }'
         self.assertNotEqual(r.style, s1)
@@ -104,9 +105,9 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.style.cssText, u'font-family: x1')
         self.assertEqual(s1.cssText, u'')
         s2 = r.style
-        
+
         # set invalid rule.cssText
-        try: 
+        try:
             r.cssText = '@font-face { $ }'
         except xml.dom.SyntaxErr, e:
             pass
@@ -132,24 +133,24 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.cssText, u'@font-face {\n    font-family: y1\n    }')
         self.assertEqual(sn.cssText, u'font-family: y1')
         self.assertEqual(r.style.cssText, u'font-family: y1')
-        self.assertEqual(s2.cssText, u'font-family: x2') # old
+        self.assertEqual(s2.cssText, u'font-family: x2')  # old
 
         # set s2.cssText
         sn.cssText = 'font-family: y2'
         self.assertEqual(r.style, sn)
         self.assertEqual(r.cssText, u'@font-face {\n    font-family: y2\n    }')
         self.assertEqual(r.style.cssText, u'font-family: y2')
-        self.assertEqual(s2.cssText, u'font-family: x2') # old
-        
+        self.assertEqual(s2.cssText, u'font-family: x2')  # old
+
         # set invalid s2.cssText
-        try: 
+        try:
             sn.cssText = '$'
         except xml.dom.SyntaxErr, e:
             pass
         self.assertEqual(r.style, sn)
         self.assertEqual(r.style.cssText, u'font-family: y2')
         self.assertEqual(r.cssText, u'@font-face {\n    font-family: y2\n    }')
-        
+
         # set r.style with text
         r.style = 'font-family: z'
         self.assertNotEqual(r.style, sn)
@@ -167,17 +168,17 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     src: url(x)
     }'''
         self.assertEqual(exp, r.cssText)
-        
+
         tests = {
-            'font-family': [#('serif', True),
-#                            ('x', True),
-#                            ('"x"', True),
-                            ('x, y', False),
-                            ('"x", y', False),
-                            ('x, "y"', False),
-#                            ('"x", "y"', False)
-                            ]
-            }
+            'font-family': [  # ('serif', True),
+                #                            ('x', True),
+                #                            ('"x"', True),
+                ('x, y', False),
+                ('"x", y', False),
+                ('x, "y"', False),
+                #                            ('"x", "y"', False)
+            ]
+        }
         for n, t in tests.items():
             for (v, valid) in t:
                 r = cssutils.css.CSSFontFaceRule()
@@ -189,20 +190,20 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSFontFaceRule (incomplete)"
         tests = {
             u'@font-face{':
-                u'', # no } and no content
+                u'',  # no } and no content
             u'@font-face { ':
-                u'', # no } and no content
+                u'',  # no } and no content
             u'@font-face { font-family: x':
-                u'@font-face {\n    font-family: x\n    }', # no }
+                u'@font-face {\n    font-family: x\n    }',  # no }
         }
-        self.do_equal_p(tests) # parse
+        self.do_equal_p(tests)  # parse
 
     def test_InvalidModificationErr(self):
         "CSSFontFaceRule.cssText InvalidModificationErr"
         self._test_InvalidModificationErr(u'@font-face')
         tests = {
             u'@font-fac {}': xml.dom.InvalidModificationErr,
-            }
+        }
         self.do_raise_r(tests)
 
     def test_valid(self):
@@ -218,7 +219,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
                     'font-family: x, y; src: local(x);',
                     N + 'font-style: inherit',
                     N + 'invalid: 1')
-            }
+        }
         for valid, testlist in tests.items():
             for test in testlist:
                 r.style.cssText = test
@@ -226,9 +227,9 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_reprANDstr(self):
         "CSSFontFaceRule.__repr__(), .__str__()"
-        style='src: url(x)'        
+        style = 'src: url(x)'
         s = cssutils.css.CSSFontFaceRule(style=style)
-        
+
         self.assertTrue(style in str(s))
 
         s2 = eval(repr(s))

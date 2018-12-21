@@ -14,15 +14,18 @@ import cssutils
 import itertools
 import xml.dom
 
+
 def as_list(p):
-    if isinstance(p,list):
+    if isinstance(p, list):
         return p
     return list(p)
+
 
 class CSSVariablesDeclaration(cssutils.util._NewBase):
     """The CSSVariablesDeclaration interface represents a single block of
     variable declarations. 
     """
+
     def __init__(self, cssText='', parentRule=None, readonly=False):
         """
         :param cssText:
@@ -32,17 +35,17 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             None if this CSSVariablesDeclaration is not attached to a CSSRule.
         :param readonly:
             defaults to False
-            
+
         Format::
-        
+
             variableset
                 : vardeclaration [ ';' S* vardeclaration ]* S*
                 ;
-            
+
             vardeclaration
                 : varname ':' S* term
                 ;
-            
+
             varname
                 : IDENT S*
                 ;
@@ -52,33 +55,33 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         self._vars = {}
         if cssText:
             self.cssText = cssText
-            
+
         self._readonly = readonly
 
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (self.__class__.__name__,
-                                                 self.cssText)
+                                                self.cssText)
 
     def __str__(self):
         return "<cssutils.css.%s object length=%r at 0x%x>" % (
-                self.__class__.__name__,
-                self.length,
-                id(self))
-        
+            self.__class__.__name__,
+            self.length,
+            id(self))
+
     def __contains__(self, variableName):
         """Check if a variable is in variable declaration block.
-        
+
         :param variableName:
             a string
         """
         return normalize(variableName) in as_list(self.keys())
-    
+
     def __getitem__(self, variableName):
         """Retrieve the value of variable ``variableName`` from this 
         declaration.
         """
         return self.getVariableValue(variableName)
-    
+
     def __setitem__(self, variableName, value):
         self.setVariable(variableName, value)
 
@@ -94,7 +97,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         """Analoguous to standard dict returns variable names which are set in
         this declaration."""
         return as_list(self._vars.keys())
-    
+
     def _getCssText(self):
         """Return serialized property cssText."""
         return cssutils.ser.do_css_CSSVariablesDeclaration(self)
@@ -112,19 +115,19 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
               is unparsable.
 
         Format::
-        
+
             variableset
             : vardeclaration [ ';' S* vardeclaration ]*
             ;
-            
+
             vardeclaration
             : varname ':' S* term
             ;
-            
+
             varname
             : IDENT S*
             ;
-            
+
             expr
             : [ VARCALL | term ] [ operator [ VARCALL | term ] ]*
             ;
@@ -137,14 +140,14 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             PreDef.char(':', ':', toSeq=False, optional=True),
             #PreDef.S(toSeq=False, optional=True),
             Prod(name='term', match=lambda t, v: True,
-                 toSeq=lambda t, tokens: ('value', 
-                                          PropertyValue(itertools.chain([t], 
-                                                                        tokens), 
-                                          parent=self)
+                 toSeq=lambda t, tokens: ('value',
+                                          PropertyValue(itertools.chain([t],
+                                                                        tokens),
+                                                        parent=self)
+                                          )
                  )
-            )
         )
-        prods = Sequence(vardeclaration,                         
+        prods = Sequence(vardeclaration,
                          Sequence(PreDef.S(optional=True),
                                   PreDef.char(';', ';', toSeq=False, optional=True),
                                   PreDef.S(optional=True),
@@ -155,7 +158,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                          )
         # parse
         wellformed, seq, store, notused = \
-            ProdParser().parse(cssText, 
+            ProdParser().parse(cssText,
                                'CSSVariableDeclaration',
                                prods,
                                emptyOk=True)
@@ -178,18 +181,18 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
                                                (nameitem.value, item.value),
                                                'var',
                                                nameitem.line, nameitem.col)
-                    else: 
+                    else:
                         # saved non normalized name for reserialization
-                        newseq.append((nameitem.value, item.value), 
+                        newseq.append((nameitem.value, item.value),
                                       'var',
                                       nameitem.line, nameitem.col)
 
-#                    newseq.append((nameitem.value, item.value), 
+#                    newseq.append((nameitem.value, item.value),
 #                                  'var',
 #                                  nameitem.line, nameitem.col)
-                    
+
                     newvars[nname] = item.value
-                    
+
                 else:
                     newseq.appendItem(item)
 
@@ -198,12 +201,12 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             self.wellformed = True
 
     cssText = property(_getCssText, _setCssText,
-        doc="(DOM) A parsable textual representation of the declaration "
-            "block excluding the surrounding curly braces.")
+                       doc="(DOM) A parsable textual representation of the declaration "
+                       "block excluding the surrounding curly braces.")
 
     def _setParentRule(self, parentRule):
         self._parentRule = parentRule
-    
+
     parentRule = property(lambda self: self._parentRule, _setParentRule,
                           doc="(DOM) The CSS rule that contains this"
                               " declaration block or None if this block"
@@ -212,7 +215,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
     def getVariableValue(self, variableName):
         """Used to retrieve the value of a variable if it has been explicitly
         set within this variable declaration block.
-         
+
         :param variableName:
             The name of the variable.
         :returns:
@@ -245,7 +248,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             r = self._vars[normalname]
         except KeyError as e:
             return ''
-        else: 
+        else:
             self.seq._readonly = False
             if normalname in self._vars:
                 for i, x in enumerate(self.seq):
@@ -273,7 +276,7 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
               readonly.
         """
         self._checkReadonly()
-                
+
         # check name
         wellformed, seq, store, unused = \
             ProdParser().parse(normalize(variableName),
@@ -285,33 +288,33 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
         else:
             # check value
             if isinstance(value, PropertyValue):
-                v = value 
+                v = value
             else:
                 v = PropertyValue(cssText=value, parent=self)
-                                
+
             if not v.wellformed:
                 self._log.error('Invalid variable value: %r: %r'
                                 % (variableName, value))
             else:
                 # update seq
                 self.seq._readonly = False
-                
+
                 variableName = normalize(variableName)
-                
+
                 if variableName in self._vars:
                     for i, x in enumerate(self.seq):
                         if x.value[0] == variableName:
-                            self.seq.replace(i, 
-                                      [variableName, v], 
-                                      x.type, 
-                                      x.line,
-                                      x.col)
+                            self.seq.replace(i,
+                                             [variableName, v],
+                                             x.type,
+                                             x.line,
+                                             x.col)
                             break
                 else:
-                    self.seq.append([variableName, v], 'var')                
+                    self.seq.append([variableName, v], 'var')
                 self.seq._readonly = True
                 self._vars[variableName] = v
-                
+
     def item(self, index):
         """Used to retrieve the variables that have been explicitly set in
         this variable declaration block. The order of the variables
@@ -333,6 +336,6 @@ class CSSVariablesDeclaration(cssutils.util._NewBase):
             return ''
 
     length = property(lambda self: len(self._vars),
-        doc="The number of variables that have been explicitly set in this"
-            " variable declaration block. The range of valid indices is 0"
-            " to length-1 inclusive.")
+                      doc="The number of variables that have been explicitly set in this"
+                      " variable declaration block. The range of valid indices is 0"
+                      " to length-1 inclusive.")

@@ -1,4 +1,15 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals, division, absolute_import, print_function
+from .profiles import Profiles
+from .serialize import CSSSerializer
+from .parse import CSSParser
+from . import stylesheets
+from . import css
+from . import errorhandler
+from .version import VERSION
+import xml.dom
+import os.path
+import sys
 """cssutils - CSS Cascading Style Sheets library for Python
 
     Copyright (C) 2004-2013 Christof Hoeke
@@ -88,18 +99,12 @@ Usage may be::
         }
 
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
-VERSION = '1.0.3'
-
-__version__ = '%s $Id$' % VERSION
-
-import sys
 
 if sys.version_info[0] == 3:
     text_type = str
@@ -110,30 +115,21 @@ else:
     from urlparse import urlsplit as urllib_urlsplit
     from urllib import pathname2url as urllib_pathname2url
 
-if sys.version_info < (2,6):
+if sys.version_info < (2, 6):
     bytes = str
 
-from . import codec
-import os.path
-import xml.dom
 
 # order of imports is important (partly circular)
-from . import util
-from . import errorhandler
 log = errorhandler.ErrorHandler()
+VERSION
 
-from . import css
-from . import stylesheets
-from .parse import CSSParser
-
-from .serialize import CSSSerializer
 ser = CSSSerializer()
 
-from .profiles import Profiles
 profile = Profiles(log=log)
 
 # used by Selector defining namespace prefix '*'
 _ANYNS = -1
+
 
 class DOMImplementationCSS(object):
     """This interface allows the DOM user to create a CSSStyleSheet
@@ -192,30 +188,45 @@ class DOMImplementationCSS(object):
     def hasFeature(self, feature, version):
         return (feature.lower(), text_type(version)) in self._features
 
+
 xml.dom.registerDOMImplementation('cssutils', DOMImplementationCSS)
 
 
 def parseString(*a, **k):
     return CSSParser().parseString(*a, **k)
+
+
 parseString.__doc__ = CSSParser.parseString.__doc__
+
 
 def parseFile(*a, **k):
     return CSSParser().parseFile(*a, **k)
+
+
 parseFile.__doc__ = CSSParser.parseFile.__doc__
+
 
 def parseUrl(*a, **k):
     return CSSParser().parseUrl(*a, **k)
+
+
 parseUrl.__doc__ = CSSParser.parseUrl.__doc__
+
 
 def parseStyle(*a, **k):
     return CSSParser().parseStyle(*a, **k)
+
+
 parseStyle.__doc__ = CSSParser.parseStyle.__doc__
 
 # set "ser", default serializer
+
+
 def setSerializer(serializer):
     """Set the global serializer used by all class in cssutils."""
     global ser
     ser = serializer
+
 
 def getUrls(sheet):
     """Retrieve all ``url(urlstring)`` values (in e.g.
@@ -245,6 +256,7 @@ def getUrls(sheet):
             for v in p.propertyValue:
                 if v.type == 'URI':
                     yield v.uri
+
 
 def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
     """Replace all URLs in :class:`cssutils.css.CSSImportRule` or
@@ -282,6 +294,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
             for v in p.propertyValue:
                 if v.type == v.URI:
                     v.uri = replacer(v.uri)
+
 
 def resolveImports(sheet, target=None):
     """Recurcively combine all rules in given `sheet` into a `target` sheet.
@@ -368,7 +381,7 @@ def resolveImports(sheet, target=None):
                                      ' given media as other rules then'
                                      ' comments or stylerules found %r,'
                                      ' keeping %r' % (r,
-                                                       rule.cssText),
+                                                      rule.cssText),
                                      neverraise=True)
                             target.add(rule)
                             continue

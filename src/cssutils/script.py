@@ -1,6 +1,11 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
+import os
+import logging
+import errno
+import cssutils
+import codecs
 """classes and functions used by cssutils scripts
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSCapture', 'csscombine']
 __docformat__ = 'restructuredtext'
@@ -23,11 +28,6 @@ else:
     from urllib2 import HTTPError as urllib_HTTPError
     from urllib2 import Request as urllib_Request
 
-import codecs
-import cssutils
-import errno
-import logging
-import os
 
 try:
     import cssutils.encutils as encutils
@@ -38,13 +38,14 @@ except ImportError:
         sys.exit("You need encutils from http://cthedot.de/encutils/")
 
 # types of sheets in HTML
-LINK = 0 # <link rel="stylesheet" type="text/css" href="..." [@title="..." @media="..."]/>
-STYLE = 1 # <style type="text/css" [@title="..."]>...</style>
+LINK = 0  # <link rel="stylesheet" type="text/css" href="..." [@title="..." @media="..."]/>
+STYLE = 1  # <style type="text/css" [@title="..."]>...</style>
+
 
 class CSSCaptureHTMLParser(htmlparser_HTMLParser):
     """CSSCapture helper: Parse given data for link and style elements"""
     curtag = ''
-    sheets = [] # (type, [atts, cssText])
+    sheets = []  # (type, [atts, cssText])
 
     def _loweratts(self, atts):
         return dict([(a.lower(), v.lower()) for a, v in atts])
@@ -66,7 +67,7 @@ class CSSCaptureHTMLParser(htmlparser_HTMLParser):
 
     def handle_data(self, data):
         if self.curtag == 'style':
-            self.sheets[-1][1][1] = data # replace cssText
+            self.sheets[-1][1][1] = data  # replace cssText
 
     def handle_comment(self, data):
         # style might have comment content, treat same as data
@@ -85,6 +86,7 @@ class CSSCapture(object):
 
     raises urllib2.HTTPError
     """
+
     def __init__(self, ua=None, log=None, defaultloglevel=logging.INFO):
         """
         initialize a new Capture object
@@ -112,7 +114,7 @@ class CSSCapture(object):
             self._log.debug('Using default log')
 
         self._htmlparser = CSSCaptureHTMLParser()
-        self._cssparser = cssutils.CSSParser(log = self._log)
+        self._cssparser = cssutils.CSSParser(log=self._log)
 
     def _doRequest(self, url):
         """Do an HTTP request
@@ -155,7 +157,7 @@ class CSSCapture(object):
         """
         if cssText is None:
             encoding, enctype, cssText = cssutils.util._readUrl(href, parentEncoding=self.docencoding)
-            encoding = None # already decoded???
+            encoding = None  # already decoded???
 
         sheet = self._cssparser.parseString(cssText, href=href, media=media, title=title,
                                             encoding=encoding)
@@ -197,18 +199,17 @@ class CSSCapture(object):
 
                 atts, cssText = data
                 sheet = self._createStyleSheet(cssText=cssText,
-                                               href = docurl,
+                                               href=docurl,
                                                media=atts.get('media', None),
                                                title=atts.get('title', None),
                                                encoding=self.docencoding)
                 if sheet:
-                    sheet._href = None # inline have no href!
+                    sheet._href = None  # inline have no href!
                 print(sheet.cssText)
 
             if sheet:
                 self.stylesheetlist.append(sheet)
                 self._doImports(sheet, base=docurl)
-
 
     def _doImports(self, parentStyleSheet, base=None):
         """
@@ -322,8 +323,9 @@ class CSSCapture(object):
                 sf.write(sheet.cssText)
             sf.close()
 
+
 def csscombine(path=None, url=None, cssText=None, href=None,
-               sourceencoding=None, targetencoding=None, 
+               sourceencoding=None, targetencoding=None,
                minify=True, resolveVariables=True):
     """Combine sheets referred to by @import rules in given CSS proxy sheet
     into a single new sheet.
@@ -345,14 +347,14 @@ def csscombine(path=None, url=None, cssText=None, href=None,
         `resolveVariables` = True
             defines if variables in combined sheet should be resolved
     """
-    cssutils.log.info('Combining files from %r' % url, 
+    cssutils.log.info('Combining files from %r' % url,
                       neverraise=True)
     if sourceencoding is not None:
         cssutils.log.info('Using source encoding %r' % sourceencoding,
                           neverraise=True)
-        
+
     parser = cssutils.CSSParser(parseComments=not minify)
-        
+
     if path and not cssText:
         src = parser.parseFile(path, encoding=sourceencoding)
     elif url:
@@ -373,5 +375,5 @@ def csscombine(path=None, url=None, cssText=None, href=None,
     cssutils.ser.prefs.resolveVariables = resolveVariables
     cssText = result.cssText
     cssutils.setSerializer(oldser)
-    
+
     return cssText

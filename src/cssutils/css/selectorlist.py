@@ -25,9 +25,11 @@ from .selector import Selector
 import cssutils
 import xml.dom
 
+
 class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
     """A list of :class:`~cssutils.css.Selector` objects
     of a :class:`~cssutils.css.CSSStyleRule`."""
+
     def __init__(self, selectorText=None, parentRule=None,
                  readonly=False):
         """
@@ -51,15 +53,15 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__, 
-                                                      st)
+        return "cssutils.css.%s(selectorText=%r)" % (self.__class__.__name__,
+                                                     st)
 
     def __str__(self):
         return "<cssutils.css.%s object selectorText=%r _namespaces=%r at " \
                "0x%x>" % (self.__class__.__name__,
-                           self.selectorText,
-                           self._namespaces,
-                           id(self))
+                          self.selectorText,
+                          self._namespaces,
+                          id(self))
 
     def __setitem__(self, index, newSelector):
         """Overwrite ListSeq.__setitem__
@@ -79,7 +81,7 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
             newSelector = Selector((newSelector, namespaces),
                                    parent=self)
         if newSelector.wellformed:
-            newSelector._parent = self # maybe set twice but must be!
+            newSelector._parent = self  # maybe set twice but must be!
             return newSelector
 
     def __getNamespaces(self):
@@ -233,4 +235,3 @@ class SelectorList(cssutils.util.Base, cssutils.util.ListSeq):
                               "is not attached to a CSSRule.")
 
     wellformed = property(lambda self: bool(len(self.seq)))
-

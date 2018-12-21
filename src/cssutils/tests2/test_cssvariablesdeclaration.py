@@ -5,6 +5,7 @@ import xml.dom
 import basetest
 import cssutils
 
+
 class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -42,7 +43,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
     def test_items(self):
         "CSSVariablesDeclaration[variableName]"
         v = cssutils.css.CSSVariablesDeclaration()
-        
+
         value = '0'
         v['X'] = value
         self.assertEqual(value, v['X'])
@@ -55,12 +56,12 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 
         v['z'] = '1'
         self.assertEqual(2, v.length)
-        
+
         items = []
         # unsorted!
         self.assertEqual(sorted(v), ['x', 'z'])
-        
-        del v['z']        
+
+        del v['z']
         self.assertEqual(1, v.length)
         self.assertEqual(1, v.length)
 
@@ -97,26 +98,26 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 
             u'x  :  1  ': u'x: 1',
             u'x  :  1  ;  ': u'x: 1',
-            
+
             u'x:1;y:2': u'x: 1;\ny: 2',
             u'x:1;y:2;': u'x: 1;\ny: 2',
             u'x  :  1  ;  y  :  2  ': u'x: 1;\ny: 2',
             u'x  :  1  ;  y  :  2  ;  ': u'x: 1;\ny: 2',
-            
+
             u'/*x*/': u'/*x*/',
             u'x555: 5': None,
             u'xxx:1;yyy:2': u'xxx: 1;\nyyy: 2',
             u'xxx : 1; yyy : 2': u'xxx: 1;\nyyy: 2',
             u'x:1;x:2;X:2': u'x: 2',
             u'same:1;SAME:2;': u'same: 2',
-            u'/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/': 
+            u'/**/x/**/:/**/1/**/;/**/y/**/:/**/2/**/':
                 u'/**/ \n /**/ \n /**/ \n x: 1 /**/;\n/**/ \n /**/ \n /**/ \n y: 2 /**/'
-            }
+        }
         self.do_equal_r(tests)
- 
+
     # TODO: Fix?
 #    def test_cssText2(self):
-#        "CSSVariablesDeclaration.cssText"        
+#        "CSSVariablesDeclaration.cssText"
 #        # exception
 #        tests = {
 #                 u'top': xml.dom.SyntaxErr,
@@ -125,16 +126,16 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 #                 u'top:;': xml.dom.SyntaxErr,
 #                 u'top 0': xml.dom.SyntaxErr,
 #                 u'top 0;': xml.dom.SyntaxErr,
-#    
+#
 #                 u':': xml.dom.SyntaxErr,
 #                 u':0': xml.dom.SyntaxErr,
 #                 u':0;': xml.dom.SyntaxErr,
 #                 u':;': xml.dom.SyntaxErr,
 #                 u': ;': xml.dom.SyntaxErr,
-#    
+#
 #                 u'0': xml.dom.SyntaxErr,
 #                 u'0;': xml.dom.SyntaxErr,
-#    
+#
 #                 u';': xml.dom.SyntaxErr,
 #            }
 #        self.do_raise_r(tests)
@@ -158,7 +159,6 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         self.assertEqual(u'', v.removeVariable('x'))
         self.assertEqual(u'', v.getVariableValue('x'))
         self.assertEqual(u'', v.cssText)
-
 
     def test_imports(self):
         "CSSVariables imports"
@@ -207,8 +207,8 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
                     }
                 
                 '''
-                }[url])
-        
+            }[url])
+
         css = '''
             @import "1.css";
             @variables {
@@ -241,17 +241,16 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         p = cssutils.CSSParser(fetcher=fetcher)
         s = p.parseString(css)
 
-        # only these in rule of this sheet        
+        # only these in rule of this sheet
         self.assertEqual(s.cssRules[1].variables.length, 8)
         # but all vars in s available!
         self.assertEqual(s.variables.length, 15)
-        self.assertEqual([u'local0', u'local1', u'local2', u'local3', 
-                          u'over1-0', u'over2-0', u'over2-1', u'over2-1-0', 
-                          u'over3-0', u'over3-1', u'over3-1-0', u'over3-2', 
+        self.assertEqual([u'local0', u'local1', u'local2', u'local3',
+                          u'over1-0', u'over2-0', u'over2-1', u'over2-1-0',
+                          u'over3-0', u'over3-1', u'over3-1-0', u'over3-2',
                           u'over3-2-0', u'over3-2-1', u'over3-2-1-0'],
-                          sorted(s.variables.keys()))
-        
-        
+                         sorted(s.variables.keys()))
+
         # test with variables rule
         cssutils.ser.prefs.resolveVariables = False
         self.assertEqual(s.cssText, '''@import "1.css";
@@ -281,7 +280,7 @@ a {
     over3-2-1: var(over3-2-1);
     over3-2-1-0: var(over3-2-1-0)
     }'''.encode())
-        
+
         # test with resolved vars
         cssutils.ser.prefs.resolveVariables = True
         self.assertEqual(s.cssText, '''@import "1.css";
@@ -301,7 +300,6 @@ a {
     over3-2-1: 1;
     over3-2-1-0: 0
     }'''.encode())
-        
 
         s = cssutils.resolveImports(s)
         self.assertEqual(s.cssText, '''/* START @import "1.css" */
@@ -323,23 +321,23 @@ a {
     over3-2-1: 1;
     over3-2-1-0: 0
     }'''.encode())
-    
+
     def test_parentRule(self):
         "CSSVariablesDeclaration.parentRule"
         s = cssutils.parseString(u'@variables { a:1}')
         r = s.cssRules[0]
-        d = r.variables 
+        d = r.variables
         self.assertEqual(r, d.parentRule)
-        
+
         d2 = cssutils.css.CSSVariablesDeclaration('b: 2')
         r.variables = d2
         self.assertEqual(r, d2.parentRule)
-        
+
     def test_reprANDstr(self):
         "CSSVariablesDeclaration.__repr__(), .__str__()"
         s = cssutils.css.CSSVariablesDeclaration(cssText='a:1;b:2')
 
-        self.assertTrue("2" in str(s)) # length
+        self.assertTrue("2" in str(s))  # length
 
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/env python
+from distutils.command.build_py import build_py
 """
 cssutils setup
 
@@ -17,11 +18,15 @@ import os
 try:
     next
 except NameError:
-    next = lambda iter: iter.next()
+    def next(iter): return iter.next()
 
 # extract the version without importing the module
 lines = open('src/cssutils/__init__.py')
-is_ver_line = lambda line: line.startswith('VERSION = ')
+
+
+def is_ver_line(line): return line.startswith('VERSION = ')
+
+
 line = next(line for line in lines if is_ver_line(line))
 
 exec(line, locals(), globals())
@@ -32,7 +37,6 @@ exec(line, locals(), globals())
 #     from distutils.command.build_py import build_py_2to3 as build_py
 # except ImportError:
 
-from distutils.command.build_py import build_py
 
 try:
     from setuptools import setup, find_packages
@@ -41,10 +45,13 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+
 def read(*rnames):
     return codecs.open(os.path.join(*rnames), encoding='utf-8').read()
 
-long_description = '\n' + read('README.txt') + '\n'# + read('CHANGELOG.txt')
+
+long_description = '\n' + read('README.txt') + '\n'  # + read('CHANGELOG.txt')
+
 
 def list_files(package, dir_name):
     prefix = os.path.join('src', package)
@@ -56,14 +63,15 @@ def list_files(package, dir_name):
         result.extend(path[len(prefix) + 1:] for path in fullpaths)
     return result
 
+
 setup(
     name='cssutils',
     version=VERSION,
-    package_dir={'':'src'},
+    package_dir={'': 'src'},
     packages=find_packages('src'),
     include_package_data=True,
     package_data={'cssutils': list_files('cssutils', 'tests/sheets')},
-    test_suite='cssutils.tests', #'nose.collector'
+    test_suite='cssutils.tests',  # 'nose.collector'
     tests_require=['mock', 'pbr < 1.7.0'],
     entry_points={
         'console_scripts': [
@@ -102,5 +110,5 @@ setup(
         'Topic :: Internet',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Text Processing :: Markup :: HTML'
-        ]
-    )
+    ]
+)

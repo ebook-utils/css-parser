@@ -1,12 +1,21 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
+import re
+import xml.dom
+import sys
+from . import tokenize2
+from . import errorhandler
+import codecs
+from . import codec
+import cssutils
+from itertools import chain
+from .helper import normalize
 """base classes and helper functions for css and stylesheets packages
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
 if sys.version_info[0] == 3:
     text_type = str
     string_type = str
@@ -15,28 +24,21 @@ else:
     string_type = basestring
     from itertools import ifilter as filter
 
-from .helper import normalize
-from itertools import chain
-import cssutils
-from . import codec
-import codecs
-from . import errorhandler
-from . import tokenize2
-import types
-import xml.dom
-import re
 
 try:
     from ._fetchgae import _defaultFetcher
-except ImportError as e:
+except ImportError:
     from ._fetch import _defaultFetcher
 
+
 def as_list(p):
-    if isinstance(p,list):
+    if isinstance(p, list):
         return p
     return list(p)
 
+
 log = errorhandler.ErrorHandler()
+
 
 class _BaseClass(object):
     """
@@ -76,6 +78,7 @@ class _NewBase(_BaseClass):
 
     **Currently CSSValue and related ones only.**
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -110,6 +113,7 @@ class _NewListBase(_NewBase):
 
     some methods must be overwritten in inheriting class
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -161,24 +165,24 @@ class Base(_BaseClass):
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
     _SHORTHANDPROPERTIES = {
-            'background': [],
-            #u'background-position': [], # list of 2 values!
-            'border': [],
-            'border-left': [],
-            'border-right': [],
-            'border-top': [],
-            'border-bottom': [],
-            #u'border-color': [], # list or single but same values
-            #u'border-style': [], # list or single but same values
-            #u'border-width': [], # list or single but same values
-            'cue': [],
-            'font': [],
-            'list-style': [],
-            #u'margin': [], # list or single but same values
-            'outline': [],
-            #u'padding': [], # list or single but same values
-            'pause': []
-            }
+        'background': [],
+        # u'background-position': [], # list of 2 values!
+        'border': [],
+        'border-left': [],
+        'border-right': [],
+        'border-top': [],
+        'border-bottom': [],
+        # u'border-color': [], # list or single but same values
+        # u'border-style': [], # list or single but same values
+        # u'border-width': [], # list or single but same values
+        'cue': [],
+        'font': [],
+        'list-style': [],
+        # u'margin': [], # list or single but same values
+        'outline': [],
+        # u'padding': [], # list or single but same values
+        'pause': []
+    }
 
     @staticmethod
     def _normalize(x):
@@ -202,7 +206,7 @@ class Base(_BaseClass):
         """
         if isinstance(text_namespaces_tuple, tuple):
             return text_namespaces_tuple[0], _SimpleNamespaces(self._log,
-                                                    text_namespaces_tuple[1])
+                                                               text_namespaces_tuple[1])
         else:
             return text_namespaces_tuple, _SimpleNamespaces(log=self._log)
 
@@ -217,7 +221,7 @@ class Base(_BaseClass):
         elif isinstance(textortokens, string_type):
             # needs to be tokenized
             return self.__tokenizer2.tokenize(
-                 textortokens)
+                textortokens)
         elif isinstance(textortokens, tuple):
             # a single token (like a comment)
             return [textortokens]
@@ -271,7 +275,7 @@ class Base(_BaseClass):
         """
         if token:
             value = token[1][4: - 1].strip()
-            if value and (value[0] in '\'"') and (value[0] == value[ - 1]):
+            if value and (value[0] in '\'"') and (value[0] == value[- 1]):
                 # a string "..." or '...'
                 value = value.replace('\\' + value[0], value[0])[1: - 1]
             return value
@@ -281,19 +285,19 @@ class Base(_BaseClass):
     def _tokensupto2(self,
                      tokenizer,
                      starttoken=None,
-                     blockstartonly=False, # {
-                     blockendonly=False, # }
+                     blockstartonly=False,  # {
+                     blockendonly=False,  # }
                      mediaendonly=False,
-                     importmediaqueryendonly=False, # ; or STRING
-                     mediaqueryendonly=False, # { or STRING
-                     semicolon=False, # ;
-                     propertynameendonly=False, # :
-                     propertyvalueendonly=False, # ! ; }
-                     propertypriorityendonly=False, # ; }
-                     selectorattendonly=False, # ]
-                     funcendonly=False, # )
-                     listseponly=False, # ,
-                     separateEnd=False # returns (resulttokens, endtoken)
+                     importmediaqueryendonly=False,  # ; or STRING
+                     mediaqueryendonly=False,  # { or STRING
+                     semicolon=False,  # ;
+                     propertynameendonly=False,  # :
+                     propertyvalueendonly=False,  # ! ; }
+                     propertypriorityendonly=False,  # ; }
+                     selectorattendonly=False,  # ]
+                     funcendonly=False,  # )
+                     listseponly=False,  # ,
+                     separateEnd=False  # returns (resulttokens, endtoken)
                      ):
         """
         returns tokens upto end of atrule and end index
@@ -303,17 +307,17 @@ class Base(_BaseClass):
         """
         ends = ';}'
         endtypes = ()
-        brace = bracket = parant = 0 # {}, [], ()
+        brace = bracket = parant = 0  # {}, [], ()
 
-        if blockstartonly: # {
+        if blockstartonly:  # {
             ends = '{'
-            brace = - 1 # set to 0 with first {
-        elif blockendonly: # }
+            brace = - 1  # set to 0 with first {
+        elif blockendonly:  # }
             ends = '}'
             brace = 1
-        elif mediaendonly: # }
+        elif mediaendonly:  # }
             ends = '}'
-            brace = 1 # rules } and mediarules }
+            brace = 1  # rules } and mediarules }
         elif importmediaqueryendonly:
             # end of mediaquery which may be ; or STRING
             ends = ';'
@@ -322,24 +326,24 @@ class Base(_BaseClass):
             # end of mediaquery which may be { or STRING
             # special case, see below
             ends = '{'
-            brace = - 1 # set to 0 with first {
+            brace = - 1  # set to 0 with first {
             endtypes = ('STRING',)
         elif semicolon:
             ends = ';'
-        elif propertynameendonly: # : and ; in case of an error
+        elif propertynameendonly:  # : and ; in case of an error
             ends = ':;'
-        elif propertyvalueendonly: # ; or !important
+        elif propertyvalueendonly:  # ; or !important
             ends = ';!'
-        elif propertypriorityendonly: # ;
+        elif propertypriorityendonly:  # ;
             ends = ';'
-        elif selectorattendonly: # ]
+        elif selectorattendonly:  # ]
             ends = ']'
             if starttoken and self._tokenvalue(starttoken) == '[':
                 bracket = 1
-        elif funcendonly: # )
+        elif funcendonly:  # )
             ends = ')'
             parant = 1
-        elif listseponly: # ,
+        elif listseponly:  # ,
             ends = ','
 
         resulttokens = []
@@ -378,16 +382,16 @@ class Base(_BaseClass):
                 resulttokens.append(token)
 
                 if (brace == bracket == parant == 0) and (
-                    val in ends or typ in endtypes):
+                        val in ends or typ in endtypes):
                     break
                 elif mediaqueryendonly and brace == - 1 and (
-                     bracket == parant == 0) and typ in endtypes:
-                     # mediaqueryendonly with STRING
+                        bracket == parant == 0) and typ in endtypes:
+                    # mediaqueryendonly with STRING
                     break
         if separateEnd:
             # TODO: use this method as generator, then this makes sense
             if resulttokens:
-                return resulttokens[: - 1], resulttokens[ - 1]
+                return resulttokens[: - 1], resulttokens[- 1]
             else:
                 return resulttokens, None
         else:
@@ -433,7 +437,7 @@ class Base(_BaseClass):
         p = {'ATKEYWORD': ATKEYWORD,
              'COMMENT': COMMENT,
              'S': S,
-             'EOF': EOF # only available if fullsheet
+             'EOF': EOF  # only available if fullsheet
              }
         p.update(productions)
         return p
@@ -493,6 +497,7 @@ class Base2(Base, _NewBase):
 
     Base class for new seq handling.
     """
+
     def __init__(self):
         self._seq = Seq()
 
@@ -541,10 +546,10 @@ class Base2(Base, _NewBase):
             return 'EOF'
 
         defaultproductions = {'ATKEYWORD': ATKEYWORD,
-             'COMMENT': COMMENT,
-             'S': S,
-             'EOF': EOF # only available if fullsheet
-             }
+                              'COMMENT': COMMENT,
+                              'S': S,
+                              'EOF': EOF  # only available if fullsheet
+                              }
         defaultproductions.update(productions)
         return defaultproductions
 
@@ -557,6 +562,7 @@ class Seq(object):
 
     is normally readonly, only writable during parsing
     """
+
     def __init__(self, readonly=True):
         """
         only way to write to a Seq is to initialize it with new items
@@ -568,9 +574,9 @@ class Seq(object):
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
         return 'cssutils.%s.%s([\n    %s], readonly=%r)' % (self.__module__,
-                                          self.__class__.__name__,
-            ',\n    '.join(['%r' % item for item in self._seq]
-            ), self._readonly)
+                                                            self.__class__.__name__,
+                                                            ',\n    '.join(['%r' % item for item in self._seq]
+                                                                           ), self._readonly)
 
     def __str__(self):
         vals = []
@@ -583,8 +589,8 @@ class Seq(object):
                 vals.append(repr(v))
 
         return "<cssutils.%s.%s object length=%r items=%r readonly=%r at 0x%x>" % (
-                self.__module__, self.__class__.__name__, len(self),
-                vals, self._readonly, id(self))
+            self.__module__, self.__class__.__name__, len(self),
+            vals, self._readonly, id(self))
 
     def __delitem__(self, i):
         del self._seq[i]
@@ -625,7 +631,7 @@ class Seq(object):
     def insert(self, index, val, typ, line=None, col=None):
         "Insert new Item() at index # even if readony!? TODO!"
         self._seq.insert(index, Item(val, typ, line, col))
-    
+
     def replace(self, index=-1, val=None, typ=None, line=None, col=None):
         """
         if not readonly replace Item at index with new Item or
@@ -638,11 +644,11 @@ class Seq(object):
 
     def rstrip(self):
         "trims S items from end of Seq"
-        while self._seq and self._seq[ - 1].type == tokenize2.CSSProductions.S:
+        while self._seq and self._seq[- 1].type == tokenize2.CSSProductions.S:
             # TODO: removed S before CSSComment /**/ /**/
-            del self._seq[ - 1]
+            del self._seq[- 1]
 
-    def appendToVal(self, val=None, index= - 1):
+    def appendToVal(self, val=None, index=- 1):
         """
         if not readonly append to Item's value at index
         """
@@ -668,6 +674,7 @@ class Item(object):
     *line*
         **NOT IMPLEMENTED YET, may contain the line in the source later**
     """
+
     def __init__(self, value, type, line=None, col=None):
         self.__value = value
         self.__type = type
@@ -681,8 +688,8 @@ class Item(object):
 
     def __repr__(self):
         return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
-                self.__module__, self.__class__.__name__,
-                self.__value, self.__type, self.__line, self.__col)
+            self.__module__, self.__class__.__name__,
+            self.__value, self.__type, self.__line, self.__col)
 
 
 class ListSeq(object):
@@ -701,8 +708,9 @@ class ListSeq(object):
 
     some methods must be overwritten in inheriting class
     """
+
     def __init__(self):
-        self.seq = [] # does not need to use ``Seq`` as simple list only
+        self.seq = []  # does not need to use ``Seq`` as simple list only
 
     def __contains__(self, item):
         return item in self.seq
@@ -747,6 +755,7 @@ class _Namespaces(object):
     parentStyleSheet
         the parent CSSStyleSheet
     """
+
     def __init__(self, parentStyleSheet, log=None, *args):
         "no initial values are set, only the relevant sheet is"
         self.parentStyleSheet = parentStyleSheet
@@ -767,7 +776,7 @@ class _Namespaces(object):
             prefix = ''
         delrule = self.__findrule(prefix)
         for i, rule in enumerate(filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            self.parentStyleSheet.cssRules)):
+                                        self.parentStyleSheet.cssRules)):
             if rule == delrule:
                 self.parentStyleSheet.deleteRule(i)
                 return
@@ -791,23 +800,23 @@ class _Namespaces(object):
     def __setitem__(self, prefix, namespaceURI):
         "replaces prefix or sets new rule, may raise NoModificationAllowedErr"
         if not prefix:
-            prefix = '' # None or ''
+            prefix = ''  # None or ''
         rule = self.__findrule(prefix)
         if not rule:
             self.parentStyleSheet.insertRule(cssutils.css.CSSNamespaceRule(
-                                                    prefix=prefix,
-                                                    namespaceURI=namespaceURI),
-                                  inOrder=True)
+                prefix=prefix,
+                namespaceURI=namespaceURI),
+                inOrder=True)
         else:
             if prefix in self.namespaces:
-                rule.namespaceURI = namespaceURI # raises NoModificationAllowedErr
+                rule.namespaceURI = namespaceURI  # raises NoModificationAllowedErr
             if namespaceURI in as_list(self.namespaces.values()):
                 rule.prefix = prefix
 
     def __findrule(self, prefix):
         # returns namespace rule where prefix == key
         for rule in filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            reversed(self.parentStyleSheet.cssRules)):
+                           reversed(self.parentStyleSheet.cssRules)):
             if rule.prefix == prefix:
                 return rule
 
@@ -819,7 +828,7 @@ class _Namespaces(object):
         """
         namespaces = {}
         for rule in filter(lambda r: r.type == r.NAMESPACE_RULE,
-                            reversed(self.parentStyleSheet.cssRules)):
+                           reversed(self.parentStyleSheet.cssRules)):
             if rule.namespaceURI not in as_list(namespaces.values()):
                 namespaces[rule.prefix] = rule.namespaceURI
         return namespaces
@@ -847,7 +856,7 @@ class _Namespaces(object):
 
     def __str__(self):
         return "<cssutils.util.%s object parentStyleSheet=%r at 0x%x>" % (
-                self.__class__.__name__, str(self.parentStyleSheet), id(self))
+            self.__class__.__name__, str(self.parentStyleSheet), id(self))
 
 
 class _SimpleNamespaces(_Namespaces):
@@ -855,6 +864,7 @@ class _SimpleNamespaces(_Namespaces):
     namespaces used in objects like Selector as long as they are not connected
     to a CSSStyleSheet
     """
+
     def __init__(self, log=None, *args):
         """init"""
         super(_SimpleNamespaces, self).__init__(parentStyleSheet=None, log=log)
@@ -868,11 +878,11 @@ class _SimpleNamespaces(_Namespaces):
 
     def __str__(self):
         return "<cssutils.util.%s object namespaces=%r at 0x%x>" % (
-                self.__class__.__name__, self.namespaces, id(self))
+            self.__class__.__name__, self.namespaces, id(self))
 
     def __repr__(self):
         return "cssutils.util.%s(%r)" % (self.__class__.__name__,
-            self.namespaces)
+                                         self.namespaces)
 
 
 def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
@@ -916,10 +926,10 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         httpEncoding, content = r
 
         if overrideEncoding:
-            enctype = 0 # 0. override encoding
+            enctype = 0  # 0. override encoding
             encoding = overrideEncoding
         elif httpEncoding:
-            enctype = 1 # 1. HTTP
+            enctype = 1  # 1. HTTP
             encoding = httpEncoding
         else:
             # BOM or @charset
@@ -927,18 +937,18 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 contentEncoding, explicit = codec.detectencoding_unicode(content)
             else:
                 contentEncoding, explicit = codec.detectencoding_str(content)
-            
+
             if explicit:
-                enctype = 2 # 2. BOM/@charset: explicitly
+                enctype = 2  # 2. BOM/@charset: explicitly
                 encoding = contentEncoding
-                
+
             elif parentEncoding:
-                enctype = 4 # 4. parent stylesheet or document
+                enctype = 4  # 4. parent stylesheet or document
                 # may also be None in which case 5. is used in next step anyway
                 encoding = parentEncoding
-                
+
             else:
-                enctype = 5 # 5. assume UTF-8
+                enctype = 5  # 5. assume UTF-8
                 encoding = 'utf-8'
 
         if isinstance(content, text_type):
@@ -951,7 +961,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 except AttributeError as ae:
                     # at least in GAE
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
-                    
+
             except UnicodeDecodeError as e:
                 log.warn(e, neverraise=True)
                 decodedCssText = None

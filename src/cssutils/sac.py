@@ -1,4 +1,9 @@
 #!/usr/bin/env python
+from . import tokenize2
+import os
+from . import errorhandler
+import codecs
+from . import helper
 """A validating CSSParser"""
 from __future__ import unicode_literals, division, absolute_import, print_function
 
@@ -9,16 +14,10 @@ __version__ = '$Id: parse.py 1754 2009-05-30 14:50:13Z cthedot $'
 import sys
 PY2 = sys.version_info[0] == 2
 
-from . import helper
-import codecs
-from . import errorhandler
-import os
-from . import tokenize2
- 
-    
+
 class ErrorHandler(object):
     """Basic class for CSS error handlers.
-    
+
     This class class provides a default implementation ignoring warnings and
     recoverable errors and throwing a SAXParseException for fatal errors.
 
@@ -34,9 +33,10 @@ class ErrorHandler(object):
     (in other words, a CSS driver class could catch an exception and report a 
     fatalError).
     """
+
     def __init__(self):
         self._log = errorhandler.ErrorHandler()
-    
+
     def error(self, exception, token=None):
         self._log.error(exception, token, neverraise=True)
 
@@ -46,7 +46,7 @@ class ErrorHandler(object):
     def warn(self, exception, token=None):
         self._log.warn(exception, token, neverraise=True)
 
-     
+
 class DocumentHandler(object):
     """
      void     endFontFace()
@@ -64,15 +64,16 @@ class DocumentHandler(object):
      void     startPage(java.lang.String name, java.lang.String pseudo_page)
               Receive notification of the beginning of a page statement.
     """
+
     def __init__(self):
         def log(msg):
             sys.stderr.write('INFO\t%s\n' % msg)
         self._log = log
-    
+
     def comment(self, text, line=None, col=None):
         "Receive notification of a comment."
         self._log("comment %r at [%s, %s]" % (text, line, col))
-    
+
     def startDocument(self, encoding):
         "Receive notification of the beginning of a style sheet."
         # source
@@ -81,17 +82,17 @@ class DocumentHandler(object):
     def endDocument(self, source=None, line=None, col=None):
         "Receive notification of the end of a document."
         self._log("endDocument EOF")
-    
+
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
         self._log("importStyle at [%s, %s]" % (line, col))
-    
+
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
         # prefix might be None!
         self._log("namespaceDeclaration at [%s, %s]" % (line, col))
-    
+
     def startSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the beginning of a rule statement."
         # TODO selectorList!
@@ -100,7 +101,7 @@ class DocumentHandler(object):
     def endSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the end of a rule statement."
         self._log("endSelector at [%s, %s]" % (line, col))
-    
+
     def property(self, name, value='TODO', important=False, line=None, col=None):
         "Receive notification of a declaration."
         # TODO: value is LexicalValue?
@@ -109,22 +110,22 @@ class DocumentHandler(object):
     def ignorableAtRule(self, atRule, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
         self._log("ignorableAtRule %r at [%s, %s]" % (atRule, line, col))
-        
 
 
 class EchoHandler(DocumentHandler):
     "Echos all input to property `out`"
+
     def __init__(self):
         super(EchoHandler, self).__init__()
         self._out = []
-        
+
     out = property(lambda self: ''.join(self._out))
 
     def startDocument(self, encoding):
         super(EchoHandler, self).startDocument(encoding)
         if 'utf-8' != encoding:
             self._out.append('@charset "%s";\n' % encoding)
-    
+
 #    def comment(self, text, line=None, col=None):
 #        self._out.append(u'/*%s*/' % text)
 
@@ -133,15 +134,14 @@ class EchoHandler(DocumentHandler):
         # defaultNamespaceURI???
         super(EchoHandler, self).importStyle(uri, media, name, line, col)
         self._out.append('@import %s%s%s;\n' % (helper.string(uri),
-                                               '%s ' % media if media else '',
-                                               '%s ' % name if name else '')
-        )
-        
-        
+                                                '%s ' % media if media else '',
+                                                '%s ' % name if name else '')
+                         )
+
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         super(EchoHandler, self).namespaceDeclaration(prefix, uri, line, col)
-        self._out.append('@namespace %s%s;\n' % ('%s ' % prefix if prefix else '', 
-                                                helper.string(uri)))
+        self._out.append('@namespace %s%s;\n' % ('%s ' % prefix if prefix else '',
+                                                 helper.string(uri)))
 
     def startSelector(self, selectors=None, line=None, col=None):
         super(EchoHandler, self).startSelector(selectors, line, col)
@@ -151,12 +151,12 @@ class EchoHandler(DocumentHandler):
 
     def endSelector(self, selectors=None, line=None, col=None):
         self._out.append('    }')
-        
+
     def property(self, name, value, important=False, line=None, col=None):
         super(EchoHandler, self).property(name, value,  line, col)
-        self._out.append('    %s: %s%s;\n' % (name, value, 
-                                        ' !important' if important else ''))
-  
+        self._out.append('    %s: %s%s;\n' % (name, value,
+                                              ' !important' if important else ''))
+
 
 class Parser(object):
     """
@@ -177,7 +177,7 @@ class Parser(object):
      void     parseStyleSheet(java.lang.String uri)
           Parse a CSS document from a URI.
      void     setConditionFactory(ConditionFactory conditionFactory)
-           
+
      void     setDocumentHandler(DocumentHandler handler)
           Allow an application to register a document event handler.
      void     setErrorHandler(ErrorHandler handler)
@@ -186,6 +186,7 @@ class Parser(object):
           Allow an application to request a locale for errors and warnings.
      void     setSelectorFactory(SelectorFactory selectorFactory) 
     """
+
     def __init__(self, documentHandler=None, errorHandler=None):
         self._tokenizer = tokenize2.Tokenizer()
         if documentHandler:
@@ -197,20 +198,20 @@ class Parser(object):
             self.setErrorHandler(errorHandler)
         else:
             self.setErrorHandler(ErrorHandler())
-    
+
     def parseString(self, cssText, encoding=None):
         if isinstance(cssText, str):
             cssText = codecs.getdecoder('css')(cssText, encoding=encoding)[0]
-        
+
         tokens = self._tokenizer.tokenize(cssText, fullsheet=True)
-                
+
         def COMMENT(val, line, col):
             self._handler.comment(val[2:-2], line, col)
 
         def EOF(val, line, col):
             self._handler.endDocument(val, line, col)
-                
-        def simple(t):            
+
+        def simple(t):
             map = {'COMMENT': COMMENT,
                    'S': lambda val, line, col: None,
                    'EOF': EOF}
@@ -220,12 +221,12 @@ class Parser(object):
                 return True
             else:
                 return False
-                        
+
         # START PARSING
         t = next(tokens)
         type_, val, line, col = t
-        
-        encoding = 'utf-8'                
+
+        encoding = 'utf-8'
         if 'CHARSET_SYM' == type_:
             # @charset "encoding";
             # S
@@ -235,15 +236,15 @@ class Parser(object):
                 encoding = helper.stringvalue(val)
             # ;
             if 'STRING' == encodingtoken[0] and semicolontoken:
-                encoding = helper.stringvalue(encodingtoken[1])    
+                encoding = helper.stringvalue(encodingtoken[1])
             else:
                 self._errorHandler.fatal('Invalid @charset')
-                
+
             t = next(tokens)
             type_, val, line, col = t
-            
+
         self._handler.startDocument(encoding)
-                
+
         while True:
             start = (line, col)
             try:
@@ -254,11 +255,11 @@ class Parser(object):
                     atRule = [val]
                     braces = 0
                     while True:
-                        # read till end ; 
+                        # read till end ;
                         # TODO: or {}
                         t = next(tokens)
                         type_, val, line, col = t
-                        atRule.append(val) 
+                        atRule.append(val)
                         if ';' == val and not braces:
                             break
                         elif '{' == val:
@@ -267,7 +268,7 @@ class Parser(object):
                             braces -= 1
                             if braces == 0:
                                 break
-                            
+
                     self._handler.ignorableAtRule(''.join(atRule), *start)
 
                 elif 'IMPORT_SYM' == type_:
@@ -282,14 +283,14 @@ class Parser(object):
                             uri = helper.urivalue(val)
                         elif ';' == val:
                             break
-                    
-                    if uri:    
+
+                    if uri:
                         self._handler.importStyle(uri, media, name)
                     else:
                         self._errorHandler.error('Invalid @import'
-                                                 ' declaration at %r' 
+                                                 ' declaration at %r'
                                                  % (start,))
-                        
+
                 elif 'NAMESPACE_SYM' == type_:
                     prefix, uri = None, None
                     while True:
@@ -307,9 +308,9 @@ class Parser(object):
                         self._handler.namespaceDeclaration(prefix, uri, *start)
                     else:
                         self._errorHandler.error('Invalid @namespace'
-                                                 ' declaration at %r' 
+                                                 ' declaration at %r'
                                                  % (start,))
-    
+
                 else:
                     # CSSSTYLERULE
                     selector = []
@@ -329,15 +330,15 @@ class Parser(object):
                             break
                         else:
                             selector.append(val)
-                            
+
                         t = next(tokens)
                         type_, val, line, col = t
-                                            
+
                     end = None
                     while True:
                         # name: value [!important][;name: value [!important]]*;?
                         name, value, important = None, [], False
-                        
+
                         while True:
                             # name:
                             t = next(tokens)
@@ -371,7 +372,7 @@ class Parser(object):
                             # value !;}
                             t = next(tokens)
                             type_, val, line, col = t
-                            
+
                             if 'S' == type_:
                                 value.append(' ')
                             elif simple(t):
@@ -389,7 +390,7 @@ class Parser(object):
                             # !important
                             t = next(tokens)
                             type_, val, line, col = t
-                            
+
                             if simple(t):
                                 pass
                             elif 'IDENT' == type_ and not important:
@@ -402,7 +403,7 @@ class Parser(object):
 
                         if name and value:
                             self._handler.property(name, value, important)
-                            
+
                         if '}' == end:
                             self._handler.endSelector(selectors, line=line, col=col)
                             break
@@ -413,20 +414,16 @@ class Parser(object):
                     else:
                         self._handler.endSelector(selectors, line=line, col=col)
 
-
                 t = next(tokens)
                 type_, val, line, col = t
 
             except StopIteration:
                 break
-            
 
-    
     def setDocumentHandler(self, handler):
         "Allow an application to register a document event `handler`."
         self._handler = handler
-        
+
     def setErrorHandler(self, handler):
         "TODO"
         self._errorHandler = handler
-        

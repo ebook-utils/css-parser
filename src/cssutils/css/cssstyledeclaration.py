@@ -60,6 +60,7 @@ from .property import Property
 import cssutils
 import xml.dom
 
+
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
     """The CSSStyleDeclaration class represents a single CSS declaration
     block. This class may be used to determine the style properties
@@ -96,6 +97,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         [Property: Value Priority?;]* [Property: Value Priority?]?
     """
+
     def __init__(self, cssText='', parentRule=None, readonly=False,
                  validating=None):
         """
@@ -190,15 +192,15 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def __repr__(self):
         return "cssutils.css.%s(cssText=%r)" % (
-                self.__class__.__name__,
-                self.getCssText(separator=' '))
+            self.__class__.__name__,
+            self.getCssText(separator=' '))
 
     def __str__(self):
         return "<cssutils.css.%s object length=%r (all: %r) at 0x%x>" % (
-                self.__class__.__name__,
-                self.length,
-                len(self.getProperties(all=True)),
-                id(self))
+            self.__class__.__name__,
+            self.length,
+            len(self.getProperties(all=True)),
+            id(self))
 
     def __nnames(self):
         """Return iterator for all different names in order as set
@@ -290,6 +292,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
         # for closures: must be a mutable
         new = {'wellformed': True}
+
         def ident(expected, seq, token, tokenizer=None):
             # a property
 
@@ -310,10 +313,10 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         def unexpected(expected, seq, token, tokenizer=None):
             # error, find next ; or } to omit upto next property
             ignored = self._tokenvalue(token) + self._valuestr(
-                                self._tokensupto2(tokenizer,
-                                                  propertyvalueendonly=True))
+                self._tokensupto2(tokenizer,
+                                  propertyvalueendonly=True))
             self._log.error('CSSStyleDeclaration: Unexpected token, ignoring '
-                            'upto %r.' % ignored,token)
+                            'upto %r.' % ignored, token)
             # does not matter in this case
             return expected
 
@@ -321,7 +324,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             # a standalone ; or error...
             if self._tokenvalue(token) == ';':
                 self._log.info('CSSStyleDeclaration: Stripped standalone semicolon'
-                                ': %s' % self._valuestr([token]), neverraise=True)
+                               ': %s' % self._valuestr([token]), neverraise=True)
                 return expected
             else:
                 return unexpected(expected, seq, token, tokenizer)
@@ -329,9 +332,9 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         # [Property: Value;]* Property: Value?
         newseq = self._tempSeq()
         wellformed, expected = self._parse(expected=None,
-            seq=newseq, tokenizer=tokenizer,
-            productions={'IDENT': ident, 'CHAR': char},
-            default=unexpected)
+                                           seq=newseq, tokenizer=tokenizer,
+                                           productions={'IDENT': ident, 'CHAR': char},
+                                           default=unexpected)
         # wellformed set by parse
 
         for item in newseq:
@@ -362,8 +365,8 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 #            x.parent = self
 
     parentRule = property(lambda self: self._parentRule, _setParentRule,
-        doc="(DOM) The CSS rule that contains this declaration block or "
-            "None if this CSSStyleDeclaration is not attached to a CSSRule.")
+                          doc="(DOM) The CSS rule that contains this declaration block or "
+                          "None if this CSSStyleDeclaration is not attached to a CSSRule.")
 
     def getProperties(self, name=None, all=False):
         """

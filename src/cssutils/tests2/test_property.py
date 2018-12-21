@@ -4,10 +4,11 @@ import xml.dom
 import basetest
 import cssutils
 
+
 class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.property.Property('top', '1px')#, 'important')
+        self.r = cssutils.css.property.Property('top', '1px')  # , 'important')
 
     def test_init(self):
         "Property.__init__()"
@@ -85,12 +86,12 @@ class PropertyTestCase(basetest.BaseTestCase):
             # TODO: important with unicode escapes!
             u'font: normal 1em/1.5 serif': None,
             u'font: normal 1em/serif': None
-            }
+        }
         self.do_equal_r(tests)
 
         tests = {
             u'': (xml.dom.SyntaxErr,
-                   u'Property: No property name found: '),
+                  u'Property: No property name found: '),
             u':': (xml.dom.SyntaxErr,
                    u'Property: No property name found: : [1:1: :]'),
             u'a': (xml.dom.SyntaxErr,
@@ -100,20 +101,20 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'/**/x': (xml.dom.SyntaxErr,
                        u'Property: No ":" after name found: /**/x [1:5: x]'),
             u'c:': (xml.dom.SyntaxErr,
-                   u"Property: No property value found: c: [1:2: :]"),
+                    u"Property: No property value found: c: [1:2: :]"),
             u'd: ': (xml.dom.SyntaxErr,
-                   u"No content to parse."),
+                     u"No content to parse."),
             u'e:!important': (xml.dom.SyntaxErr,
-                   u"No content to parse."),
+                              u"No content to parse."),
             u'f: 1!': (xml.dom.SyntaxErr,
                        u'Property: Invalid priority: !'),
             u'g: 1!importantX': (xml.dom.SyntaxErr,
-                   u"Property: No CSS priority value: importantx"),
+                                 u"Property: No CSS priority value: importantx"),
 
             # TODO?
-            #u'a: 1;': (xml.dom.SyntaxErr,
+            # u'a: 1;': (xml.dom.SyntaxErr,
             #       u'''CSSValue: No match: ('CHAR', u';', 1, 5)''')
-            }
+        }
         for test in tests:
             ecp, msg = tests[test]
             self.assertRaisesMsg(ecp, msg, p._setCssText, test)
@@ -135,7 +136,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'\\x': u'x',
             u'a\\010': u'a\x10',
             u'a\\01': u'a\x01'
-            }
+        }
         self.do_equal_r(tests, att='name')
 
         tests = {
@@ -148,7 +149,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'top:': xml.dom.SyntaxErr,
             u'top;': xml.dom.SyntaxErr,
             u'color: #xyz': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests, att='_setName')
 
         p = cssutils.css.property.Property(r'c\olor', 'red')
@@ -177,7 +178,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.value = 'red'
         self.assertEqual(p.valid, False)
 
-    #def test_cssValue(self):
+    # def test_cssValue(self):
     #    "Property.cssValue"
     #    pass
     #    # DEPRECATED
@@ -212,10 +213,10 @@ class PropertyTestCase(basetest.BaseTestCase):
         tests = {
             u' ': xml.dom.SyntaxErr,
             u'"\n': xml.dom.SyntaxErr,
-            #u'important': xml.dom.SyntaxErr,
+            # u'important': xml.dom.SyntaxErr,
             u';': xml.dom.SyntaxErr,
             u'!important !important': xml.dom.SyntaxErr
-            }
+        }
         self.do_raise_r(tests, att='_setPriority')
 
     def test_value(self):
@@ -231,7 +232,7 @@ class PropertyTestCase(basetest.BaseTestCase):
             u'3px ': u'3px',
             u' 4px ': u'4px',
             u'5px 1px': u'5px 1px',
-            }
+        }
         self.do_equal_r(tests, att='value')
 
         tests = {
@@ -245,14 +246,14 @@ class PropertyTestCase(basetest.BaseTestCase):
             u':': xml.dom.SyntaxErr,
             u';': xml.dom.SyntaxErr,
             u'!important': xml.dom.SyntaxErr,
-            }
+        }
         self.do_raise_r(tests, att='_setValue')
 
     def test_reprANDstr(self):
         "Property.__repr__(), .__str__()"
-        name="color"
-        value="red"
-        priority="important"
+        name = "color"
+        value = "red"
+        priority = "important"
 
         s = cssutils.css.property.Property(name=name, value=value, priority=priority)
 

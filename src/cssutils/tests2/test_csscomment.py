@@ -5,6 +5,7 @@ import xml
 import test_cssrule
 import cssutils.css
 
+
 class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -31,13 +32,13 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'''/*"
             */''': None,
             u'/** / ** //*/': None
-            }
-        self.do_equal_r(tests) # set cssText
+        }
+        self.do_equal_r(tests)  # set cssText
         tests.update({
             u'/*x': u'/*x*/',
             u'\n /*': u'/**/',
-            })
-        self.do_equal_p(tests) # parse
+        })
+        self.do_equal_p(tests)  # parse
 
         tests = {
             u'/* */ ': xml.dom.InvalidModificationErr,
@@ -47,8 +48,8 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
             u'  */ /* ': xml.dom.InvalidModificationErr,
             u'*/': xml.dom.InvalidModificationErr,
             u'@x /* x */': xml.dom.InvalidModificationErr
-            }
-        self.do_raise_r(tests) # set cssText
+        }
+        self.do_raise_r(tests)  # set cssText
         # no raising of error possible?
         # self.do_raise_p(tests) # parse
 
@@ -65,6 +66,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
         self.assertTrue(text == s2.cssText)
+
 
 if __name__ == '__main__':
     import unittest

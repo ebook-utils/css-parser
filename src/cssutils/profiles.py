@@ -1,28 +1,29 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
+from cssutils import util
+import sys
+import re
 """CSS profiles.
 
 Profiles is based on code by Kevin D. Smith, orginally used as cssvalues,
 thanks!
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['Profiles']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
-import sys
 
 if sys.version_info[0] == 3:
     string_type = str
 else:
     string_type = basestring
 
+
 def as_list(p):
-    if isinstance(p,list):
+    if isinstance(p, list):
         return p
     return list(p)
 
-from cssutils import util
-import re
 
 class NoSuchProfileException(Exception):
     """Raised if no profile with given name is found"""
@@ -76,7 +77,7 @@ class Profiles(object):
         'nonascii': r'[^\0-\177]',
         'unicode': r'\\[0-9a-f]{1,6}(\r\n|[ \n\r\t\f])?',
         'escape': r'{unicode}|\\[ -~\u0080-\u01ff]',
-    #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
+        #   'escape': r'{unicode}|\\[ -~\200-\4177777]',
         'int': r'[-]?\d+',
         'nmchar': r'[\w-]|{nonascii}|{escape}',
         'num': r'[-]?\d+|[-]?\d*\.\d+',
@@ -88,14 +89,14 @@ class Profiles(object):
         'string2': r"'(\\\'|[^\'])*'",
         'nl': r'\n|\r\n|\r|\f',
         'w': r'\s*',
-        }
+    }
     _MACROS = {
         'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
         'rgbcolor': r'rgb\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\)|rgb\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\)',
         'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
         'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
         'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{uicolor}',
-        #'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
+        # 'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
         'integer': r'{int}',
         'length': r'0|{num}(em|ex|px|in|cm|mm|pt|pc)',
         'positivelength': r'0|{positivenum}(em|ex|px|in|cm|mm|pt|pc)',
@@ -104,7 +105,7 @@ class Profiles(object):
         'frequency': r'0|{num}k?Hz',
         'percentage': r'{num}%',
         'shadow': '(inset)?{w}{length}{w}{length}{w}{length}?{w}{length}?{w}{color}?'
-        }
+    }
 
     def __init__(self, log=None):
         """A few profiles are predefined."""
@@ -160,7 +161,7 @@ class Profiles(object):
                            properties[self.CSS3_TEXT],
                            macros[self.CSS3_TEXT]
                            )
-                        ])
+                          ])
 
         self.__update_knownNames()
 
@@ -222,7 +223,7 @@ class Profiles(object):
                         doc='Names of all profiles in order as defined.')
 
     knownNames = property(lambda self: self._knownNames,
-                               doc="All known property names of all profiles.")
+                          doc="All known property names of all profiles.")
 
     def _resetProperties(self, newMacros=None):
         "reset all props from raw values as changes in macros happened"
@@ -242,14 +243,13 @@ class Profiles(object):
         self._profilesProperties.clear()
         for profile in self._profileNames:
             properties = self._expand_macros(
-                            # keep raw
-                            self._rawProfiles[profile]['properties'].copy(),
-                            macros)
+                # keep raw
+                self._rawProfiles[profile]['properties'].copy(),
+                macros)
             self._profilesProperties[profile] = self._compile_regexes(properties)
 
         # save
         self._usedMacros = macros
-
 
     def addProfiles(self, profiles):
         """Add a list of profiles at once. Useful as if profiles define custom
@@ -265,7 +265,6 @@ class Profiles(object):
         # only add new properties
         for profile, properties, macros in profiles:
             self.addProfile(profile, properties.copy(), None)
-
 
     def addProfile(self, profile, properties, macros=None):
         """Add a new profile with name `profile` (e.g. 'CSS level 2')
@@ -316,7 +315,6 @@ class Profiles(object):
         self._profilesProperties[profile] = self._compile_regexes(properties)
 
         self.__update_knownNames()
-
 
     def removeProfile(self, profile=None, all=False):
         """Remove `profile` or remove `all` profiles.
@@ -472,7 +470,7 @@ macros within the CSS property value regular expressions.
 macros[Profiles.CSS_LEVEL_2] = {
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
-    #'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
+    # 'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
@@ -529,7 +527,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     'cue-after': r'{uri}|none|inherit',
     'cue-before': r'{uri}|none|inherit',
     'cue': r'({uri}|none|inherit){1,2}|inherit',
-    #'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
+    # 'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
     'direction': r'ltr|rtl|inherit',
     'display': r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit',
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
@@ -614,7 +612,7 @@ macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
     'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
     'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'
-    }
+}
 properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
     'border-style': r'{border-style}(\s+{border-style}){0,3}|inherit',
@@ -642,7 +640,7 @@ properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-top-left-radius': '{border-radius-part}',
     'border-radius': '({length}{w}|{percentage}{w}){1,4}(/{w}({length}{w}|{percentage}{w}){1,4})?',
     'box-shadow': 'none|{shadow}({w},{w}{shadow})*',
-    }
+}
 
 # CSS3 Basic User Interface Module
 macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
@@ -657,7 +655,7 @@ macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'outline-color': r'{color}|invert|inherit',
     'outline-style': r'auto|{border-style}|inherit',
     'outline-width': r'{border-width}|inherit',
-    }
+}
 properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'box-sizing': r'content-box|border-box',
     'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',
@@ -666,48 +664,48 @@ properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'outline-style': r'{outline-style}',
     'outline-width': r'{outline-width}',
     'outline-offset': r'{length}|inherit',
-    #'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
+    # 'outline': r'{outline-attrs}(\s+{outline-attrs})*|inherit',
     'outline': r'{outline-1}|{outline-2}|{outline-3}|{outline-4}|{outline-5}|{outline-6}|inherit',
     'resize': 'none|both|horizontal|vertical|inherit',
-    }
+}
 
 # CSS Box Module Level 3
 macros[Profiles.CSS3_BOX] = {
     'overflow': macros[Profiles.CSS_LEVEL_2]['overflow']
-    }
+}
 properties[Profiles.CSS3_BOX] = {
     'overflow': '{overflow}{w}{overflow}?|inherit',
     'overflow-x': '{overflow}|inherit',
     'overflow-y': '{overflow}|inherit'
-    }
+}
 
 # CSS Color Module Level 3
 macros[Profiles.CSS3_COLOR] = {
     # orange and transparent in CSS 2.1
     'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)',
-                    # orange?
+    # orange?
     'rgbacolor': r'rgba\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\,{w}{num}{w}\)|rgba\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
     'hslcolor': r'hsl\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\)|hsla\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
     'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
     'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|{x11color}|inherit',
-    }
+}
 properties[Profiles.CSS3_COLOR] = {
     'opacity': r'{num}|inherit',
-    }
+}
 
 # CSS Fonts Module Level 3 http://www.w3.org/TR/css3-fonts/
 macros[Profiles.CSS3_FONTS] = {
-    #'family-name': r'{string}|{ident}',
+    # 'family-name': r'{string}|{ident}',
     'family-name': r'{string}|({ident}(\s+{ident})*)',
     'font-face-name': 'local\({w}{family-name}{w}\)',
     'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
-    }
+}
 properties[Profiles.CSS3_FONTS] = {
     'font-size-adjust': r'{number}|none|inherit',
     'font-stretch': r'normal|wider|narrower|{font-stretch-names}|inherit'
-    }
+}
 properties[Profiles.CSS3_FONT_FACE] = {
     'font-family': '{family-name}',
     'font-stretch': r'{font-stretch-names}',
@@ -715,7 +713,7 @@ properties[Profiles.CSS3_FONT_FACE] = {
     'font-weight': r'normal|bold|[1-9]00',
     'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
     'unicode-range': '{unicode-range}({w},{w}{unicode-range})*'
-    }
+}
 
 # CSS3 Paged Media
 macros[Profiles.CSS3_PAGED_MEDIA] = {
@@ -725,7 +723,7 @@ macros[Profiles.CSS3_PAGED_MEDIA] = {
     'page-2': '{page-orientation}(?:{w}{page-size})?',
     'page-size-orientation': '{page-1}|{page-2}',
     'pagebreak': 'auto|always|avoid|left|right'
-    }
+}
 properties[Profiles.CSS3_PAGED_MEDIA] = {
     'fit': 'fill|hidden|meet|slice',
     'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',
@@ -737,10 +735,10 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-inside': 'auto|avoid|inherit',
     'size': '({length}{w}){1,2}|auto|{page-size-orientation}',
     'widows': r'{integer}|inherit'
-    }
+}
 
 macros[Profiles.CSS3_TEXT] = {
-    }
+}
 properties[Profiles.CSS3_TEXT] = {
     'text-shadow': 'none|{shadow}({w},{w}{shadow})*',
-    }
+}

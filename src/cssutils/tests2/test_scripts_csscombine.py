@@ -5,6 +5,7 @@ import basetest
 import cssutils
 import os
 
+
 class CSSCombine(basetest.BaseTestCase):
 
     C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
@@ -35,7 +36,7 @@ class CSSCombine(basetest.BaseTestCase):
         # cssText
         # TODO: really need binary or can handle str too?
         f = open(csspath, mode="rb")
-        cssText=f.read()
+        cssText = f.read()
         f.close()
         combined = csscombine(cssText=cssText, href=cssurl)
         self.assertEqual(combined, self.C.encode())

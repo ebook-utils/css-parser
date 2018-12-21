@@ -5,6 +5,7 @@ import basetest
 import cssutils
 from cssutils.css.selectorlist import SelectorList
 
+
 class SelectorListTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -23,11 +24,11 @@ class SelectorListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, s.length)
         self.assertEqual(u'a', s.selectorText)
 
-        s = SelectorList(selectorText=('p|a', {'p': 'uri'})) # n-dict
+        s = SelectorList(selectorText=('p|a', {'p': 'uri'}))  # n-dict
         self.assertEqual(1, s.length)
         self.assertEqual(u'p|a', s.selectorText)
 
-        s = SelectorList(selectorText=('p|a', (('p', 'uri'),))) # n-tuples
+        s = SelectorList(selectorText=('p|a', (('p', 'uri'),)))  # n-tuples
         self.assertEqual(1, s.length)
         self.assertEqual(u'p|a', s.selectorText)
 
@@ -37,7 +38,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
             self.assertEqual(style, style.selectorList.parentRule)
             for sel in style.selectorList:
                 self.assertEqual(style.selectorList, sel.parent)
-        
+
         style = cssutils.css.CSSStyleRule('a, b')
         check(style)
 
@@ -52,7 +53,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
         # replace selectorText
         style.selectorText = ('x, y')
         check(style)
-            
+
     def test_appendSelector(self):
         "SelectorList.appendSelector() and .length"
         s = SelectorList()
@@ -72,8 +73,8 @@ class SelectorListTestCase(basetest.BaseTestCase):
         s.append('a')
         self.assertEqual(2, s.length)
         self.assertEqual(u'b, a', s.selectorText)
-        
-        # __setitem__    
+
+        # __setitem__
         self.assertRaises(IndexError, s.__setitem__, 4, 'x')
         s[1] = 'c'
         self.assertEqual(2, s.length)
@@ -113,7 +114,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
             u'a, b, c': u'a, b, c',
             u'#a, x#a, .b, x.b': u'#a, x#a, .b, x.b',
             (u'[p|a], p|*', (('p', 'uri'),)): u'[p|a], p|*',
-            }
+        }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
 
@@ -125,14 +126,14 @@ class SelectorListTestCase(basetest.BaseTestCase):
             u'a,': xml.dom.SyntaxErr,
             u',a': xml.dom.SyntaxErr,
             u'/* 1 */,a': xml.dom.SyntaxErr,
-            }
+        }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
     def test_reprANDstr(self):
         "SelectorList.__repr__(), .__str__()"
-        sel=(u'a, p|b', { 'p': 'uri'})
-        
+        sel = (u'a, p|b', {'p': 'uri'})
+
         s = cssutils.css.SelectorList(selectorText=sel)
 
         self.assertTrue(sel[0] in str(s))

@@ -3,7 +3,8 @@
 __version__ = '$Id: test_util.py 1437 2008-08-18 20:30:38Z cthedot $'
 
 from . import basetest
-from cssutils.helper import * 
+from cssutils.helper import *
+
 
 class HelperTestCase(basetest.BaseTestCase):
 
@@ -62,7 +63,7 @@ class HelperTestCase(basetest.BaseTestCase):
         self.assertEqual('x', stringvalue('"x"'))
         self.assertEqual('"', stringvalue('"\\""'))
         self.assertEqual(r'x', stringvalue(r"\x "))
-        
+
         # escapes should have been done by tokenizer
         # so this shoule not happen at all:
         self.assertEqual(r'a', stringvalue(r"\a "))

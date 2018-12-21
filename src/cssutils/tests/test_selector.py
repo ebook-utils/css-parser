@@ -10,6 +10,7 @@ import xml.dom
 from . import basetest
 import cssutils
 
+
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
@@ -22,15 +23,15 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual({}, s._namespaces.namespaces)
         self.assertEqual(None, s.parent)
         self.assertEqual('*', s.selectorText)
-        self.assertEqual((0,0,0,0), s.specificity)
+        self.assertEqual((0, 0, 0, 0), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        s = cssutils.css.Selector(('p|b', {'p': 'URI'}) )
+        s = cssutils.css.Selector(('p|b', {'p': 'URI'}))
         self.assertEqual(('URI', 'b'), s.element)
         self.assertEqual({'p': 'URI'}, s._namespaces.namespaces)
         self.assertEqual(None, s.parent)
         self.assertEqual('p|b', s.selectorText)
-        self.assertEqual((0,0,0,1), s.specificity)
+        self.assertEqual((0, 0, 0, 1), s.specificity)
         self.assertEqual(True, s.wellformed)
 
         self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
@@ -52,9 +53,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x[href]': (None, 'x'),
             'x[href="123"]': (None, 'x'),
             'x:hover': (None, 'x'),
-            'x:first-letter': (None, 'x'), # TODO: Really?
-            'x::first-line': (None, 'x'), # TODO: Really?
-            'x:not(href)': (None, 'x'), # TODO: Really?
+            'x:first-letter': (None, 'x'),  # TODO: Really?
+            'x::first-line': (None, 'x'),  # TODO: Really?
+            'x:not(href)': (None, 'x'),  # TODO: Really?
 
             '#id': None,
             '.c': None,
@@ -62,16 +63,16 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x.c': (None, 'x')
         }
         for test, ele in list(tests.items()):
-            s = cssutils.css.Selector((test,{'ex': 'example'}))
+            s = cssutils.css.Selector((test, {'ex': 'example'}))
             self.assertEqual(ele, s.element)
 
     def test_namespaces(self):
         "Selector.namespaces"
         namespaces = [
-            {'p': 'other'}, # no default
-            {'': 'default', 'p': 'other'}, # with default
-            {'': 'default', 'p': 'default' } # same default
-            ]
+            {'p': 'other'},  # no default
+            {'': 'default', 'p': 'other'},  # with default
+            {'': 'default', 'p': 'default'}  # same default
+        ]
         tests = {
             # selector: with default, no default, same default
             '*': ('*', '*', '*'),
@@ -100,10 +101,10 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual(r.selectorText, 'a')
 
         # add default namespace
-        sheet.namespaces[''] = 'a';
+        sheet.namespaces[''] = 'a'
         self.assertEqual(r.selectorText, '|a')
 
-        del sheet.namespaces[''];
+        del sheet.namespaces['']
         self.assertEqual(r.selectorText, 'a')
 
 #        r.selectorList.append('a')
@@ -181,7 +182,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             '_': None,
             '-_': None,
             r'-\72': '-r',
-            #ur'\25': u'%', # TODO: should be escaped!
+            # ur'\25': u'%', # TODO: should be escaped!
             '.a a': None,
             'a1': None,
             'a1-1': None,
@@ -203,8 +204,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             # HASH
             '''#a''': None,
             '''#a1''': None,
-            '''#1a''': None, # valid to grammar but not for HTML
-            '''#1''': None, # valid to grammar but not for HTML
+            '''#1a''': None,  # valid to grammar but not for HTML
+            '''#1''': None,  # valid to grammar but not for HTML
             '''a#b''': None,
             '''a #b''': None,
             '''a#b.c''': None,
@@ -225,7 +226,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             '''a[ x]''': 'a[x]',
             '''a[x ]''': 'a[x]',
             '''a [x]''': 'a [x]',
-            '''* [x]''': None, # is really * *[x]
+            '''* [x]''': None,  # is really * *[x]
 
             '''a[x="1"]''': None,
             '''a[x ="1"]''': 'a[x="1"]',
@@ -243,7 +244,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             '''a[ x ~= a1]''': 'a[x~=a1]',
             '''a[x ~= a1 ]''': 'a[x~=a1]',
             '''a[ x ~= a1 ]''': 'a[x~=a1]',
-            '''a [ x ~= a1 ]''': 'a [x~=a1]', # same as next!
+            '''a [ x ~= a1 ]''': 'a [x~=a1]',  # same as next!
             '''a *[ x ~= a1 ]''': 'a *[x~=a1]',
 
             '''a[x|=en]''': None,
@@ -287,7 +288,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x:func(1+1)': 'x:func(1+1)',
             'x:func(1   +   1)': 'x:func(1 + 1)',
             'x:func(1-1)': 'x:func(1-1)',
-            'x:func(1  -  1)': 'x:func(1 -1)', # TODO: FIX!
+            'x:func(1  -  1)': 'x:func(1 -1)',  # TODO: FIX!
             'x:func(a-1)': 'x:func(a-1)',
             'x:func(a -1px)': 'x:func(a -1px)',
             'x:func(1px)': None,
@@ -333,7 +334,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             # case
             'elemenT.clasS#iD[atT="valuE"]:noT(x)::firsT-linE':
                 'elemenT.clasS#iD[atT="valuE"]:not(x)::first-line'
-            }
+        }
         # do not parse as not complete
         self.do_equal_r(tests, att='selectorText')
 
@@ -356,8 +357,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             '::': xml.dom.SyntaxErr,
             ': a': xml.dom.SyntaxErr,
             ':: a': xml.dom.SyntaxErr,
-            ':a()': xml.dom.SyntaxErr, # no value
-            '::a()': xml.dom.SyntaxErr, # no value
+            ':a()': xml.dom.SyntaxErr,  # no value
+            '::a()': xml.dom.SyntaxErr,  # no value
             ':::a': xml.dom.SyntaxErr,
             ':1': xml.dom.SyntaxErr,
 
@@ -382,14 +383,14 @@ class SelectorTestCase(basetest.BaseTestCase):
 
             # functional pseudo
             '*:lang(': xml.dom.SyntaxErr,
-            '*:lang()': xml.dom.SyntaxErr, # no arg
+            '*:lang()': xml.dom.SyntaxErr,  # no arg
 
             # negation
-            'not(x)': xml.dom.SyntaxErr, # no valid function
-            ':not()': xml.dom.SyntaxErr, # no arg
-            ':not(x': xml.dom.SyntaxErr, # no )
-            ':not(-': xml.dom.SyntaxErr, # not allowed
-            ':not(+': xml.dom.SyntaxErr, # not allowed
+            'not(x)': xml.dom.SyntaxErr,  # no valid function
+            ':not()': xml.dom.SyntaxErr,  # no arg
+            ':not(x': xml.dom.SyntaxErr,  # no )
+            ':not(-': xml.dom.SyntaxErr,  # not allowed
+            ':not(+': xml.dom.SyntaxErr,  # not allowed
 
             # only one selector!
             ',': xml.dom.InvalidModificationErr,
@@ -397,9 +398,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             'a,': xml.dom.InvalidModificationErr,
 
             # @
-            'p @here': xml.dom.SyntaxErr, # not allowed
+            'p @here': xml.dom.SyntaxErr,  # not allowed
 
-            }
+        }
         # only set as not complete
         self.do_raise_r(tests, att='_setSelectorText')
 
@@ -412,74 +413,74 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
 
         tests = {
-            '*': (0,0,0,0),
-            'li': (0,0,0,1),
-            'li:first-line': (0,0,0,2),
-            'ul li': (0,0,0,2),
-            'ul ol+li': (0,0,0,3),
-            'h1 + *[rel=up]': (0,0,1,1),
-            'ul ol li.red': (0,0,1,3),
-            'li.red.level': (0,0,2,1),
-            '#x34y': (0,1,0,0),
+            '*': (0, 0, 0, 0),
+            'li': (0, 0, 0, 1),
+            'li:first-line': (0, 0, 0, 2),
+            'ul li': (0, 0, 0, 2),
+            'ul ol+li': (0, 0, 0, 3),
+            'h1 + *[rel=up]': (0, 0, 1, 1),
+            'ul ol li.red': (0, 0, 1, 3),
+            'li.red.level': (0, 0, 2, 1),
+            '#x34y': (0, 1, 0, 0),
 
-            'UL OL LI.red': (0,0,1,3),
-            'LI.red.level': (0,0,2,1),
-            '#s12:not(FOO)': (0,1,0,1),
-            'button:not([DISABLED])': (0,0,1,1), #?
-            '*:not(FOO)': (0,0,0,1),
+            'UL OL LI.red': (0, 0, 1, 3),
+            'LI.red.level': (0, 0, 2, 1),
+            '#s12:not(FOO)': (0, 1, 0, 1),
+            'button:not([DISABLED])': (0, 0, 1, 1),  # ?
+            '*:not(FOO)': (0, 0, 0, 1),
 
             # elements
-            'a+b': (0,0,0,2),
-            'a>b': (0,0,0,2),
-            'a b': (0,0,0,2),
-            '* a': (0,0,0,1),
-            'a *': (0,0,0,1),
-            'a * b': (0,0,0,2),
+            'a+b': (0, 0, 0, 2),
+            'a>b': (0, 0, 0, 2),
+            'a b': (0, 0, 0, 2),
+            '* a': (0, 0, 0, 1),
+            'a *': (0, 0, 0, 1),
+            'a * b': (0, 0, 0, 2),
 
-            'a:hover': (0,0,0,1),
+            'a:hover': (0, 0, 0, 1),
 
-            'a:first-line': (0,0,0,2),
-            'a:first-letter': (0,0,0,2),
-            'a:before': (0,0,0,2),
-            'a:after': (0,0,0,2),
+            'a:first-line': (0, 0, 0, 2),
+            'a:first-letter': (0, 0, 0, 2),
+            'a:before': (0, 0, 0, 2),
+            'a:after': (0, 0, 0, 2),
 
             # classes and attributes
-            '.a': (0,0,1,0),
-            '*.a': (0,0,1,0),
-            'a.a': (0,0,1,1),
-            '.a.a': (0,0,2,0), # IE<7 False (0,0,1,0)
-            'a.a.a': (0,0,2,1),
-            '.a.b': (0,0,2,0),
-            'a.a.b': (0,0,2,1),
-            '.a .a': (0,0,2,0),
-            '*[x]': (0,0,1,0),
-            '*[x]': (0,0,1,0),
-            '*[x]': (0,0,1,0),
-            '*[x=a]': (0,0,1,0),
-            '*[x~=a]': (0,0,1,0),
-            '*[x|=a]': (0,0,1,0),
-            '*[x^=a]': (0,0,1,0),
-            '*[x*=a]': (0,0,1,0),
-            '*[x$=a]': (0,0,1,0),
-            '*[x][y]': (0,0,2,0),
+            '.a': (0, 0, 1, 0),
+            '*.a': (0, 0, 1, 0),
+            'a.a': (0, 0, 1, 1),
+            '.a.a': (0, 0, 2, 0),  # IE<7 False (0,0,1,0)
+            'a.a.a': (0, 0, 2, 1),
+            '.a.b': (0, 0, 2, 0),
+            'a.a.b': (0, 0, 2, 1),
+            '.a .a': (0, 0, 2, 0),
+            '*[x]': (0, 0, 1, 0),
+            '*[x]': (0, 0, 1, 0),
+            '*[x]': (0, 0, 1, 0),
+            '*[x=a]': (0, 0, 1, 0),
+            '*[x~=a]': (0, 0, 1, 0),
+            '*[x|=a]': (0, 0, 1, 0),
+            '*[x^=a]': (0, 0, 1, 0),
+            '*[x*=a]': (0, 0, 1, 0),
+            '*[x$=a]': (0, 0, 1, 0),
+            '*[x][y]': (0, 0, 2, 0),
 
             # ids
-            '#a': (0,1,0,0),
-            '*#a': (0,1,0,0),
-            'x#a': (0,1,0,1),
-            '.x#a': (0,1,1,0),
-            'a.x#a': (0,1,1,1),
-            '#a#a': (0,2,0,0), # e.g. html:id + xml:id
-            '#a#b': (0,2,0,0),
-            '#a #b': (0,2,0,0),
-            }
+            '#a': (0, 1, 0, 0),
+            '*#a': (0, 1, 0, 0),
+            'x#a': (0, 1, 0, 1),
+            '.x#a': (0, 1, 1, 0),
+            'a.x#a': (0, 1, 1, 1),
+            '#a#a': (0, 2, 0, 0),  # e.g. html:id + xml:id
+            '#a#b': (0, 2, 0, 0),
+            '#a #b': (0, 2, 0, 0),
+        }
         for text in tests:
             selector.selectorText = text
             self.assertEqual(tests[text], selector.specificity)
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
-        sel='a + b'
+        sel = 'a + b'
 
         s = cssutils.css.Selector(selectorText=sel)
 

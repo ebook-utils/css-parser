@@ -1,12 +1,13 @@
 """Experimental settings for special stuff."""
 from __future__ import unicode_literals, division, absolute_import, print_function
 
+
 def set(key, value):
     """Call to enable special settings:
-    
+
     ('DXImageTransform.Microsoft', True)
         enable support for parsing special MS only filter values
-    
+
     Clears the tokenizer cache which holds the compiled productions!
     """
     if key == 'DXImageTransform.Microsoft' and value == True:

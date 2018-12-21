@@ -1,5 +1,10 @@
-"""CSSStyleRule implements DOM Level 2 CSS CSSStyleRule."""
 from __future__ import unicode_literals, division, absolute_import, print_function
+import xml.dom
+import cssutils
+from . import cssrule
+from .selectorlist import SelectorList
+from .cssstyledeclaration import CSSStyleDeclaration
+"""CSSStyleRule implements DOM Level 2 CSS CSSStyleRule."""
 
 __all__ = ['CSSStyleRule']
 __docformat__ = 'restructuredtext'
@@ -9,13 +14,8 @@ import sys
 if sys.version_info[0] == 3:
     string_type = str
 else:
-    string_type= basestring
+    string_type = basestring
 
-from .cssstyledeclaration import CSSStyleDeclaration
-from .selectorlist import SelectorList
-from . import cssrule
-import cssutils
-import xml.dom
 
 class CSSStyleRule(cssrule.CSSRule):
     """The CSSStyleRule object represents a ruleset specified (if any) in a CSS
@@ -28,6 +28,7 @@ class CSSStyleRule(cssrule.CSSRule):
         LBRACE S* declaration [ ';' S* declaration ]* '}' S*
         ;
     """
+
     def __init__(self, selectorText=None, style=None, parentRule=None,
                  parentStyleSheet=None, readonly=False):
         """
@@ -59,15 +60,15 @@ class CSSStyleRule(cssrule.CSSRule):
         else:
             st = self.selectorText
         return "cssutils.css.%s(selectorText=%r, style=%r)" % (
-                self.__class__.__name__, st, self.style.cssText)
+            self.__class__.__name__, st, self.style.cssText)
 
     def __str__(self):
         return "<cssutils.css.%s object selectorText=%r style=%r _namespaces=%r "\
                "at 0x%x>" % (self.__class__.__name__,
-                              self.selectorText,
-                              self.style.cssText,
-                              self._namespaces,
-                              id(self))
+                             self.selectorText,
+                             self.style.cssText,
+                             self._namespaces,
+                             id(self))
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -131,10 +132,10 @@ class CSSStyleRule(cssrule.CSSRule):
             elif not selectortokens:
                 ok = False
                 self._log.error('CSSStyleRule: No selector found: %r.' %
-                            self._valuestr(cssText), bracetoken)
+                                self._valuestr(cssText), bracetoken)
             # SET
             newSelectorList.selectorText = (selectortokens,
-                                              namespaces)
+                                            namespaces)
 
             if not styletokens:
                 ok = False
@@ -144,7 +145,7 @@ class CSSStyleRule(cssrule.CSSRule):
             else:
                 braceorEOFtoken = styletokens.pop()
                 val, typ = self._tokenvalue(braceorEOFtoken),\
-                           self._type(braceorEOFtoken)
+                    self._type(braceorEOFtoken)
                 if val != '}' and typ != 'EOF':
                     ok = False
                     self._log.error('CSSStyleRule: No "}" after style '

@@ -9,15 +9,16 @@ from cssutils.css.property import Property
 
 debug = False
 
+
 class PropertiesTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         "init test values"
         V = {
-            '0': ('0', '-0'),#, '+0'),
-            'NUMBER': ('0', '-0', '100.1', '-100.1'),#, '+0', '+100.1'),
-            'PERCENTAGE': ('0%', '-0%', '100.1%', '-100.1%'),#, '+0%', '+100.1%'),
-            
+            '0': ('0', '-0'),  # , '+0'),
+            'NUMBER': ('0', '-0', '100.1', '-100.1'),  # , '+0', '+100.1'),
+            'PERCENTAGE': ('0%', '-0%', '100.1%', '-100.1%'),  # , '+0%', '+100.1%'),
+
             'EM': '1.2em',
             'EX': '1.2ex',
             'PX': '1.2px',
@@ -26,7 +27,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'IN': '1.2in',
             'PT': '1.2pt',
             'PC': '1.2pc',
-    
+
             'ANGLES': ('1deg', '1rad', '1grad'),
             'TIMES': ('1s', '1ms'),
             'FREQUENCIES': ('1hz', '1khz'),
@@ -34,14 +35,14 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'STRING': ('"string"', "'STRING'"),
             'URI': ('url(x)', 'URL("x")', "url(')')"),
             'IDENT': ('ident', 'IDENT', '_IDENT', '_2', 'i-2'),
-            #'AUTO': 'auto', # explicit in list as an IDENT too
-            #'INHERIT': 'inherit', # explicit in list as an IDENT too
+            # 'AUTO': 'auto', # explicit in list as an IDENT too
+            # 'INHERIT': 'inherit', # explicit in list as an IDENT too
             'ATTR': ('attr(x)'),
             'RECT': ('rect(1,2,3,4)'),
-            #?
+            # ?
             'CLIP': ('rect(1,2,3,4)'),
             'FUNCTION': (),
-            
+
             'HEX3': '#123',
             'HEX6': '#123abc',
             'RGB': 'rgb(1,2,3)',
@@ -49,8 +50,9 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'RGBA': 'rgba(1,2,3, 1)',
             'RGBA100': 'rgba(1%,2%,100%, 0)',
             'HSL': 'hsl(1,2%,3%)',
-            'HSLA': 'hsla(1,2%,3%, 1.0)'            
-             }        
+            'HSLA': 'hsla(1,2%,3%, 1.0)'
+        }
+
         def expanded(*keys):
             r = []
             for k in keys:
@@ -62,17 +64,17 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
         # before adding combined
         self.V = V
-        self.ALL = list(self._valuesofkeys(V.keys())) 
-        
+        self.ALL = list(self._valuesofkeys(V.keys()))
+
         # combined values, only keys of V may be used!
         self.V['LENGTHS'] = expanded('0', 'EM', 'EX', 'PX', 'CM', 'MM', 'IN', 'PT', 'PC')
         self.V['COLORS'] = expanded('HEX3', 'HEX6', 'RGB', 'RGB100')
         self.V['COLORS3'] = expanded('RGBA', 'RGBA100', 'HSL', 'HSLA')
-        
+
     def _allvalues(self):
         "Return list of **all** possible values as simple list"
         return copy.copy(self.ALL)
-            
+
     def _valuesofkeys(self, keys):
         "Generate all distinct values in given keys of self.V"
         done = []
@@ -85,16 +87,16 @@ class PropertiesTestCase(basetest.BaseTestCase):
                 v = self.V[key]
                 if isinstance(v, basestring):
                     # single value
-                    if v not in done: 
+                    if v not in done:
                         done.append(v)
                         yield v
                 else:
                     # a list of values
                     for value in v:
-                        if value not in done: 
+                        if value not in done:
                             done.append(value)
                             yield value
-        
+
     def _check(self, name, keys):
         """
         Check each value in values if for property name p.name==exp.
@@ -111,32 +113,32 @@ class PropertiesTestCase(basetest.BaseTestCase):
             if name == debug:
                 print '-False?', Property(name, value).valid, value
             self.assertEqual(False, Property(name, value).valid)
-                
+
     def test_properties(self):
         "properties"
         tests = {
             # propname: key or [list of values]
             'color': ('COLORS', 'COLORS3', ['inherit', 'red']),
-            
+
             'fit': (['fill', 'hidden', 'meet', 'slice'],),
-            'fit-position': ('LENGTHS', 'PERCENTAGE', 
+            'fit-position': ('LENGTHS', 'PERCENTAGE',
                              ['auto',
-                              'top left', 
+                              'top left',
                               '0% 50%',
                               '1cm 5em',
                               'bottom']),
             'font-family': ('STRING', 'IDENT', ['a, b',
-                                               '"a", "b"',
-                                               'a, "b"',
-                                               '"a", b',
-                                               r'a\{b',
-                                               r'a\ b',
-                                               'a b'
-                                               'a b, c  d  , e'
-                                               ]),
-            #'src': ('STRING',),
-                                               
-            'font-weight': (['normal', 'bold', 'bolder', 'lighter', 'inherit', 
+                                                '"a", "b"',
+                                                'a, "b"',
+                                                '"a", b',
+                                                r'a\{b',
+                                                r'a\ b',
+                                                'a b'
+                                                'a b, c  d  , e'
+                                                ]),
+            # 'src': ('STRING',),
+
+            'font-weight': (['normal', 'bold', 'bolder', 'lighter', 'inherit',
                              '100', '200', '300', '400', '500', '600', '700',
                              '800', '900'],),
             'font-stretch': (['normal', 'wider', 'narrower', 'ultra-condensed',
@@ -146,28 +148,28 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'font-style': (['normal', 'italic', 'oblique', 'inherit'],),
             'font-variant': (['normal', 'small-caps', 'inherit'],),
             'font-size': ('LENGTHS', 'PERCENTAGE', ['xx-small', 'x-small',
-                                                   'small', 'medium', 'large', 
-                                                   'x-large', 'xx-large',
-                                                   'larger', 'smaller',
-                                                   '1em', '1%', 'inherit']),
+                                                    'small', 'medium', 'large',
+                                                    'x-large', 'xx-large',
+                                                    'larger', 'smaller',
+                                                    '1em', '1%', 'inherit']),
             'font-size-adjust': ('NUMBER', ['none', 'inherit']),
-#            'font': (['italic small-caps bold 1px/3 a, "b", serif',
-#                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
-#                      'status-bar', 'inherit'],),
-            
+            #            'font': (['italic small-caps bold 1px/3 a, "b", serif',
+            #                      'caption', 'icon', 'menu', 'message-box', 'small-caption',
+            #                      'status-bar', 'inherit'],),
+
             'image-orientation': ('0', 'ANGLES', ['auto']),
             'left': ('LENGTHS', 'PERCENTAGE', ['inherit', 'auto']),
             'opacity': ('NUMBER', ['inherit']),
-            
+
             'orphans': ('0', ['1', '99999', 'inherit']),
-            'page': ('IDENT',), 
+            'page': ('IDENT',),
             'page-break-inside': (['auto', 'inherit', 'avoid'],),
-            'size': ('LENGTHS', ['auto', 
-                                 '1em 1em', 
+            'size': ('LENGTHS', ['auto',
+                                 '1em 1em',
                                  'a4 portrait',
                                  'b4 landscape',
                                  'A5 PORTRAIT']),
-            
+
             'widows': ('0', ['1', '99999', 'inherit'])
         }
         for name, keys in tests.items():
@@ -184,7 +186,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
         }
         for v, rs in tests.items():
             p = Property('color', v)
-            
+
             # TODO: Fix
 #            cssutils.profile.defaultProfiles = \
 #                cssutils.profile.CSS_LEVEL_2

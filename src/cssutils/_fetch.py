@@ -1,6 +1,9 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
+from . import errorhandler
+import encutils
+from cssutils.version import VERSION
 """Default URL reading functions"""
 
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['_defaultFetcher']
 __docformat__ = 'restructuredtext'
@@ -8,7 +11,7 @@ __version__ = '$Id: tokenize2.py 1547 2008-12-10 20:42:26Z cthedot $'
 
 import sys
 
-if sys.version_info[0] == 3:
+if sys.version_info[0] >= 3:
     from urllib.request import urlopen as urllib_urlopen
     from urllib.request import Request as urllib_Request
     from urllib.error import HTTPError as urllib_HTTPError
@@ -19,12 +22,9 @@ else:
     from urllib2 import HTTPError as urllib_HTTPError
     from urllib2 import URLError as urllib_URLError
 
-import cssutils
-from cssutils import VERSION
-import encutils
-from . import errorhandler
 
 log = errorhandler.ErrorHandler()
+
 
 def _defaultFetcher(url):
     """Retrieve data from ``url``. cssutils default implementation of fetch
@@ -40,7 +40,7 @@ def _defaultFetcher(url):
     except urllib_HTTPError as e:
         # http error, e.g. 404, e can be raised
         log.warn('HTTPError opening url=%s: %s %s' %
-                          (url, e.code, e.msg), error=e)
+                 (url, e.code, e.msg), error=e)
     except urllib_URLError as e:
         # URLError like mailto: or other IO errors, e can be raised
         log.warn('URLError, %s' % e.reason, error=e)
@@ -55,7 +55,7 @@ def _defaultFetcher(url):
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != 'text/css':
                 log.error('Expected "text/css" mime type for url=%r but found: %r' %
-                                  (url, mimeType), error=ValueError)
+                          (url, mimeType), error=ValueError)
             content = res.read()
             if hasattr(res, 'close'):
                 res.close()

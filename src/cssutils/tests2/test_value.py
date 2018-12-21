@@ -38,59 +38,59 @@ class PropertyValueTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "PropertyValue.cssText"
         tests = {
-                 u'0': (None, 1, None),
-                 u'0 0': (None, 2, None),
-                 u'0, 0': (None, 2, None),
-                 u'0,0': (u'0, 0', 2, None),
-                 u'0  ,   0': (u'0, 0', 2, None),
-                 u'0/0': (None, 2, None),
-                 u'/**/ 0 /**/': (None, 1, u'0'),
-                 u'0 /**/ 0 /**/ 0': (None, 3, u'0 0 0'),
-                 u'0, /**/ 0, /**/ 0': (None, 3, u'0, 0, 0'),
-                 u'0//**/ 0//**/ 0': (None, 3, u'0/0/0'),
-                 u'/**/ red': (None, 1, u'red'),
-                 u'/**/red': (u'/**/ red', 1, u'red'),
-                 u'red /**/': (None, 1, u'red'),
-                 u'red/**/': (u'red /**/', 1, u'red'),
+            u'0': (None, 1, None),
+            u'0 0': (None, 2, None),
+            u'0, 0': (None, 2, None),
+            u'0,0': (u'0, 0', 2, None),
+            u'0  ,   0': (u'0, 0', 2, None),
+            u'0/0': (None, 2, None),
+            u'/**/ 0 /**/': (None, 1, u'0'),
+            u'0 /**/ 0 /**/ 0': (None, 3, u'0 0 0'),
+            u'0, /**/ 0, /**/ 0': (None, 3, u'0, 0, 0'),
+            u'0//**/ 0//**/ 0': (None, 3, u'0/0/0'),
+            u'/**/ red': (None, 1, u'red'),
+            u'/**/red': (u'/**/ red', 1, u'red'),
+            u'red /**/': (None, 1, u'red'),
+            u'red/**/': (u'red /**/', 1, u'red'),
 
-                 u'a()1,-1,+1,1%,-1%,1px,-1px,"a",a,url(a),#aabb44': (
-                 u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
-                    12, u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4'),
+            u'a()1,-1,+1,1%,-1%,1px,-1px,"a",a,url(a),#aabb44': (
+                u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4',
+                12, u'a() 1, -1, +1, 1%, -1%, 1px, -1px, "a", a, url(a), #ab4'),
 
-                # calc values
-                 u'calc(1)': (None, 1, u'calc(1)'),
-                 u'calc( 1)': (u'calc(1)', 1, u'calc(1)'),
-                 u'calc(1 )': (u'calc(1)', 1, u'calc(1)'),
-                 u'calc(1px)': (None, 1, u'calc(1px)'),
-                 u'calc(1p-x-)': (None, 1, u'calc(1p-x-)'),
-                 u'calc(1%)': (None, 1, u'calc(1%)'),
-                 u'calc(-1)': (None, 1, u'calc(-1)'),
-                 u'calc(+1)': (None, 1, u'calc(+1)'),
-                 u'calc(1  +   1px)': (u'calc(1 + 1px)', 1, u'calc(1 + 1px)'),
-                 u'calc(1 - 1px)': (None, 1, u'calc(1 - 1px)'),
-                 u'calc(1*1px)': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
-                 u'calc(1  /  1px)': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
-                 u'calc( 1*1px)': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
-                 u'calc( 1  /  1px)': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
-                 u'calc(1*1px )': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
-                 u'calc(1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
-                 u'calc( 1*1px )': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
-                 u'calc( 1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
-                 u'calc(var(X))': (None, 1, None),
-                 u'calc(2 * var(X))': (None, 1, None),
-                 u'calc(2px + var(X))': (None, 1, None),
+            # calc values
+            u'calc(1)': (None, 1, u'calc(1)'),
+            u'calc( 1)': (u'calc(1)', 1, u'calc(1)'),
+            u'calc(1 )': (u'calc(1)', 1, u'calc(1)'),
+            u'calc(1px)': (None, 1, u'calc(1px)'),
+            u'calc(1p-x-)': (None, 1, u'calc(1p-x-)'),
+            u'calc(1%)': (None, 1, u'calc(1%)'),
+            u'calc(-1)': (None, 1, u'calc(-1)'),
+            u'calc(+1)': (None, 1, u'calc(+1)'),
+            u'calc(1  +   1px)': (u'calc(1 + 1px)', 1, u'calc(1 + 1px)'),
+            u'calc(1 - 1px)': (None, 1, u'calc(1 - 1px)'),
+            u'calc(1*1px)': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
+            u'calc(1  /  1px)': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
+            u'calc( 1*1px)': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
+            u'calc( 1  /  1px)': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
+            u'calc(1*1px )': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
+            u'calc(1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
+            u'calc( 1*1px )': (u'calc(1 * 1px)', 1, u'calc(1 * 1px)'),
+            u'calc( 1  /  1px )': (u'calc(1 / 1px)', 1, u'calc(1 / 1px)'),
+            u'calc(var(X))': (None, 1, None),
+            u'calc(2 * var(X))': (None, 1, None),
+            u'calc(2px + var(X))': (None, 1, None),
 
-                 #issue #24
-                 u'rgb(0, 10, 255)': (None, 1, u'rgb(0, 10, 255)'),
-                 u'hsl(10, 10%, 25%)': (None, 1, u'hsl(10, 10%, 25%)'),
-                 u'rgba(0, 10, 255, 0.5)': (None, 1, u'rgba(0, 10, 255, 0.5)'),
-                 u'hsla(10, 10%, 25%, 0.5)': (None, 1, u'hsla(10, 10%, 25%, 0.5)'),
+            # issue #24
+            u'rgb(0, 10, 255)': (None, 1, u'rgb(0, 10, 255)'),
+            u'hsl(10, 10%, 25%)': (None, 1, u'hsl(10, 10%, 25%)'),
+            u'rgba(0, 10, 255, 0.5)': (None, 1, u'rgba(0, 10, 255, 0.5)'),
+            u'hsla(10, 10%, 25%, 0.5)': (None, 1, u'hsla(10, 10%, 25%, 0.5)'),
 
-                #issue #27
-                u'matrix(0.000092, 0.2500010, -0.250000, 0.000092, 0, 0)': (
-                    u'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)', 1,
-                    u'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)')
-                 }
+            # issue #27
+            u'matrix(0.000092, 0.2500010, -0.250000, 0.000092, 0, 0)': (
+                u'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)', 1,
+                u'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)')
+        }
         for (cssText, (c, l, v)) in tests.items():
             if c is None:
                 c = cssText
@@ -103,26 +103,26 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             self.assertEqual(v, pv.value)
 
         tests = {
-                u'0 0px -0px +0px': (u'0 0 0 0', 4),
-                u'1 2 3 4': (None, 4),
-                u'-1 -2 -3 -4': (None, 4),
-                u'-1 2': (None, 2),
-                u'-1px red "x"': (None, 3),
-                u'a, b c': (None, 3),
-                u'1px1 2% 3': (u'1px1 2% 3', 3),
-                u'f(+1pX, -2, 5%) 1': (u'f(+1px, -2, 5%) 1', 2),
-                u'0 f()0': (u'0 f() 0', 3),
-                u'f()0': (u'f() 0', 2),
-                u'f()1%': (u'f() 1%', 2),
-                u'f()1px': (u'f() 1px', 2),
-                u'f()"str"': (u'f() "str"', 2),
-                u'f()ident': (u'f() ident', 2),
-                u'f()#123': (u'f() #123', 2),
-                u'f()url()': (u'f() url()', 2),
-                u'f()f()': (u'f() f()', 2),
-                u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
-                u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
-                }
+            u'0 0px -0px +0px': (u'0 0 0 0', 4),
+            u'1 2 3 4': (None, 4),
+            u'-1 -2 -3 -4': (None, 4),
+            u'-1 2': (None, 2),
+            u'-1px red "x"': (None, 3),
+            u'a, b c': (None, 3),
+            u'1px1 2% 3': (u'1px1 2% 3', 3),
+            u'f(+1pX, -2, 5%) 1': (u'f(+1px, -2, 5%) 1', 2),
+            u'0 f()0': (u'0 f() 0', 3),
+            u'f()0': (u'f() 0', 2),
+            u'f()1%': (u'f() 1%', 2),
+            u'f()1px': (u'f() 1px', 2),
+            u'f()"str"': (u'f() "str"', 2),
+            u'f()ident': (u'f() ident', 2),
+            u'f()#123': (u'f() #123', 2),
+            u'f()url()': (u'f() url()', 2),
+            u'f()f()': (u'f() f()', 2),
+            u'url(x.gif)0 0': (u'url(x.gif) 0 0', 3),
+            u'url(x.gif)no-repeat': (u'url(x.gif) no-repeat', 2)
+        }
         for (cssText, (c, l)) in tests.items():
             if c is None:
                 c = cssText
@@ -163,9 +163,9 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             u'alpha( opacity = 80 , x=2  )': u'alpha(opacity=80, x=2)',
             u'expression(eval(document.documentElement.scrollTop))':
                 u'expression(eval(document.documentElement.scrollTop))',
-            #TODO
-#            u'expression((function(ele){ele.style.behavior="none";})(this))':
-#                u'expression((function(ele){ele.style.behavior="none";})(this))',
+            # TODO
+            #            u'expression((function(ele){ele.style.behavior="none";})(this))':
+            #                u'expression((function(ele){ele.style.behavior="none";})(this))',
 
             # unicode-range
             'u+f': 'u+f',
@@ -197,7 +197,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             '1/  2': '1/2',
             '1  /2': '1/2',
             '1  /  2': '1/2',
-             # comment
+            # comment
             '1/**/2': '1 /**/ 2',
             '1 /**/2': '1 /**/ 2',
             '1/**/ 2': '1 /**/ 2',
@@ -228,77 +228,77 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             u'attr( href )': u'attr(href)',
             # PrinceXML extende FUNC syntax with nested FUNC
             u'target-counter(attr(href),page)': u'target-counter(attr(href), page)'
-                 }
+        }
         self.do_equal_r(tests)
 
         tests = [
-                    u'a+',
-                    u'-',
-                    u'+',
-                    u'-%',
-                    u'+a',
-                    u'--1px',
-                    u'++1px',
-                    u'#',
-                    u'#00',
-                    u'#12x',
-                    u'#xyz',
-                    u'#0000',
-                    u'#00000',
-                    u'#0000000',
-                    u'-#0',
-                    # operator
-                    u',',
-                    u'1,,2',
-                    u'1,/**/,2',
-                    u'1  ,  /**/  ,  2',
-                    u'1,',
-                    u'1, ',
-                    u'1 ,',
-                    u'1 , ',
-                    u'1  ,  ',
-                    u'1//2',
-                    # URL
-                    u'url(x))',
-                    # string
-                    u'"',
-                    u"'",
-                    # function
-                    u'f(-)',
-                    u'f(x))',
-                    #calc
-                    u'calc(',
-                    u'calc(1',
-                    u'calc(1 + 1',
-                    u'calc(1+1)',
-                    u'calc(1-1)',
-                    u'calc(1 +1)',
-                    u'calc(1+ 1)',
-                    u'calc(1 -1)',
-                    u'calc(1- 1)',
-                    u'calc(+)',
-                    u'calc(+ 1)',
-                    u'calc(-)',
-                    u'calc(- 1)',
-                    u'calc(*)',
-                    u'calc(*1)',
-                    u'calc(* 2)',
-                    u'calc(/)',
-                    u'calc(/1)',
-                    u'calc(/ 2)',
-                    u'calc(1+)',
-                    u'calc(1 +)',
-                    u'calc(1 + )',
-                    u'calc(2px -)',
-                    u'calc(3px*)',
-                    u'calc(3px *)',
-                    u'calc(3px * )',
-                    u'calc(4em/)',
-                    u'calc(4em /)',
-                    u'calc(4em / )',
-                    u'calc(1 + + 1)',
-                    u'calc(1 ++ 1)'
-                    ]
+            u'a+',
+            u'-',
+            u'+',
+            u'-%',
+            u'+a',
+            u'--1px',
+            u'++1px',
+            u'#',
+            u'#00',
+            u'#12x',
+            u'#xyz',
+            u'#0000',
+            u'#00000',
+            u'#0000000',
+            u'-#0',
+            # operator
+            u',',
+            u'1,,2',
+            u'1,/**/,2',
+            u'1  ,  /**/  ,  2',
+            u'1,',
+            u'1, ',
+            u'1 ,',
+            u'1 , ',
+            u'1  ,  ',
+            u'1//2',
+            # URL
+            u'url(x))',
+            # string
+            u'"',
+            u"'",
+            # function
+            u'f(-)',
+            u'f(x))',
+            # calc
+            u'calc(',
+            u'calc(1',
+            u'calc(1 + 1',
+            u'calc(1+1)',
+            u'calc(1-1)',
+            u'calc(1 +1)',
+            u'calc(1+ 1)',
+            u'calc(1 -1)',
+            u'calc(1- 1)',
+            u'calc(+)',
+            u'calc(+ 1)',
+            u'calc(-)',
+            u'calc(- 1)',
+            u'calc(*)',
+            u'calc(*1)',
+            u'calc(* 2)',
+            u'calc(/)',
+            u'calc(/1)',
+            u'calc(/ 2)',
+            u'calc(1+)',
+            u'calc(1 +)',
+            u'calc(1 + )',
+            u'calc(2px -)',
+            u'calc(3px*)',
+            u'calc(3px *)',
+            u'calc(3px * )',
+            u'calc(4em/)',
+            u'calc(4em /)',
+            u'calc(4em / )',
+            u'calc(1 + + 1)',
+            u'calc(1 ++ 1)'
+        ]
         self.do_raise_r_list(tests, xml.dom.SyntaxErr)
 
     def test_list(self):
@@ -366,7 +366,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
 
     def test_reprANDstr(self):
         "PropertyValue.__repr__(), .__str__()"
-        cssText='inherit'
+        cssText = 'inherit'
 
         s = cssutils.css.PropertyValue(cssText=cssText)
 
@@ -384,32 +384,32 @@ class ValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.Value()
         self.assertTrue(u'' == v.cssText)
         self.assertTrue(u'' == v.value)
-        self.assertTrue(None is  v.type)
+        self.assertTrue(None is v.type)
 
     def test_cssText(self):
         "Value.cssText"
         # HASH IDENT STRING UNICODE-RANGE
         tests = {
-                 u'#123': (u'#123', u'#123', u'HASH'),
-                 u'#123456': (u'#123456', u'#123456', u'HASH'),
-                 u'#112233': (u'#123', u'#112233', u'HASH'),
-                 u'  #112233  ': (u'#123', u'#112233', u'HASH'),
+            u'#123': (u'#123', u'#123', u'HASH'),
+            u'#123456': (u'#123456', u'#123456', u'HASH'),
+            u'#112233': (u'#123', u'#112233', u'HASH'),
+            u'  #112233  ': (u'#123', u'#112233', u'HASH'),
 
-                 u'red': (u'red', u'red', u'IDENT'),
-                 u'  red  ': (u'red', u'red', u'IDENT'),
-                 u'red  ': (u'red', u'red', u'IDENT'),
-                 u'  red': (u'red', u'red', u'IDENT'),
-                 u'red-': (u'red-', u'red-', u'IDENT'),
-                 u'-red': (u'-red', u'-red', u'IDENT'),
+            u'red': (u'red', u'red', u'IDENT'),
+            u'  red  ': (u'red', u'red', u'IDENT'),
+            u'red  ': (u'red', u'red', u'IDENT'),
+            u'  red': (u'red', u'red', u'IDENT'),
+            u'red-': (u'red-', u'red-', u'IDENT'),
+            u'-red': (u'-red', u'-red', u'IDENT'),
 
-                 u'"red"': (u'"red"', u'red', u'STRING'),
-                 u"'red'": (u'"red"', u'red', u'STRING'),
-                 u'  "red"  ': (u'"red"', u'red', u'STRING'),
-                 ur'"red\""': (ur'"red\""', ur'red"', u'STRING'),
-                 ur"'x\"'": (ur'"x\\""', ur'x\"', 'STRING'), #???
-                 u'''"x\
+            u'"red"': (u'"red"', u'red', u'STRING'),
+            u"'red'": (u'"red"', u'red', u'STRING'),
+            u'  "red"  ': (u'"red"', u'red', u'STRING'),
+            ur'"red\""': (ur'"red\""', ur'red"', u'STRING'),
+            ur"'x\"'": (ur'"x\\""', ur'x\"', 'STRING'),  # ???
+            u'''"x\
 y"''': (u'"xy"', u'xy', u'STRING'),
-                 }
+        }
         for (p, (r, n, t)) in tests.items():
             v = cssutils.css.Value(p)
             self.assertEqual(r, v.cssText)
@@ -431,21 +431,21 @@ class ColorValueTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "ColorValue.cssText"
         tests = {
-                 # HASH
-                 u'#123': (u'#123',),
-                 u'#112233': (u'#123',),
-                 # rgb
-                 u'rgb(1,2,3)': (u'rgb(1, 2, 3)',),
-                 u'rgb(1%,2%,3%)': (u'rgb(1%, 2%, 3%)',),
-                 u'rgb(-1,-1,-1)': (u'rgb(-1, -1, -1)',),
-                 u'rgb(-1%,-2%,-3%)': (u'rgb(-1%, -2%, -3%)',),
-                 # rgba
-                 u'rgba(1,2,3, 0)': (u'rgba(1, 2, 3, 0)',),
-                 # hsl
-                 u'hsl(1,2%,3%)': (u'hsl(1, 2%, 3%)',),
-                 u'hsla(1,2%,3%, 1.0)': (u'hsla(1, 2%, 3%, 1)',),
+            # HASH
+            u'#123': (u'#123',),
+            u'#112233': (u'#123',),
+            # rgb
+            u'rgb(1,2,3)': (u'rgb(1, 2, 3)',),
+            u'rgb(1%,2%,3%)': (u'rgb(1%, 2%, 3%)',),
+            u'rgb(-1,-1,-1)': (u'rgb(-1, -1, -1)',),
+            u'rgb(-1%,-2%,-3%)': (u'rgb(-1%, -2%, -3%)',),
+            # rgba
+            u'rgba(1,2,3, 0)': (u'rgba(1, 2, 3, 0)',),
+            # hsl
+            u'hsl(1,2%,3%)': (u'hsl(1, 2%, 3%)',),
+            u'hsla(1,2%,3%, 1.0)': (u'hsla(1, 2%, 3%, 1)',),
 
-                 }
+        }
         for (p, (r, )) in tests.items():
             v = cssutils.css.ColorValue(p)
             self.assertEqual(v.COLOR_VALUE, v.type)
@@ -459,39 +459,39 @@ class ColorValueTestCase(basetest.BaseTestCase):
             self.assertEqual(r, v.value)
 
         tests = {
-             u'1': xml.dom.SyntaxErr,
-             u'a': xml.dom.SyntaxErr,
+            u'1': xml.dom.SyntaxErr,
+            u'a': xml.dom.SyntaxErr,
 
-             u'#12': xml.dom.SyntaxErr,
-             u'#1234': xml.dom.SyntaxErr,
-             u'#1234567': xml.dom.SyntaxErr,
-             u'#12345678': xml.dom.SyntaxErr,
+            u'#12': xml.dom.SyntaxErr,
+            u'#1234': xml.dom.SyntaxErr,
+            u'#1234567': xml.dom.SyntaxErr,
+            u'#12345678': xml.dom.SyntaxErr,
 
-             u'rgb(1,1%,1%)': xml.dom.SyntaxErr,
-             u'rgb(1%,1,1)': xml.dom.SyntaxErr,
-             u'rgb(-1,-1%,-1%)': xml.dom.SyntaxErr,
-             u'rgb(-1%,-1,-1)': xml.dom.SyntaxErr,
+            u'rgb(1,1%,1%)': xml.dom.SyntaxErr,
+            u'rgb(1%,1,1)': xml.dom.SyntaxErr,
+            u'rgb(-1,-1%,-1%)': xml.dom.SyntaxErr,
+            u'rgb(-1%,-1,-1)': xml.dom.SyntaxErr,
 
-             u'rgb(1,1,1, 0)': xml.dom.SyntaxErr,
-             u'rgb(1%,1%,1%, 0)': xml.dom.SyntaxErr,
-             u'rgba(1,1,1)': xml.dom.SyntaxErr,
-             u'rgba(1%,1%,1%)': xml.dom.SyntaxErr,
-             u'rgba(1,1,1, 0%)': xml.dom.SyntaxErr,
-             u'rgba(1%,1%,1%, 0%)': xml.dom.SyntaxErr,
+            u'rgb(1,1,1, 0)': xml.dom.SyntaxErr,
+            u'rgb(1%,1%,1%, 0)': xml.dom.SyntaxErr,
+            u'rgba(1,1,1)': xml.dom.SyntaxErr,
+            u'rgba(1%,1%,1%)': xml.dom.SyntaxErr,
+            u'rgba(1,1,1, 0%)': xml.dom.SyntaxErr,
+            u'rgba(1%,1%,1%, 0%)': xml.dom.SyntaxErr,
 
-             u'hsl(1,2%,3%, 1)': xml.dom.SyntaxErr,
-             u'hsla(1,2%,3%)': xml.dom.SyntaxErr,
+            u'hsl(1,2%,3%, 1)': xml.dom.SyntaxErr,
+            u'hsla(1,2%,3%)': xml.dom.SyntaxErr,
 
-             u'hsl(1,2,3)': xml.dom.SyntaxErr,
-             u'hsl(1%,2,3)': xml.dom.SyntaxErr,
-             u'hsl(1%,2,3%)': xml.dom.SyntaxErr,
-             u'hsl(1%,2%,3)': xml.dom.SyntaxErr,
+            u'hsl(1,2,3)': xml.dom.SyntaxErr,
+            u'hsl(1%,2,3)': xml.dom.SyntaxErr,
+            u'hsl(1%,2,3%)': xml.dom.SyntaxErr,
+            u'hsl(1%,2%,3)': xml.dom.SyntaxErr,
 
-             u'hsla(1,2%,3%, 0%)': xml.dom.SyntaxErr,
-             u'hsla(1,2,3, 0.0)': xml.dom.SyntaxErr,
-             u'hsla(1%,2,3, 0.0)': xml.dom.SyntaxErr,
-             u'hsla(1%,2,3%, 0.0)': xml.dom.SyntaxErr,
-             u'hsla(1%,2%,3, 0.0)': xml.dom.SyntaxErr,
+            u'hsla(1,2%,3%, 0%)': xml.dom.SyntaxErr,
+            u'hsla(1,2,3, 0.0)': xml.dom.SyntaxErr,
+            u'hsla(1%,2,3, 0.0)': xml.dom.SyntaxErr,
+            u'hsla(1%,2,3%, 0.0)': xml.dom.SyntaxErr,
+            u'hsla(1%,2%,3, 0.0)': xml.dom.SyntaxErr,
         }
         self.r = cssutils.css.ColorValue()
         self.do_raise_r(tests)
@@ -499,14 +499,14 @@ class ColorValueTestCase(basetest.BaseTestCase):
     def test_rgb(self):
         "ColorValue.red .green .blue"
         tests = {
-            (u'#0A0AD2', 'rgb(10, 10, 210)' ): (10, 10, 210, 1.0),
+            (u'#0A0AD2', 'rgb(10, 10, 210)'): (10, 10, 210, 1.0),
             # TODO: Fix rounding?
             (u'hsl(240, 91%, 43%)', ): (10, 10, 209, 1.0),
             (u'#ff8800', u'#f80',
              'rgb(255, 136, 0)', 'rgba(255, 136, 0, 1.0)'): (255, 136, 0, 1.0),
             (u'red', u'#ff0000', u'#f00',
              u'hsl(0, 100%, 50%)', u'hsla(0, 100%, 50%, 1.0)'):
-                (255, 0, 0, 1.0),
+            (255, 0, 0, 1.0),
             (u'lime', u'#00ff00', u'#0f0', u'hsl(120, 100%, 50%)'):
                 (0, 255, 0, 1.0),
             (u'rgba(255, 127, 0, .1)', u'rgba(100%, 50%, 0%, .1)'):
@@ -516,7 +516,7 @@ class ColorValueTestCase(basetest.BaseTestCase):
         }
         for colors, rgba in tests.items():
             for color in colors:
-                c = cssutils.css.ColorValue(color);
+                c = cssutils.css.ColorValue(color)
                 self.assertEqual(c.red, rgba[0])
                 self.assertEqual(c.green, rgba[1])
                 self.assertEqual(c.blue, rgba[2])
@@ -531,7 +531,7 @@ class URIValueTestCase(basetest.BaseTestCase):
         self.assertTrue(u'url()' == v.cssText)
         self.assertTrue(u'' == v.value)
         self.assertTrue(u'' == v.uri)
-        self.assertTrue(v.URI is  v.type)
+        self.assertTrue(v.URI is v.type)
 
         v.uri = '1'
         self.assertTrue(u'1' == v.value)
@@ -557,16 +557,16 @@ class URIValueTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "URIValue.cssText"
         tests = {
-                 u'url()': (u'url()', u'', u'URI'),
-                 # comments are part of the url!
-                 u'url(/**/)': (u'url(/**/)', u'/**/', u'URI'),
-                 u'url(/**/1)': (u'url(/**/1)', u'/**/1', u'URI'),
-                 u'url(1/**/)': (u'url(1/**/)', u'1/**/', u'URI'),
-                 u'url(/**/1/**/)': (u'url(/**/1/**/)', u'/**/1/**/', u'URI'),
-                 u'url(some.gif)': (u'url(some.gif)', u'some.gif', u'URI'),
-                 u'  url(some.gif)  ': (u'url(some.gif)', u'some.gif', u'URI'),
-                 u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', u'URI'),
-                 }
+            u'url()': (u'url()', u'', u'URI'),
+            # comments are part of the url!
+            u'url(/**/)': (u'url(/**/)', u'/**/', u'URI'),
+            u'url(/**/1)': (u'url(/**/1)', u'/**/1', u'URI'),
+            u'url(1/**/)': (u'url(1/**/)', u'1/**/', u'URI'),
+            u'url(/**/1/**/)': (u'url(/**/1/**/)', u'/**/1/**/', u'URI'),
+            u'url(some.gif)': (u'url(some.gif)', u'some.gif', u'URI'),
+            u'  url(some.gif)  ': (u'url(some.gif)', u'some.gif', u'URI'),
+            u'url(   some.gif  )': (u'url(some.gif)', u'some.gif', u'URI'),
+        }
         for (p, (r, n, t)) in tests.items():
             v = cssutils.css.URIValue(p)
             self.assertEqual(r, v.cssText)
@@ -582,14 +582,15 @@ class URIValueTestCase(basetest.BaseTestCase):
             self.assertEqual(n, v.uri)
 
         tests = {
-             u'a()': xml.dom.SyntaxErr,
-             u'1': xml.dom.SyntaxErr,
-             u'url(': xml.dom.SyntaxErr,
-             u'url("': xml.dom.SyntaxErr,
-             u'url(\'': xml.dom.SyntaxErr,
-             }
+            u'a()': xml.dom.SyntaxErr,
+            u'1': xml.dom.SyntaxErr,
+            u'url(': xml.dom.SyntaxErr,
+            u'url("': xml.dom.SyntaxErr,
+            u'url(\'': xml.dom.SyntaxErr,
+        }
         self.r = cssutils.css.URIValue()
         self.do_raise_r(tests)
+
 
 class DimensionValueTestCase(basetest.BaseTestCase):
 
@@ -598,54 +599,54 @@ class DimensionValueTestCase(basetest.BaseTestCase):
         v = cssutils.css.DimensionValue()
         self.assertTrue(u'' == v.cssText)
         self.assertTrue(u'' == v.value)
-        self.assertTrue(None is  v.type)
-        self.assertTrue(None is  v.dimension)
+        self.assertTrue(None is v.type)
+        self.assertTrue(None is v.dimension)
 
     def test_cssText(self):
         "DimensionValue.cssText"
         # NUMBER DIMENSION PERCENTAGE
         tests = {
 
-                 u'0': (u'0', 0, None, u'NUMBER'),
-                 u'00': (u'0', 0, None, u'NUMBER'),
-                 u'.0': (u'0', 0, None, u'NUMBER'),
-                 u'0.0': (u'0', 0, None, u'NUMBER'),
-                 u'+0': (u'0', 0, None, u'NUMBER'),
-                 u'+00': (u'0', 0, None, u'NUMBER'),
-                 u'+.0': (u'0', 0, None, u'NUMBER'),
-                 u'+0.0': (u'0', 0, None, u'NUMBER'),
-                 u'-0': (u'0', 0, None, u'NUMBER'),
-                 u'-00': (u'0', 0, None, u'NUMBER'),
-                 u'-.0': (u'0', 0, None, u'NUMBER'),
-                 u'-0.0': (u'0', 0, None, u'NUMBER'),
+            u'0': (u'0', 0, None, u'NUMBER'),
+            u'00': (u'0', 0, None, u'NUMBER'),
+            u'.0': (u'0', 0, None, u'NUMBER'),
+            u'0.0': (u'0', 0, None, u'NUMBER'),
+            u'+0': (u'0', 0, None, u'NUMBER'),
+            u'+00': (u'0', 0, None, u'NUMBER'),
+            u'+.0': (u'0', 0, None, u'NUMBER'),
+            u'+0.0': (u'0', 0, None, u'NUMBER'),
+            u'-0': (u'0', 0, None, u'NUMBER'),
+            u'-00': (u'0', 0, None, u'NUMBER'),
+            u'-.0': (u'0', 0, None, u'NUMBER'),
+            u'-0.0': (u'0', 0, None, u'NUMBER'),
 
-                 u'1': (u'1', 1, None, u'NUMBER'),
-                 u'1.0': (u'1', 1.0, None, u'NUMBER'),
-                 u'1.1': (u'1.1', 1.1, None, u'NUMBER'),
-                 u'+1': (u'+1', 1, None, u'NUMBER'),
-                 u'+1.0': (u'+1', 1.0, None, u'NUMBER'),
-                 u'+1.1': (u'+1.1', 1.1, None, u'NUMBER'),
-                 u'-1': (u'-1', -1, None, u'NUMBER'),
-                 u'-1.0': (u'-1', -1, None, u'NUMBER'),
-                 u'-1.1': (u'-1.1', -1.1, None, u'NUMBER'),
+            u'1': (u'1', 1, None, u'NUMBER'),
+            u'1.0': (u'1', 1.0, None, u'NUMBER'),
+            u'1.1': (u'1.1', 1.1, None, u'NUMBER'),
+            u'+1': (u'+1', 1, None, u'NUMBER'),
+            u'+1.0': (u'+1', 1.0, None, u'NUMBER'),
+            u'+1.1': (u'+1.1', 1.1, None, u'NUMBER'),
+            u'-1': (u'-1', -1, None, u'NUMBER'),
+            u'-1.0': (u'-1', -1, None, u'NUMBER'),
+            u'-1.1': (u'-1.1', -1.1, None, u'NUMBER'),
 
-                 u'0px': (u'0', 0, u'px', u'DIMENSION'),
-                 u'1px': (u'1px', 1, u'px', u'DIMENSION'),
-                 u'1.0px': (u'1px', 1.0, u'px', u'DIMENSION'),
-                 u'1.1px': (u'1.1px', 1.1, u'px', u'DIMENSION'),
-                 u'-1px': (u'-1px', -1, u'px', u'DIMENSION'),
-                 u'-1.1px': (u'-1.1px', -1.1, u'px', u'DIMENSION'),
-                 u'+1px': (u'+1px', 1, u'px', u'DIMENSION'),
+            u'0px': (u'0', 0, u'px', u'DIMENSION'),
+            u'1px': (u'1px', 1, u'px', u'DIMENSION'),
+            u'1.0px': (u'1px', 1.0, u'px', u'DIMENSION'),
+            u'1.1px': (u'1.1px', 1.1, u'px', u'DIMENSION'),
+            u'-1px': (u'-1px', -1, u'px', u'DIMENSION'),
+            u'-1.1px': (u'-1.1px', -1.1, u'px', u'DIMENSION'),
+            u'+1px': (u'+1px', 1, u'px', u'DIMENSION'),
 
-                 u'1px1': (u'1px1', 1, u'px1', u'DIMENSION'),
+            u'1px1': (u'1px1', 1, u'px1', u'DIMENSION'),
 
-                 u'0%': (u'0%', 0, u'%', u'PERCENTAGE'),
-                 u'1%': (u'1%', 1, u'%', u'PERCENTAGE'),
-                 u'1.1%': (u'1.1%', 1.1, u'%', u'PERCENTAGE'),
-                 u'-1%': (u'-1%', -1, u'%', u'PERCENTAGE'),
-                 u'-1.1%': (u'-1.1%', -1.1, u'%', u'PERCENTAGE'),
-                 u'+1%': (u'+1%', 1, u'%', u'PERCENTAGE'),
-                 }
+            u'0%': (u'0%', 0, u'%', u'PERCENTAGE'),
+            u'1%': (u'1%', 1, u'%', u'PERCENTAGE'),
+            u'1.1%': (u'1.1%', 1.1, u'%', u'PERCENTAGE'),
+            u'-1%': (u'-1%', -1, u'%', u'PERCENTAGE'),
+            u'-1.1%': (u'-1.1%', -1.1, u'%', u'PERCENTAGE'),
+            u'+1%': (u'+1%', 1, u'%', u'PERCENTAGE'),
+        }
         for (p, (r, n, d, t)) in tests.items():
             v = cssutils.css.DimensionValue(p)
             self.assertEqual(r, v.cssText)
@@ -666,15 +667,15 @@ class CSSFunctionTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "CSSFunction.cssText"
         tests = {
-                 u'x(x)': (u'x(x)', None),
-                 u'X(  X  )': (u'x(X)', None),
-                 u'x(1,2)': (u'x(1, 2)', None),
-                 u'x(1/**/)': (u'x(1 /**/)', u'x(1)'),
-                 u'x(/**/1)': (u'x(/**/ 1)', u'x(1)'),
-                 u'x(/**/1/**/)': (u'x(/**/ 1 /**/)', u'x(1)'),
-                 u'x(/**/1,x/**/)': (u'x(/**/ 1, x /**/)', u'x(1, x)'),
-                 u'x(1,2)': (u'x(1, 2)', None),
-                 }
+            u'x(x)': (u'x(x)', None),
+            u'X(  X  )': (u'x(X)', None),
+            u'x(1,2)': (u'x(1, 2)', None),
+            u'x(1/**/)': (u'x(1 /**/)', u'x(1)'),
+            u'x(/**/1)': (u'x(/**/ 1)', u'x(1)'),
+            u'x(/**/1/**/)': (u'x(/**/ 1 /**/)', u'x(1)'),
+            u'x(/**/1,x/**/)': (u'x(/**/ 1, x /**/)', u'x(1, x)'),
+            u'x(1,2)': (u'x(1, 2)', None),
+        }
         for (f, (cssText, value)) in tests.items():
             if value is None:
                 value = cssText
@@ -697,15 +698,15 @@ class CSSVariableTestCase(basetest.BaseTestCase):
     def test_cssText(self):
         "CSSVariable.cssText"
         tests = {
-                 u'var(x)': (u'var(x)', u'x', None),
-                 u'VAR(  X  )': (u'var(X)', u'X', None),
-                 u'var(c1,rgb(14,14,14))': (u'var(c1, rgb(14, 14, 14))', u'c1', u'rgb(14, 14, 14)'),
-                 u'var( L, 1px )': (u'var(L, 1px)', u'L', u'1px'),
-                 u'var(L,1)': (u'var(L, 1)', u'L', u'1'),
-                 u'var(T, calc( 2 * 1px ))': (u'var(T, calc(2 * 1px))', u'T', 'calc(2 * 1px)'),
-                 u'var(U, url( example.png ) )': (u'var(U, url(example.png))', u'U', u'url(example.png)'),
-                 u'var(C, #f00 )': (u'var(C, #f00)', u'C', '#fff')
-                 }
+            u'var(x)': (u'var(x)', u'x', None),
+            u'VAR(  X  )': (u'var(X)', u'X', None),
+            u'var(c1,rgb(14,14,14))': (u'var(c1, rgb(14, 14, 14))', u'c1', u'rgb(14, 14, 14)'),
+            u'var( L, 1px )': (u'var(L, 1px)', u'L', u'1px'),
+            u'var(L,1)': (u'var(L, 1)', u'L', u'1'),
+            u'var(T, calc( 2 * 1px ))': (u'var(T, calc(2 * 1px))', u'T', 'calc(2 * 1px)'),
+            u'var(U, url( example.png ) )': (u'var(U, url(example.png))', u'U', u'url(example.png)'),
+            u'var(C, #f00 )': (u'var(C, #f00)', u'C', '#fff')
+        }
         for (var, (cssText, name, fallback)) in tests.items():
             v = cssutils.css.CSSVariable(var)
             self.assertEqual(cssText, v.cssText)
@@ -713,7 +714,6 @@ class CSSVariableTestCase(basetest.BaseTestCase):
             self.assertEqual(name, v.name)
             # not resolved so it is None
             self.assertEqual(None, v.value)
-
 
 
 #    def test_cssValueType(self):
@@ -744,7 +744,7 @@ class CSSVariableTestCase(basetest.BaseTestCase):
 #                self.assertEqual(cls, type(v))
 
 
-#class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
+# class CSSPrimitiveValueTestCase(basetest.BaseTestCase):
 #
 #    def test_init(self):
 #        "CSSPrimitiveValue.__init__()"
@@ -1141,7 +1141,6 @@ class CSSVariableTestCase(basetest.BaseTestCase):
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
 #        v = cssutils.css.CSSPrimitiveValue('rgb(1%, .5%, 10.1%)')
 #        self.assertEqual(v.CSS_RGBCOLOR, v.primitiveType)
-
 
 if __name__ == '__main__':
     import unittest

@@ -48,14 +48,14 @@ __all__ = [
     'CSSStyleDeclaration', 'Property',
     #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     'PropertyValue',
-           'Value',
-           'ColorValue',
-           'DimensionValue',
-           'URIValue',
-           'CSSFunction', 
-           'CSSVariable',
-           'MSValue'
-    ]
+    'Value',
+    'ColorValue',
+    'DimensionValue',
+    'URIValue',
+    'CSSFunction',
+    'CSSVariable',
+    'MSValue'
+]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 

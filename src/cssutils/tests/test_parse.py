@@ -2,12 +2,13 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
 
-
 import sys
 import xml.dom
 from . import basetest
 import cssutils
-import urllib.request, urllib.error, urllib.parse
+import urllib.request
+import urllib.error
+import urllib.parse
 
 try:
     import mock
@@ -24,7 +25,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
     def _make_fetcher(self, encoding, content):
         "make an URL fetcher with specified data"
         def fetcher(url):
-            return encoding, content            
+            return encoding, content
         return fetcher
 
     def setUp(self):
@@ -92,11 +93,11 @@ class CSSParserTestCase(basetest.BaseTestCase):
             parser = cssutils.CSSParser()
             m = mock.Mock()
             with mock.patch('cssutils.util._defaultFetcher', m):
-                m.return_value = (None, '')                 
+                m.return_value = (None, '')
                 sheet = parser.parseUrl('http://example.com',
                                         media='tv,print',
                                         title='test')
-                
+
             self.assertEqual(sheet.href, 'http://example.com')
             self.assertEqual(sheet.encoding, 'utf-8')
             self.assertEqual(sheet.media.mediaText, 'tv, print')
@@ -112,11 +113,11 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ('http://cthedot.de/test.css', ''): (True, 'utf-8', ''),
                 ('http://cthedot.de/test.css', 'a'): (True, 'utf-8', ''),
                 ('http://cthedot.de/test.css', 'a {color: red}'): (True, 'utf-8',
-                                                                 'a {\n    color: red\n    }'),
+                                                                   'a {\n    color: red\n    }'),
                 ('http://cthedot.de/test.css', 'a {color: red}'): (True, 'utf-8',
-                                                                 'a {\n    color: red\n    }'),
+                                                                   'a {\n    color: red\n    }'),
                 ('http://cthedot.de/test.css', '@charset "ascii";a {color: red}'): (True, 'ascii',
-                                                                 '@charset "ascii";\na {\n    color: red\n    }'),
+                                                                                    '@charset "ascii";\na {\n    color: red\n    }'),
             }
             override = 'iso-8859-1'
             overrideprefix = '@charset "iso-8859-1";'
@@ -156,8 +157,8 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('/*a*/', 'ascii'): ('ascii', '@charset "ascii";\n/*a*/'.encode('ascii')),
 
             # org
-            #('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),
-            #('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
+            # ('/*\xc3\xa4*/', None): (u'utf-8', u'/*\xc3\xa4*/'.encode('utf-8')),
+            # ('/*\xc3\xa4*/', 'utf-8'): (u'utf-8', u'@charset "utf-8";\n/*\xc3\xa4*/'.encode('utf-8')),
             # new for 2.x and 3.x
             ('/*\xe4*/'.encode('utf-8'), None): ('utf-8', '/*\xe4*/'.encode('utf-8')),
             ('/*\xe4*/'.encode('utf-8'), 'utf-8'): ('utf-8', '@charset "utf-8";\n/*\xe4*/'.encode('utf-8')),
@@ -168,27 +169,27 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
             # unicode string, no encoding: encoding, cssText
             ('/*€*/', None): (
-               'utf-8', '/*€*/'.encode('utf-8')),
+                'utf-8', '/*€*/'.encode('utf-8')),
             ('@charset "iso-8859-1";/*ä*/', None): (
-               'iso-8859-1', '@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),
+                'iso-8859-1', '@charset "iso-8859-1";\n/*ä*/'.encode('iso-8859-1')),
             ('@charset "utf-8";/*€*/', None): (
-               'utf-8', '@charset "utf-8";\n/*€*/'.encode('utf-8')),
+                'utf-8', '@charset "utf-8";\n/*€*/'.encode('utf-8')),
             ('@charset "utf-16";/**/', None): (
-               'utf-16', '@charset "utf-16";\n/**/'.encode('utf-16')),
+                'utf-16', '@charset "utf-16";\n/**/'.encode('utf-16')),
             # unicode string, encoding utf-8: encoding, cssText
             ('/*€*/', 'utf-8'): ('utf-8',
-               '@charset "utf-8";\n/*€*/'.encode('utf-8')),
+                                 '@charset "utf-8";\n/*€*/'.encode('utf-8')),
             ('@charset "iso-8859-1";/*ä*/', 'utf-8'): (
-               'utf-8', '@charset "utf-8";\n/*ä*/'.encode('utf-8')),
+                'utf-8', '@charset "utf-8";\n/*ä*/'.encode('utf-8')),
             ('@charset "utf-8";/*€*/', 'utf-8'): (
-               'utf-8', '@charset "utf-8";\n/*€*/'.encode('utf-8')),
+                'utf-8', '@charset "utf-8";\n/*€*/'.encode('utf-8')),
             ('@charset "utf-16";/**/', 'utf-8'): (
-               'utf-8', '@charset "utf-8";\n/**/'.encode('utf-8')),
+                'utf-8', '@charset "utf-8";\n/**/'.encode('utf-8')),
             # probably not what is wanted but does not raise:
             ('/*€*/', 'ascii'): (
-               'ascii', '@charset "ascii";\n/*\\20AC */'.encode('utf-8')),
+                'ascii', '@charset "ascii";\n/*\\20AC */'.encode('utf-8')),
             ('/*€*/', 'iso-8859-1'): (
-               'iso-8859-1', '@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),
+                'iso-8859-1', '@charset "iso-8859-1";\n/*\\20AC */'.encode('utf-8')),
         }
         for test in tests:
             css, encoding = test
@@ -259,7 +260,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
         d = p.parseStyle(style)
         self.assertEqual(d.validating, False)
 
-        # url        
+        # url
         p = cssutils.CSSParser(validate=False)
         p.setFetcher(self._make_fetcher('utf-8', t))
         u = 'url'
@@ -271,7 +272,6 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertEqual(s.validating, True)
 
         # check if it raises see log test
-
 
     def test_fetcher(self):
         """CSSParser.fetcher
@@ -292,38 +292,38 @@ class CSSParserTestCase(basetest.BaseTestCase):
             # 0/0 override/override => ASCII/ASCII
             ('@charset "utf-16"; @import "x";', 'ASCII', ('iso-8859-1',
                                                           '@charset "latin1";/*t*/')): (
-                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'.encode()),
+                'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'.encode()),
             # 1/1 not tested her but same as next
             # 2/1 @charset/HTTP => UTF-16/ISO-8859-1
             ('@charset "UTF-16"; @import "x";', None, ('ISO-8859-1',
                                                        '@charset "latin1";/*t*/')): (
-                 'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'.encode('iso-8859-1')),
+                'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'.encode('iso-8859-1')),
             # 2/2 @charset/@charset => UTF-16/ISO-8859-1
-            ('@charset "UTF-16"; @import "x";', None, 
+            ('@charset "UTF-16"; @import "x";', None,
                 (None, '@charset "ISO-8859-1";/*t*/')): (
-                 'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'.encode('iso-8859-1')),
+                'utf-16', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*t*/'.encode('iso-8859-1')),
             # 2/4 @charset/referrer => ASCII/ASCII
             ('@charset "ASCII"; @import "x";', None, (None, '/*t*/')): (
-                 'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'.encode()),
+                'ascii', 1, 'ascii', '@charset "ascii";\n/*t*/'.encode()),
             # 5/5 default/default or referrer
             ('@import "x";', None, (None, '/*t*/')): (
-                 'utf-8', 0, 'utf-8', '/*t*/'.encode()),
+                'utf-8', 0, 'utf-8', '/*t*/'.encode()),
             # 0/0 override/override+unicode
             ('@charset "utf-16"; @import "x";', 'ASCII', (
-                     None, '@charset "latin1";/*\u0287*/')): (
-                 'ascii', 1, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
+                None, '@charset "latin1";/*\u0287*/')): (
+                'ascii', 1, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
             # 2/1 @charset/HTTP+unicode
             ('@charset "ascii"; @import "x";', None, ('iso-8859-1', '/*\u0287*/')): (
-                 'ascii', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*\\287 */'.encode()),
+                'ascii', 1, 'iso-8859-1', '@charset "iso-8859-1";\n/*\\287 */'.encode()),
             # 2/4 @charset/referrer+unicode
             ('@charset "ascii"; @import "x";', None, (None, '/*\u0287*/')): (
-                 'ascii', 1, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
+                'ascii', 1, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
             # 5/1 default/HTTP+unicode
             ('@import "x";', None, ('ascii', '/*\u0287*/')): (
-                 'utf-8', 0, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
+                'utf-8', 0, 'ascii', '@charset "ascii";\n/*\\287 */'.encode()),
             # 5/5 default+unicode/default+unicode
             ('@import "x";', None, (None, '/*\u0287*/')): (
-                 'utf-8', 0, 'utf-8', '/*\u0287*/'.encode('utf-8'))
+                'utf-8', 0, 'utf-8', '/*\u0287*/'.encode('utf-8'))
         }
         parser = cssutils.CSSParser()
         for test in tests:
@@ -360,7 +360,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertEqual(css1, css2)
 
         s = cssutils.parseString(css2)
-        s.cssRules[0].encoding='ascii'
+        s.cssRules[0].encoding = 'ascii'
         css3 = r'''@charset "ascii";
 /* \E4  */'''
         self.assertEqual(css3, str(s.cssText, 'utf-8'))
@@ -406,7 +406,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
                 ''',
                 r'''a { content: "\\\"; }
                 '''
-        )
+                )
         for css in csss:
             self.assertEqual(''.encode(), cssutils.parseString(css).cssText)
 
@@ -421,7 +421,7 @@ a {
     color: green
     }''',
             'p @here {color: red} p {color: green}': 'p {\n    color: green\n    }'
-            }
+        }
 
         for css in tests:
             exp = tests[css]
@@ -443,7 +443,7 @@ a {
             '@1 { [ } div{color:green}': '',
             # red was eaten:
             '@1 { [ } ] div{color:red}div{color:green}': 'div {\n    color: green\n    }',
-             }
+        }
         for css, exp in list(tests.items()):
             self.assertEqual(exp.encode(), cssutils.parseString(css).cssText)
 

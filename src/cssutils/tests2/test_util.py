@@ -21,6 +21,7 @@ import encutils
 
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 
+
 class ListSeqTestCase(basetest.BaseTestCase):
 
     def test_all(self):
@@ -95,7 +96,7 @@ class BaseTestCase(basetest.BaseTestCase):
                 u'[a[func()]{func()}func([func()]{func()}func())]', True),
             # issue 50
             ('withstarttoken [', u'a];x', u'[a];', False)
-            ]
+        ]
 
         for typ, values, exp, paransasfunc in tests:
 
@@ -171,14 +172,14 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', 'ascii', ('utf-16', u'ä'.encode('iso-8859-1'))):
                 ('latin1', 0, u'ä'),
             ('latin1', 'ascii', ('utf-16', u'a'.encode('ascii'))):
-                ('latin1',0,  u'a'),
+                ('latin1', 0,  u'a'),
             # + @charset
             ('latin1', 'ascii', ('utf-16', u'@charset "ascii";'.encode())):
                 ('latin1', 0, u'@charset "latin1";'),
             ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
             ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override only
             ('latin1', None, None): (None, None, None),
@@ -194,7 +195,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
             ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override + parent
             ('latin1', 'ascii', None): (None, None, None),
@@ -210,7 +211,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
             ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override + http
             ('latin1', None, ('utf-16', u''.encode())): ('latin1', 0, u''),
@@ -225,7 +226,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
             ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override ü @charset
             ('latin1', None, (None, u'@charset "ascii";'.encode())):
@@ -233,7 +234,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 0, u'@charset "latin1";ä'),
             ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
 
             # ===== 1. HTTP WINS =====
@@ -249,7 +250,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('latin1'))):
                 ('latin1', 1, u'@charset "latin1";ä'),
             (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 1, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 1, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
 
             # ===== 2. @charset WINS =====
@@ -258,15 +259,15 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, 'ascii', (None, u'@charset "latin1";ä'.encode('latin1'))):
                 ('latin1', 2, u'@charset "latin1";ä'),
             (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8'))):
-                ('latin1', 2, u'@charset "latin1";\xc3\xa4'), # read as latin1!
+                ('latin1', 2, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # ===== 2. BOM WINS =====
             (None, 'ascii', (None, u'ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'\xe4'), # read as latin1!
+                ('utf-8-sig', 2, u'\xe4'),  # read as latin1!
             (None, 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'), # read as latin1!
+                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'),  # read as latin1!
             (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'), # read as latin1!
+                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'),  # read as latin1!
 
 
             # ===== 4. parentEncoding WINS =====
@@ -277,7 +278,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, 'latin1', (None, u'a'.encode('ascii'))):
                 ('latin1', 4, u'a'),
             (None, 'latin1', (None, u'ä'.encode('utf-8'))):
-                ('latin1', 4, u'\xc3\xa4'), # read as latin1!
+                ('latin1', 4, u'\xc3\xa4'),  # read as latin1!
 
             # ===== 5. default WINS which in this case is None! =====
             (None, None, (None, u''.encode())): ('utf-8', 5, u''),
@@ -285,18 +286,18 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             (None, None, (None, u'a'.encode('ascii'))):
                 ('utf-8', 5, u'a'),
             (None, None, (None, u'ä'.encode('utf-8'))):
-                ('utf-8', 5, u'ä'), # read as utf-8
-            (None, None, (None, u'ä'.encode('iso-8859-1'))): # trigger UnicodeDecodeError!
+                ('utf-8', 5, u'ä'),  # read as utf-8
+            (None, None, (None, u'ä'.encode('iso-8859-1'))):  # trigger UnicodeDecodeError!
                 ('utf-8', 5, None),
 
 
         }
         for (override, parent, r), exp in tests.items():
             self.assertEqual(_readUrl(url,
-                                       overrideEncoding=override,
-                                       parentEncoding=parent,
-                                       fetcher=make_fetcher(r)),
-                              exp)
+                                      overrideEncoding=override,
+                                      parentEncoding=parent,
+                                      fetcher=make_fetcher(r)),
+                             exp)
 
     def test_defaultFetcher(self):
         """util._defaultFetcher"""
@@ -304,6 +305,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
             class Response(object):
                 """urllib2.Reponse mock"""
+
                 def __init__(self, url,
                              contenttype, content,
                              exception=None, args=None):
@@ -323,18 +325,20 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
                 def info(self):
                     mimetype, charset = self.mimetype, self.charset
+
                     class Info(object):
-                        
+
                         # py2x
                         def gettype(self):
                             return mimetype
+
                         def getparam(self, name=None):
                             return charset
-                        
+
                         # py 3x
                         get_content_type = gettype
-                        get_content_charset = getparam # here always charset!  
-                        
+                        get_content_charset = getparam  # here always charset!
+
                     return Info()
 
                 def read(self):
@@ -357,39 +361,39 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                                         exception=exception, args=args)
                 return x
 
-            urlopenpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen' 
+            urlopenpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen'
 
             # positive tests
             tests = {
                 # content-type, contentstr: encoding, contentstr
                 ('text/css', u'€'.encode('utf-8')):
-                        (None, u'€'.encode('utf-8')),
+                (None, u'€'.encode('utf-8')),
                 ('text/css;charset=utf-8', u'€'.encode('utf-8')):
-                        ('utf-8', u'€'.encode('utf-8')),
+                ('utf-8', u'€'.encode('utf-8')),
                 ('text/css;charset=ascii', 'a'):
-                        ('ascii', 'a')
+                ('ascii', 'a')
             }
             url = 'http://example.com/test.css'
             for (contenttype, content), exp in tests.items():
                 @mock.patch(urlopenpatch, new=urlopen(url, contenttype, content))
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertEqual(exp, do(url))
 
             # wrong mimetype
             @mock.patch(urlopenpatch, new=urlopen(url, 'text/html', 'a'))
             def do(url):
                 return _defaultFetcher(url)
-            
+
             self.assertRaises(ValueError, do, url)
-            
+
             # calling url results in fake exception
-                            
+
             # py2 ~= py3 raises error earlier than urlopen!
             tests = {
                 '1': (ValueError, ['invalid value for url']),
-                #_readUrl('mailto:a.css')
+                # _readUrl('mailto:a.css')
                 'mailto:e4': (urllib2.URLError, ['urlerror']),
                 # cannot resolve x, IOError
                 'http://x': (urllib2.URLError, ['ioerror']),
@@ -398,13 +402,13 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 @mock.patch(urlopenpatch, new=urlopen(url, exception=exception, args=args))
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertRaises(exception, do, url)
 
             # py2 != py3 raises error earlier than urlopen!
-            urlrequestpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request' 
+            urlrequestpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request'
             tests = {
-                #_readUrl('http://cthedot.de/__UNKNOWN__.css')
+                # _readUrl('http://cthedot.de/__UNKNOWN__.css')
                 'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
                 'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
             }
@@ -412,7 +416,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
                 @mock.patch(urlrequestpatch, new=urlopen(url, exception=exception, args=args))
                 def do(url):
                     return _defaultFetcher(url)
-                
+
                 self.assertRaises(exception, do, url)
 
         else:
@@ -427,7 +431,7 @@ class TestLazyRegex(basetest.BaseTestCase):
 
     def test_public_interface(self):
         methods = ['search', 'match', 'split', 'sub', 'subn', 'findall',
-                   'finditer', 'pattern', 'flags', 'groups', 'groupindex',]
+                   'finditer', 'pattern', 'flags', 'groups', 'groupindex', ]
         for method in methods:
             self.assertTrue(hasattr(self.lazyre, method),
                             'expected %r public attribute' % method)

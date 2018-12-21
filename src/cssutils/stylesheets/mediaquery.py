@@ -1,9 +1,13 @@
-"""Implements a DOM for MediaQuery, see 
+from __future__ import unicode_literals, division, absolute_import, print_function
+import xml.dom
+import cssutils
+from cssutils.helper import normalize
+from cssutils.prodparser import Sequence, PreDef, Prod, Choice, ProdParser
+"""Implements a DOM for MediaQuery, see
 http://www.w3.org/TR/css3-mediaqueries/.
 
 A cssutils implementation, not defined in official DOM.
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['MediaQuery']
 __docformat__ = 'restructuredtext'
@@ -14,20 +18,15 @@ if sys.version_info[0] == 3:
     string_type = str
 else:
     string_type = basestring
- 
-from cssutils.prodparser import *
-from cssutils.helper import normalize, pushtoken
-import cssutils
-import re
-import xml.dom
 
-class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
+
+class MediaQuery(cssutils.util._NewBase):  # cssutils.util.Base):
     """
     A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
     and one or more expressions involving media features.
 
     Format::
-  
+
         media_query
          : [ONLY | NOT]? S* media_type S* [ AND S* expression ]*
          | expression [ AND S* expression ]*
@@ -41,11 +40,10 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         media_feature
          : IDENT
          ;
-          
-    """
-    MEDIA_TYPES = ['all', 'braille', 'handheld', 'print', 'projection', 
-                'speech', 'screen', 'tty', 'tv', 'embossed']
 
+    """
+    MEDIA_TYPES = ['all', 'braille', 'handheld', 'print', 'projection',
+                   'speech', 'screen', 'tty', 'tv', 'embossed']
 
     def __init__(self, mediaText=None, readonly=False, _partof=False):
         """
@@ -60,18 +58,18 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         self._mediaType = ''
         self._partof = _partof
         if mediaText:
-            self.mediaText = mediaText # sets self._mediaType too
+            self.mediaText = mediaText  # sets self._mediaType too
             self._partof = False
 
         self._readonly = readonly
 
     def __repr__(self):
         return "cssutils.stylesheets.%s(mediaText=%r)" % (
-                self.__class__.__name__, self.mediaText)
+            self.__class__.__name__, self.mediaText)
 
     def __str__(self):
         return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.mediaText, id(self))
+            self.__class__.__name__, self.mediaText, id(self))
 
     def _getMediaText(self):
         return cssutils.ser.do_stylesheets_mediaquery(self)
@@ -81,7 +79,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         :param mediaText:
             a single media query string, e.g. ``print and (min-width: 25cm)``
 
-        :exceptions:    
+        :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified string value has a syntax error and is
               unparsable.
@@ -89,7 +87,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
               Raised if the given mediaType is unknown.
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if this media query is readonly.
-        
+
         media_query
          : [ONLY | NOT]? S* media_type S* [ AND S* expression ]*
          | expression [ AND S* expression ]*
@@ -107,60 +105,60 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
         """
         self._checkReadonly()
 
-        expression = lambda: Sequence(PreDef.char(name='expression', char='('),
-                                      Prod(name='media_feature',
-                                           match=lambda t, v: t == PreDef.types.IDENT
-                                      ),
-                                      Sequence(PreDef.char(name='colon', char=':'),
-                                               cssutils.css.value.MediaQueryValueProd(self),
-                                               minmax=lambda: (0, 1) # optional
+        def expression(): return Sequence(PreDef.char(name='expression', char='('),
+                                          Prod(name='media_feature',
+                                               match=lambda t, v: t == PreDef.types.IDENT
                                                ),
-                                      PreDef.char(name='expression END', char=')',
-                                                  stopIfNoMoreMatch=self._partof
-                                                  )
-                                      )
+                                          Sequence(PreDef.char(name='colon', char=':'),
+                                                   cssutils.css.value.MediaQueryValueProd(self),
+                                                   minmax=lambda: (0, 1)  # optional
+                                                   ),
+                                          PreDef.char(name='expression END', char=')',
+                                                      stopIfNoMoreMatch=self._partof
+                                                      )
+                                          )
 
-        prods = Choice(Sequence(Prod(name='ONLY|NOT', # media_query
-                                     match=lambda t, v: t == PreDef.types.IDENT and 
-                                                        normalize(v) in ('only', 'not'),
+        prods = Choice(Sequence(Prod(name='ONLY|NOT',  # media_query
+                                     match=lambda t, v: t == PreDef.types.IDENT and
+                                     normalize(v) in ('only', 'not'),
                                      optional=True,
                                      toStore='not simple'
-                                     ), 
+                                     ),
                                 Prod(name='media_type',
-                                     match=lambda t, v: t == PreDef.types.IDENT and 
-                                                        normalize(v) in self.MEDIA_TYPES,
+                                     match=lambda t, v: t == PreDef.types.IDENT and
+                                     normalize(v) in self.MEDIA_TYPES,
                                      stopIfNoMoreMatch=True,
                                      toStore='media_type'
-                                     ),                   
+                                     ),
                                 Sequence(Prod(name='AND',
-                                              match=lambda t, v: t == PreDef.types.IDENT and 
-                                                                 normalize(v) == 'and',
+                                              match=lambda t, v: t == PreDef.types.IDENT and
+                                              normalize(v) == 'and',
                                               toStore='not simple'
-                                         ),                   
+                                              ),
                                          expression(),
                                          minmax=lambda: (0, None)
                                          )
                                 ),
-                       Sequence(expression(),                   
+                       Sequence(expression(),
                                 Sequence(Prod(name='AND',
-                                              match=lambda t, v: t == PreDef.types.IDENT and 
-                                                                 normalize(v) == 'and'
-                                         ),                   
+                                              match=lambda t, v: t == PreDef.types.IDENT and
+                                              normalize(v) == 'and'
+                                              ),
                                          expression(),
                                          minmax=lambda: (0, None)
                                          )
-                                )                        
+                                )
                        )
-        
+
         # parse
-        ok, seq, store, unused = ProdParser().parse(mediaText, 
+        ok, seq, store, unused = ProdParser().parse(mediaText,
                                                     'MediaQuery',
                                                     prods)
         self._wellformed = ok
         if ok:
             try:
                 media_type = store['media_type']
-            except KeyError as e:
+            except KeyError:
                 pass
             else:
                 if 'not simple' not in store:
@@ -170,7 +168,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
             self._setSeq(seq)
 
     mediaText = property(_getMediaText, _setMediaText,
-        doc="The parsable textual representation of the media list.")
+                         doc="The parsable textual representation of the media list.")
 
     def _setMediaType(self, mediaType):
         """
@@ -210,7 +208,7 @@ class MediaQuery(cssutils.util._NewBase):#cssutils.util.Base):
                 self._seq.insert(0, mediaType, 'IDENT')
 
     mediaType = property(lambda self: self._mediaType, _setMediaType,
-        doc="The media type of this MediaQuery (one of "
-            ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!")
-    
+                         doc="The media type of this MediaQuery (one of "
+                         ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!")
+
     wellformed = property(lambda self: self._wellformed)

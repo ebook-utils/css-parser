@@ -4,6 +4,7 @@ import xml.dom
 import test_cssrule
 import cssutils
 
+
 class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
@@ -15,7 +16,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def tearDown(self):
         cssutils.ser.prefs.useDefaults()
-        
+
     def test_init(self):
         "CSSUnknownRule.type and init"
         super(CSSUnknownRuleTestCase, self).test_init()
@@ -66,16 +67,16 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
             u'@mediaAll{}': u'@mediaall {\n    }',
             u'@namespacep"x";': u'@namespacep "x";',
             u'@pageX{}': u'@pagex {\n    }',
-            u'@xbottom { content: counter(page) }': u'@xbottom {\n    content: counter(page)\n    }', 
-            u'@xbottom { content: "x" counter(page) "y"}': u'@xbottom {\n    content: "x" counter(page) "y"\n    }' 
-            }
+            u'@xbottom { content: counter(page) }': u'@xbottom {\n    content: counter(page)\n    }',
+            u'@xbottom { content: "x" counter(page) "y"}': u'@xbottom {\n    content: "x" counter(page) "y"\n    }'
+        }
         self.do_equal_p(tests)
-        
+
         # expects the same atkeyword for self.r so do a new one each test
         oldr = self.r
         for t, e in tests.items():
             self.r = cssutils.css.CSSUnknownRule()
-            self.do_equal_r({t:e})
+            self.do_equal_r({t: e})
         self.r = oldr
 
         tests = {
@@ -91,47 +92,47 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
     }''': None,
             '@x "string" url(x);': None,
-            
+
             # comments
-            '@x/*1*//*2*/"str"/*3*//*4*/url("x");': 
+            '@x/*1*//*2*/"str"/*3*//*4*/url("x");':
                 '@x /*1*/ /*2*/ "str" /*3*/ /*4*/ url(x);',
             # WS
             '@x"string"url("x");': '@x "string" url(x);',
-            '@x\n\r\t\f "string"\n\r\t\f url(\n\r\t\f "x"\n\r\t\f )\n\r\t\f ;': 
+            '@x\n\r\t\f "string"\n\r\t\f url(\n\r\t\f "x"\n\r\t\f )\n\r\t\f ;':
                 '@x "string" url(x);',
         }
         self.do_equal_p(tests)
         self.do_equal_r(tests)
 
         tests = {
-                 u'@;': xml.dom.InvalidModificationErr,
-                 u'@{}': xml.dom.InvalidModificationErr,
-                 u'@ ;': xml.dom.InvalidModificationErr,
-                 u'@ {};': xml.dom.InvalidModificationErr,
-                 
-                 u'@x ;{}': xml.dom.SyntaxErr,
-                 u'@x ;;': xml.dom.SyntaxErr,
-                 u'@x }  ': xml.dom.SyntaxErr,
-                 u'@x }  ;': xml.dom.SyntaxErr,
-                 u'@x {  ': xml.dom.SyntaxErr,
-                 u'@x {  ;': xml.dom.SyntaxErr,
-                 u'@x ': xml.dom.SyntaxErr,
-                 u'@x (;': xml.dom.SyntaxErr,
-                 u'@x );': xml.dom.SyntaxErr,
-                 u'@x [;': xml.dom.SyntaxErr,
-                 u'@x ];': xml.dom.SyntaxErr,
-                 u'@x {[(]()}': xml.dom.SyntaxErr,
-                 # trailing
-                 u'@x{}{}': xml.dom.SyntaxErr,
-                 u'@x{};': xml.dom.SyntaxErr,
-                 u'@x{}1': xml.dom.SyntaxErr,
-                 u'@x{} ': xml.dom.SyntaxErr,
-                 u'@x{}/**/': xml.dom.SyntaxErr,
-                 u'@x;1': xml.dom.SyntaxErr,
-                 u'@x; ': xml.dom.SyntaxErr,
-                 u'@x;/**/': xml.dom.SyntaxErr,
+            u'@;': xml.dom.InvalidModificationErr,
+            u'@{}': xml.dom.InvalidModificationErr,
+            u'@ ;': xml.dom.InvalidModificationErr,
+            u'@ {};': xml.dom.InvalidModificationErr,
 
-                 }
+            u'@x ;{}': xml.dom.SyntaxErr,
+            u'@x ;;': xml.dom.SyntaxErr,
+            u'@x }  ': xml.dom.SyntaxErr,
+            u'@x }  ;': xml.dom.SyntaxErr,
+            u'@x {  ': xml.dom.SyntaxErr,
+            u'@x {  ;': xml.dom.SyntaxErr,
+            u'@x ': xml.dom.SyntaxErr,
+            u'@x (;': xml.dom.SyntaxErr,
+            u'@x );': xml.dom.SyntaxErr,
+            u'@x [;': xml.dom.SyntaxErr,
+            u'@x ];': xml.dom.SyntaxErr,
+            u'@x {[(]()}': xml.dom.SyntaxErr,
+            # trailing
+            u'@x{}{}': xml.dom.SyntaxErr,
+            u'@x{};': xml.dom.SyntaxErr,
+            u'@x{}1': xml.dom.SyntaxErr,
+            u'@x{} ': xml.dom.SyntaxErr,
+            u'@x{}/**/': xml.dom.SyntaxErr,
+            u'@x;1': xml.dom.SyntaxErr,
+            u'@x; ': xml.dom.SyntaxErr,
+            u'@x;/**/': xml.dom.SyntaxErr,
+
+        }
         self.do_raise_r(tests)
 
     def test_InvalidModificationErr(self):
@@ -139,9 +140,9 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self._test_InvalidModificationErr(u'@unknown')
 
     def test_reprANDstr(self):
-        "CSSUnknownRule.__repr__(), .__str__()"        
+        "CSSUnknownRule.__repr__(), .__str__()"
         s = cssutils.css.CSSUnknownRule(cssText='@x;')
-        
+
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))
 

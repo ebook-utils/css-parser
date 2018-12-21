@@ -5,6 +5,7 @@ import xml.dom
 import basetest
 import cssutils
 
+
 class StyleSheetTestCase(basetest.BaseTestCase):
 
     def test_init(self):
@@ -19,7 +20,6 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.parentStyleSheet, None)
         self.assertEqual(s.alternate, False)
         self.assertEqual(s.disabled, False)
-
 
         s = cssutils.stylesheets.StyleSheet(type='unknown',
                                             href='test.css',
@@ -38,6 +38,7 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.parentStyleSheet, None)
         self.assertEqual(s.alternate, True)
         self.assertEqual(s.disabled, True)
+
 
 if __name__ == '__main__':
     import unittest

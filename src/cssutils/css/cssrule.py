@@ -1,5 +1,7 @@
-"""CSSRule implements DOM Level 2 CSS CSSRule."""
 from __future__ import unicode_literals, division, absolute_import, print_function
+import xml.dom
+import cssutils
+"""CSSRule implements DOM Level 2 CSS CSSRule."""
 
 __all__ = ['CSSRule']
 __docformat__ = 'restructuredtext'
@@ -11,8 +13,6 @@ if sys.version_info[0] == 3:
 else:
     string_type = basestring
 
-import cssutils
-import xml.dom
 
 class CSSRule(cssutils.util.Base2):
     """Abstract base interface for any type of CSS statement. This includes
@@ -26,7 +26,7 @@ class CSSRule(cssutils.util.Base2):
     CSSRule type constants.
     An integer indicating which type of rule this is.
     """
-    UNKNOWN_RULE = 0 
+    UNKNOWN_RULE = 0
     ":class:`cssutils.css.CSSUnknownRule` (not used in CSSOM anymore)"
     STYLE_RULE = 1
     ":class:`cssutils.css.CSSStyleRule`"
@@ -41,26 +41,26 @@ class CSSRule(cssutils.util.Base2):
     PAGE_RULE = 6
     ":class:`cssutils.css.CSSPageRule`"
     NAMESPACE_RULE = 10
-    """:class:`cssutils.css.CSSNamespaceRule`, 
+    """:class:`cssutils.css.CSSNamespaceRule`,
     Value has changed in 0.9.7a3 due to a change in the CSSOM spec."""
-    COMMENT = 1001 # was -1, cssutils only
+    COMMENT = 1001  # was -1, cssutils only
     """:class:`cssutils.css.CSSComment` - not in the offical spec,
     Value has changed in 0.9.7a3"""
-    VARIABLES_RULE = 1008 
+    VARIABLES_RULE = 1008
     """:class:`cssutils.css.CSSVariablesRule` - experimental rule
     not in the offical spec"""
 
-    MARGIN_RULE = 1006 
+    MARGIN_RULE = 1006
     """:class:`cssutils.css.MarginRule` - experimental rule
     not in the offical spec"""
 
-    _typestrings = {UNKNOWN_RULE: 'UNKNOWN_RULE', 
+    _typestrings = {UNKNOWN_RULE: 'UNKNOWN_RULE',
                     STYLE_RULE: 'STYLE_RULE',
-                    CHARSET_RULE: 'CHARSET_RULE', 
+                    CHARSET_RULE: 'CHARSET_RULE',
                     IMPORT_RULE: 'IMPORT_RULE',
-                    MEDIA_RULE: 'MEDIA_RULE', 
-                    FONT_FACE_RULE: 'FONT_FACE_RULE', 
-                    PAGE_RULE: 'PAGE_RULE',                     
+                    MEDIA_RULE: 'MEDIA_RULE',
+                    FONT_FACE_RULE: 'FONT_FACE_RULE',
+                    PAGE_RULE: 'PAGE_RULE',
                     NAMESPACE_RULE: 'NAMESPACE_RULE',
                     COMMENT: 'COMMENT',
                     VARIABLES_RULE: 'VARIABLES_RULE',
@@ -146,52 +146,51 @@ class CSSRule(cssutils.util.Base2):
                           doc="If the rule is wellformed.")
 
 
-
 class CSSRuleRules(CSSRule):
     """Abstract base interface for rules that contain other rules
     like @media or @page. Methods may be overwritten if a rule
-    has specific stuff to do like checking the order of insertion like 
+    has specific stuff to do like checking the order of insertion like
     @media does.
     """
-    
+
     def __init__(self, parentRule=None, parentStyleSheet=None):
-        
-        super(CSSRuleRules, self).__init__(parentRule=parentRule, 
+
+        super(CSSRuleRules, self).__init__(parentRule=parentRule,
                                            parentStyleSheet=parentStyleSheet)
-        
+
         self.cssRules = cssutils.css.CSSRuleList()
-        
+
     def __iter__(self):
         """Generator iterating over these rule's cssRules."""
         for rule in self._cssRules:
-            yield rule        
+            yield rule
 
     def _setCssRules(self, cssRules):
         "Set new cssRules and update contained rules refs."
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
         cssRules.__delitem__ == self.deleteRule
-        
+
         for rule in cssRules:
             rule._parentRule = self
             rule._parentStyleSheet = None
-            
+
         self._cssRules = cssRules
 
     cssRules = property(lambda self: self._cssRules, _setCssRules,
-            "All Rules in this style sheet, a "
-            ":class:`~cssutils.css.CSSRuleList`.")    
-    
+                        "All Rules in this style sheet, a "
+                        ":class:`~cssutils.css.CSSRuleList`.")
+
     def deleteRule(self, index):
         """
         Delete the rule at `index` from rules ``cssRules``.
-        
+
         :param index:
             The `index` of the rule to be removed from the rules cssRules
             list. For an `index` < 0 **no** :exc:`~xml.dom.IndexSizeErr` is
-            raised but rules for normal Python lists are used. E.g. 
+            raised but rules for normal Python lists are used. E.g.
             ``deleteRule(-1)`` removes the last rule in cssRules.
-            
+
             `index` may also be a CSSRule object which will then be removed.
 
         :Exceptions:
@@ -215,13 +214,13 @@ class CSSRuleRules(CSSRule):
 
         try:
             # detach
-            self._cssRules[index]._parentRule = None 
+            self._cssRules[index]._parentRule = None
             del self._cssRules[index]
-            
+
         except IndexError:
             raise xml.dom.IndexSizeErr('%s: %s is not a valid index '
-                                       'in the rulelist of length %i' 
-                                       % (self.__class__.__name__, 
+                                       'in the rulelist of length %i'
+                                       % (self.__class__.__name__,
                                           index, self._cssRules.length))
 
     def _prepareInsertRule(self, rule, index=None):
@@ -231,36 +230,36 @@ class CSSRuleRules(CSSRule):
         # check index
         if index is None:
             index = len(self._cssRules)
-            
+
         elif index < 0 or index > self._cssRules.length:
             raise xml.dom.IndexSizeErr('%s: Invalid index %s for '
                                        'CSSRuleList with a length of %s.'
                                        % (self.__class__.__name__,
                                           index, self._cssRules.length))
-        
+
         # check and optionally parse rule
         # Under Python 2.x this was basestring but ...
         if isinstance(rule, string_type):
             tempsheet = cssutils.css.CSSStyleSheet()
             tempsheet.cssText = rule
             if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
-             not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
+                                                not isinstance(tempsheet.cssRules[0], cssutils.css.CSSRule)):
                 self._log.error('%s: Invalid Rule: %s' % (self.__class__.__name__,
-                                                           rule))
+                                                          rule))
                 return False, False
             rule = tempsheet.cssRules[0]
-            
+
         elif isinstance(rule, cssutils.css.CSSRuleList):
             # insert all rules
             for i, r in enumerate(rule):
                 self.insertRule(r, index + i)
             return True, True
-            
+
         elif not isinstance(rule, cssutils.css.CSSRule):
-            self._log.error('%s: Not a CSSRule: %s' % (rule, 
-                                                        self.__class__.__name__))
+            self._log.error('%s: Not a CSSRule: %s' % (rule,
+                                                       self.__class__.__name__))
             return False, False
-        
+
         return rule, index
 
     def _finishInsertRule(self, rule, index):
@@ -277,19 +276,19 @@ class CSSRuleRules(CSSRule):
     def insertRule(self, rule, index=None):
         """
         Insert `rule` into the rules ``cssRules``.
-        
+
         :param rule:
             the parsable text representing the `rule` to be inserted. For rule
-            sets this contains both the selector and the style declaration. 
+            sets this contains both the selector and the style declaration.
             For at-rules, this specifies both the at-identifier and the rule
             content.
 
-            cssutils also allows rule to be a valid 
+            cssutils also allows rule to be a valid
             :class:`~cssutils.css.CSSRule` object.
 
         :param index:
-            before the `index` the specified `rule` will be inserted. 
-            If the specified `index` is equal to the length of the rules 
+            before the `index` the specified `rule` will be inserted.
+            If the specified `index` is equal to the length of the rules
             rule collection, the rule will be added to the end of the rule.
             If index is not given or None rule will be appended to rule
             list.

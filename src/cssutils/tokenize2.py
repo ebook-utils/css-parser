@@ -19,6 +19,7 @@ if sys.version_info[0] == 3:
 
 _TOKENIZER_CACHE = {}
 
+
 class Tokenizer(object):
     """
     generates a list of Token tuples:
@@ -31,7 +32,7 @@ class Tokenizer(object):
         '@namespace': CSSProductions.NAMESPACE_SYM,
         '@page': CSSProductions.PAGE_SYM,
         '@variables': CSSProductions.VARIABLES_SYM
-        }
+    }
     _linesep = '\n'
     unicodesub = re.compile(r'\\[0-9a-fA-F]{1,6}(?:\r\n|[\t\r\n\f\x20])?').sub
     cleanstring = re.compile(r'\\((\r\n)|[\n\r\f])').sub
@@ -136,7 +137,7 @@ class Tokenizer(object):
 
         # check for @charset which is valid only at start of CSS
         if has_at(text, pos, '@charset '):
-            found = '@charset ' # production has trailing S!
+            found = '@charset '  # production has trailing S!
             yield (CSSProductions.CHARSET_SYM, found, line, col)
             pos += len(found)
             col += len(found)
@@ -151,7 +152,7 @@ class Tokenizer(object):
 
             # speed test for most used CHARs, sadly . not possible :(
             c = text[pos]
-            if c in ',:;{}>[]': # + but in num!
+            if c in ',:;{}>[]':  # + but in num!
                 yield ('CHAR', c, line, col)
                 col += 1
                 pos += 1
@@ -162,18 +163,18 @@ class Tokenizer(object):
 
                     # TODO: USE bad comment?
                     if (fullsheet and name == 'CHAR' and
-                          has_at(text, pos, '/*')):
+                            has_at(text, pos, '/*')):
                         # before CHAR production test for incomplete comment
                         possiblecomment = '%s*/' % text[pos:]
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
-                            pos = _len_text # ate all remaining text
+                            pos = _len_text  # ate all remaining text
                             break
 
-                    match = matcher(text, pos) # if no match try next production
+                    match = matcher(text, pos)  # if no match try next production
                     if match:
-                        found = match.group(0) # needed later for line/col
+                        found = match.group(0)  # needed later for line/col
                         # The ident regex also matches the beginning of
                         # functions, but we can't put the function regex before
                         # the ident regex, as otherwise 'and(' is recognized as
@@ -190,7 +191,7 @@ class Tokenizer(object):
                         if fullsheet:
                             # check if found may be completed into a full token
                             if ('INVALID' == name and
-                                  suffix_eq(text, pos, found)):
+                                    suffix_eq(text, pos, found)):
                                 # complete INVALID to STRING with start char " or '
                                 name, found = 'STRING', '%s%s' % (found, found[0])
 
@@ -211,7 +212,7 @@ class Tokenizer(object):
                             # may contain unicode escape, replace with normal
                             # char but do not _normalize (?)
                             value = self.unicodesub(_repl, found)
-                            if name in ('STRING', 'INVALID'): #'URI'?
+                            if name in ('STRING', 'INVALID'):  # 'URI'?
                                 # remove \ followed by nl (so escaped) from string
                                 value = self.cleanstring('', value)
 
@@ -223,14 +224,14 @@ class Tokenizer(object):
                                 except KeyError as e:
                                     # might also be misplace @charset...
                                     if ('@charset' == found and
-                                          has_at(text, pos + len(found), ' ')):
+                                            has_at(text, pos + len(found), ' ')):
                                         # @charset needs tailing S!
                                         name = CSSProductions.CHARSET_SYM
                                         found += ' '
                                     else:
                                         name = 'ATKEYWORD'
 
-                            value = found # should not contain unicode escape (?)
+                            value = found  # should not contain unicode escape (?)
 
                         if self._doComments or (not self._doComments and
                                                 name != 'COMMENT'):

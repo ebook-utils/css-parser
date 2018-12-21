@@ -1,6 +1,9 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
+from . import errorhandler
+import cgi
+from google.appengine.api import urlfetch
 """GAE specific URL reading functions"""
 
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 import sys
 PY3 = sys.version_info[0] == 3
@@ -10,12 +13,9 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: tokenize2.py 1547 2008-12-10 20:42:26Z cthedot $'
 
 # raises ImportError of not on GAE
-from google.appengine.api import urlfetch
-import cgi
-from . import errorhandler
-from . import util
 
 log = errorhandler.ErrorHandler()
+
 
 def _defaultFetcher(url):
     """
@@ -54,7 +54,7 @@ def _defaultFetcher(url):
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
         log.warn('Error opening url=%r: %s' % (url, e),
-                          error=IOError)
+                 error=IOError)
     else:
         if r.status_code == 200:
             # find mimetype and encoding
@@ -65,10 +65,10 @@ def _defaultFetcher(url):
             except KeyError:
                 encoding = None
             if mimetype != 'text/css':
-                log.error('Expected "text/css" mime type for url %r but found: %r' % 
-                              (url, mimetype), error=ValueError)
+                log.error('Expected "text/css" mime type for url %r but found: %r' %
+                          (url, mimetype), error=ValueError)
             return encoding, r.content
         else:
             # TODO: 301 etc
-            log.warn('Error opening url=%r: HTTP status %s' % 
-                              (url, r.status_code), error=IOError)
+            log.warn('Error opening url=%r: HTTP status %s' %
+                     (url, r.status_code), error=IOError)

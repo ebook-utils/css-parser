@@ -46,50 +46,51 @@ def detectencoding_str(input, final=False):
     """
 
     # A bit for every candidate
-    CANDIDATE_UTF_8_SIG    =   1
-    CANDIDATE_UTF_16_AS_LE =   2
-    CANDIDATE_UTF_16_AS_BE =   4
-    CANDIDATE_UTF_16_LE    =   8
-    CANDIDATE_UTF_16_BE    =  16
-    CANDIDATE_UTF_32_AS_LE =  32
-    CANDIDATE_UTF_32_AS_BE =  64
-    CANDIDATE_UTF_32_LE    = 128
-    CANDIDATE_UTF_32_BE    = 256
-    CANDIDATE_CHARSET      = 512
+    CANDIDATE_UTF_8_SIG = 1
+    CANDIDATE_UTF_16_AS_LE = 2
+    CANDIDATE_UTF_16_AS_BE = 4
+    CANDIDATE_UTF_16_LE = 8
+    CANDIDATE_UTF_16_BE = 16
+    CANDIDATE_UTF_32_AS_LE = 32
+    CANDIDATE_UTF_32_AS_BE = 64
+    CANDIDATE_UTF_32_LE = 128
+    CANDIDATE_UTF_32_BE = 256
+    CANDIDATE_CHARSET = 512
 
-    candidates = 1023 # all candidates
+    candidates = 1023  # all candidates
 
     #input = chars(input)
     li = len(input)
-    if li>=1:
+    if li >= 1:
         # Check first byte
         c = input[0]
         if c != b"\xef"[0]:
             candidates &= ~CANDIDATE_UTF_8_SIG
         if c != b"\xff"[0]:
-            candidates &= ~(CANDIDATE_UTF_32_AS_LE|CANDIDATE_UTF_16_AS_LE)
+            candidates &= ~(CANDIDATE_UTF_32_AS_LE | CANDIDATE_UTF_16_AS_LE)
         if c != b"\xfe"[0]:
             candidates &= ~CANDIDATE_UTF_16_AS_BE
         if c != b"@"[0]:
-            candidates &= ~(CANDIDATE_UTF_32_LE|CANDIDATE_UTF_16_LE|CANDIDATE_CHARSET)
+            candidates &= ~(CANDIDATE_UTF_32_LE | CANDIDATE_UTF_16_LE | CANDIDATE_CHARSET)
         if c != b"\x00"[0]:
-            candidates &= ~(CANDIDATE_UTF_32_AS_BE|CANDIDATE_UTF_32_BE|CANDIDATE_UTF_16_BE)
-        if li>=2:
+            candidates &= ~(CANDIDATE_UTF_32_AS_BE | CANDIDATE_UTF_32_BE | CANDIDATE_UTF_16_BE)
+        if li >= 2:
             # Check second byte
             c = input[1]
             if c != b"\xbb"[0]:
                 candidates &= ~CANDIDATE_UTF_8_SIG
             if c != b"\xfe"[0]:
-                candidates &= ~(CANDIDATE_UTF_16_AS_LE|CANDIDATE_UTF_32_AS_LE)
+                candidates &= ~(CANDIDATE_UTF_16_AS_LE | CANDIDATE_UTF_32_AS_LE)
             if c != b"\xff"[0]:
                 candidates &= ~CANDIDATE_UTF_16_AS_BE
             if c != b"\x00"[0]:
-                candidates &= ~(CANDIDATE_UTF_16_LE|CANDIDATE_UTF_32_AS_BE|CANDIDATE_UTF_32_LE|CANDIDATE_UTF_32_BE)
+                candidates &= ~(CANDIDATE_UTF_16_LE | CANDIDATE_UTF_32_AS_BE |
+                                CANDIDATE_UTF_32_LE | CANDIDATE_UTF_32_BE)
             if c != b"@"[0]:
                 candidates &= ~CANDIDATE_UTF_16_BE
             if c != b"c"[0]:
                 candidates &= ~CANDIDATE_CHARSET
-            if li>=3:
+            if li >= 3:
                 # Check third byte
                 c = input[2]
                 if c != b"\xbf"[0]:
@@ -97,18 +98,18 @@ def detectencoding_str(input, final=False):
                 if c != b"c"[0]:
                     candidates &= ~CANDIDATE_UTF_16_LE
                 if c != b"\x00"[0]:
-                    candidates &= ~(CANDIDATE_UTF_32_AS_LE|CANDIDATE_UTF_32_LE|CANDIDATE_UTF_32_BE)
+                    candidates &= ~(CANDIDATE_UTF_32_AS_LE | CANDIDATE_UTF_32_LE | CANDIDATE_UTF_32_BE)
                 if c != b"\xfe"[0]:
                     candidates &= ~CANDIDATE_UTF_32_AS_BE
                 if c != b"h"[0]:
                     candidates &= ~CANDIDATE_CHARSET
-                if li>=4:
+                if li >= 4:
                     # Check fourth byte
                     c = input[3]
                     if input[2:4] == b"\x00\x00"[0:2]:
                         candidates &= ~CANDIDATE_UTF_16_AS_LE
                     if c != b"\x00"[0]:
-                        candidates &= ~(CANDIDATE_UTF_16_LE|CANDIDATE_UTF_32_AS_LE|CANDIDATE_UTF_32_LE)
+                        candidates &= ~(CANDIDATE_UTF_16_LE | CANDIDATE_UTF_32_AS_LE | CANDIDATE_UTF_32_LE)
                     if c != b"\xff"[0]:
                         candidates &= ~CANDIDATE_UTF_32_AS_BE
                     if c != b"@"[0]:
@@ -117,7 +118,7 @@ def detectencoding_str(input, final=False):
                         candidates &= ~CANDIDATE_CHARSET
     if candidates == 0:
         return ("utf-8", False)
-    if not (candidates & (candidates-1)): # only one candidate remaining
+    if not (candidates & (candidates-1)):  # only one candidate remaining
         if candidates == CANDIDATE_UTF_8_SIG and li >= 3:
             return ("utf-8-sig", True)
         elif candidates == CANDIDATE_UTF_16_AS_LE and li >= 2:
@@ -138,7 +139,7 @@ def detectencoding_str(input, final=False):
             return ("utf-32-be", False)
         elif candidates == CANDIDATE_CHARSET and li >= 4:
             prefix = '@charset "'
-            charsinput = chars(input) 
+            charsinput = chars(input)
             if charsinput[:len(prefix)] == prefix:
                 pos = charsinput.find('"', len(prefix))
                 if pos >= 0:
@@ -148,7 +149,7 @@ def detectencoding_str(input, final=False):
     # we default to UTF-8
     if final:
         return ("utf-8", False)
-    return (None, False) # dont' know yet
+    return (None, False)  # dont' know yet
 
 
 def detectencoding_unicode(input, final=False):
@@ -171,7 +172,7 @@ def detectencoding_unicode(input, final=False):
         # if this is the last call, and we haven't determined an encoding yet,
         # (or the string definitely doesn't start with prefix) we default to UTF-8
         return ("utf-8", False)
-    return (None, False) # don't know yet
+    return (None, False)  # don't know yet
 
 
 def _fixencoding(input, encoding, final=False):
@@ -194,13 +195,13 @@ def _fixencoding(input, encoding, final=False):
                 return prefix + encoding + input[pos:]
             # we haven't seen the end of the encoding name yet => fall through
         else:
-            return input # doesn't start with prefix, so nothing to fix
+            return input  # doesn't start with prefix, so nothing to fix
     elif not prefix.startswith(input) or final:
         # can't turn out to be a @charset rule later (or there is no "later")
         return input
     if final:
         return input
-    return None # don't know yet
+    return None  # don't know yet
 
 
 def decode(input, errors="strict", encoding=None, force=True):
@@ -209,14 +210,14 @@ def decode(input, errors="strict", encoding=None, force=True):
         input = input.tobytes()
     except AttributeError as e:
         pass
-    
+
     if encoding is None or not force:
         (_encoding, explicit) = detectencoding_str(input, True)
         if _encoding == "css":
             raise ValueError("css not allowed as encoding name")
-        if (explicit and not force) or encoding is None: # Take the encoding from the input
+        if (explicit and not force) or encoding is None:  # Take the encoding from the input
             encoding = _encoding
-            
+
     # NEEDS: change in parse.py (str to bytes!)
     (input, consumed) = codecs.getdecoder(encoding)(input, errors)
     return (_fixencoding(input, str(encoding), True), consumed)
@@ -240,7 +241,7 @@ def _bytes2int(bytes):
     # Helper: convert an 8 bit string into an ``int``.
     i = 0
     for byte in bytes:
-        i = (i<<8) + ord(byte)
+        i = (i << 8) + ord(byte)
     return i
 
 
@@ -248,7 +249,7 @@ def _int2bytes(i):
     # Helper: convert an ``int`` into an 8-bit string.
     v = []
     while i:
-        v.insert(0, chr(i&0xff))
+        v.insert(0, chr(i & 0xff))
         i >>= 8
     return "".join(v)
 
@@ -286,14 +287,14 @@ if hasattr(codecs, "IncrementalDecoder"):
                 # Do we have to detect the encoding from the input?
                 if self.encoding is None or not self.force:
                     (encoding, explicit) = detectencoding_str(input, final)
-                    if encoding is None: # no encoding determined yet
-                        self.buffer = input # retry the complete input on the next call
-                        return "" # no encoding determined yet, so no output
+                    if encoding is None:  # no encoding determined yet
+                        self.buffer = input  # retry the complete input on the next call
+                        return ""  # no encoding determined yet, so no output
                     elif encoding == "css":
                         raise ValueError("css not allowed as encoding name")
-                    if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
+                    if (explicit and not self.force) or self.encoding is None:  # Take the encoding from the input
                         self.encoding = encoding
-                self.buffer = "" # drop buffer, as the decoder might keep its own
+                self.buffer = ""  # drop buffer, as the decoder might keep its own
                 decoder = codecs.getincrementaldecoder(self.encoding)
                 self.decoder = decoder(self._errors)
             if self.headerfixed:
@@ -336,7 +337,7 @@ if hasattr(codecs, "IncrementalDecoder"):
             return ("", _bytes2int(marshal.dumps(state)))
 
         def setstate(self, state):
-            state = _int2bytes(marshal.loads(state[1])) # ignore buffered input
+            state = _int2bytes(marshal.loads(state[1]))  # ignore buffered input
             self.encoding = state[0]
             self.buffer = state[1]
             self.headerfixed = state[2]
@@ -376,7 +377,7 @@ if hasattr(codecs, "IncrementalEncoder"):
                     if encoding.replace("_", "-").lower() == "utf-8-sig":
                         encoding = "utf-8"
                     newinput = _fixencoding(input, str(encoding), final)
-                    if newinput is None: # @charset rule incomplete => Retry next time
+                    if newinput is None:  # @charset rule incomplete => Retry next time
                         self.buffer = input
                         return ""
                     input = newinput
@@ -449,7 +450,7 @@ class StreamWriter(codecs.StreamWriter):
                 if encoding.replace("_", "-").lower() == "utf-8-sig":
                     encoding = "utf-8"
                 newinput = _fixencoding(input, str(encoding), False)
-                if newinput is None: # @charset rule incomplete => Retry next time
+                if newinput is None:  # @charset rule incomplete => Retry next time
                     self.buffer = input
                     return ("", 0)
                 input = newinput
@@ -480,7 +481,7 @@ class StreamWriter(codecs.StreamWriter):
         except AttributeError as e:
             # TODO: py3 only exception?
             pass
-        
+
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
@@ -497,11 +498,11 @@ class StreamReader(codecs.StreamReader):
         if self.streamreader is None:
             if self.encoding is None or not self.force:
                 (encoding, explicit) = detectencoding_str(input, False)
-                if encoding is None: # no encoding determined yet
-                    return ("", 0) # no encoding determined yet, so no output
+                if encoding is None:  # no encoding determined yet
+                    return ("", 0)  # no encoding determined yet, so no output
                 elif encoding == "css":
                     raise ValueError("css not allowed as encoding name")
-                if (explicit and not self.force) or self.encoding is None: # Take the encoding from the input
+                if (explicit and not self.force) or self.encoding is None:  # Take the encoding from the input
                     self.encoding = encoding
             streamreader = codecs.getreader(self.encoding)
             streamreader = streamreader(self.stream, self._errors)
@@ -513,7 +514,7 @@ class StreamReader(codecs.StreamReader):
             if newoutput is not None:
                 self.streamreader = streamreader
                 return (newoutput, consumed)
-            return ("", 0) # we will create a new streamreader on the next call
+            return ("", 0)  # we will create a new streamreader on the next call
         return self.streamreader.decode(input, errors)
 
     def _geterrors(self):
@@ -527,7 +528,7 @@ class StreamReader(codecs.StreamReader):
         except AttributeError as e:
             # TODO: py3 only exception?
             pass
-        
+
         self._errors = errors
     errors = property(_geterrors, _seterrors)
 
@@ -604,5 +605,6 @@ def cssescape(exc):
     if not isinstance(exc, UnicodeEncodeError):
         raise TypeError("don't know how to handle %r" % exc)
     return ("".join("\\%06x" % ord(c) for c in exc.object[exc.start:exc.end]), exc.end)
+
 
 codecs.register_error("cssescape", cssescape)

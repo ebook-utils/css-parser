@@ -10,6 +10,7 @@ from . import cssrule
 import cssutils
 import xml.dom
 
+
 class CSSNamespaceRule(cssrule.CSSRule):
     """
     Represents an @namespace rule within a CSS style sheet.
@@ -18,7 +19,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     it with a given namespace (a string). This namespace prefix can then be
     used in namespace-qualified names such as those described in the
     Selectors Module [SELECT] or the Values and Units module [CSS3VAL].
-    
+
     Dealing with these rules directly is not needed anymore, easier is 
     the use of :attr:`cssutils.css.CSSStyleSheet.namespaces`.
 
@@ -31,7 +32,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
           : IDENT
           ;
     """
-    def __init__(self, namespaceURI=None, prefix=None, cssText=None, 
+
+    def __init__(self, namespaceURI=None, prefix=None, cssText=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """
         :Parameters:
@@ -62,12 +64,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
               : IDENT
               ;
         """
-        super(CSSNamespaceRule, self).__init__(parentRule=parentRule, 
+        super(CSSNamespaceRule, self).__init__(parentRule=parentRule,
                                                parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@namespace'
         self._prefix = ''
         self._namespaceURI = None
-        
+
         if namespaceURI:
             self.namespaceURI = namespaceURI
             self.prefix = prefix
@@ -75,7 +77,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             tempseq.append(self.prefix, 'prefix')
             tempseq.append(self.namespaceURI, 'namespaceURI')
             self._setSeq(tempseq)
-            
+
         elif cssText is not None:
             self.cssText = cssText
 
@@ -86,16 +88,16 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     def __repr__(self):
         return "cssutils.css.%s(namespaceURI=%r, prefix=%r)" % (
-                self.__class__.__name__,
-                self.namespaceURI,
-                self.prefix)
+            self.__class__.__name__,
+            self.namespaceURI,
+            self.prefix)
 
     def __str__(self):
         return "<cssutils.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
-                self.__class__.__name__,
-                self.namespaceURI,
-                self.prefix,
-                id(self))
+            self.__class__.__name__,
+            self.namespaceURI,
+            self.prefix,
+            id(self))
 
     def _getCssText(self):
         """Return serialized property cssText"""
@@ -184,12 +186,12 @@ class CSSNamespaceRule(cssrule.CSSRule):
             # "NAMESPACE_SYM S* [namespace_prefix S*]? [STRING|URI] S* ';' S*"
             newseq = self._tempSeq()
             wellformed, expected = self._parse(expected='prefix or uri',
-                seq=newseq, tokenizer=tokenizer,
-                productions={'IDENT': _ident,
-                             'STRING': _string,
-                             'URI': _uri,
-                             'CHAR': _char},
-                new=new)
+                                               seq=newseq, tokenizer=tokenizer,
+                                               productions={'IDENT': _ident,
+                                                            'STRING': _string,
+                                                            'URI': _uri,
+                                                            'CHAR': _char},
+                                               new=new)
 
             # wellformed set by parse
             wellformed = wellformed and new['wellformed']
@@ -230,23 +232,23 @@ class CSSNamespaceRule(cssrule.CSSRule):
             self._namespaceURI = namespaceURI
             tempseq = self._tempSeq()
             tempseq.append(namespaceURI, 'namespaceURI')
-            self._setSeq(tempseq) # makes seq readonly!
+            self._setSeq(tempseq)  # makes seq readonly!
         elif self._namespaceURI != namespaceURI:
             self._log.error('CSSNamespaceRule: namespaceURI is readonly.',
                             error=xml.dom.NoModificationAllowedErr)
 
     namespaceURI = property(lambda self: self._namespaceURI, _setNamespaceURI,
-        doc="URI (handled as simple string) of the defined namespace.")
+                            doc="URI (handled as simple string) of the defined namespace.")
 
     def _replaceNamespaceURI(self, namespaceURI):
         """Used during parse of new sheet only!
-        
+
         :param namespaceURI: the new value for this rules namespaceURI
         """
         self._namespaceURI = namespaceURI
         for i, x in enumerate(self._seq):
             if 'namespaceURI' == x.type:
-                self._seq._readonly = False 
+                self._seq._readonly = False
                 self._seq.replace(i, namespaceURI, 'namespaceURI')
                 self._seq._readonly = True
                 break
@@ -264,7 +266,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._checkReadonly()
         if not prefix:
             prefix = ''
-        else:        
+        else:
             tokenizer = self._tokenize2(prefix)
             prefixtoken = self._nexttoken(tokenizer, None)
             if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
@@ -281,7 +283,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
                 break
         else:
             # put prefix at the beginning!
-            self._seq[0] = (prefix, 'prefix', None, None) 
+            self._seq[0] = (prefix, 'prefix', None, None)
 
         # set new prefix
         self._prefix = prefix
@@ -289,9 +291,8 @@ class CSSNamespaceRule(cssrule.CSSRule):
     prefix = property(lambda self: self._prefix, _setPrefix,
                       doc="Prefix used for the defined namespace.")
 
-    type = property(lambda self: self.NAMESPACE_RULE, 
+    type = property(lambda self: self.NAMESPACE_RULE,
                     doc="The type of this rule, as defined by a CSSRule "
                         "type constant.")
-    
+
     wellformed = property(lambda self: self.namespaceURI is not None)
-    

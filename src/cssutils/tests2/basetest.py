@@ -1,3 +1,4 @@
+import cssutils
 """Base class for all tests"""
 
 import logging
@@ -13,10 +14,9 @@ from email import message_from_string, message_from_file
 sys.path.append(os.path.join(os.path.abspath('.'), '..'))
 TEST_HOME = os.path.abspath('.')
 
-import cssutils
 
+PY2x = sys.version_info < (3, 0)
 
-PY2x = sys.version_info < (3,0)
 
 def msg3x(msg):
     """msg might contain unicode repr `u'...'` which in py3 is `u'...`
@@ -34,10 +34,10 @@ def get_resource_filename(resource_name):
     """
     print cssutils.__path__
     amodule = sys.modules['cssutils']
-    module_path = os.path.dirname(getattr(amodule,'__file__',''))
+    module_path = os.path.dirname(getattr(amodule, '__file__', ''))
     if not module_path.startswith('/'):
         module_path = os.path.join(TEST_HOME, module_path)
-    if not resource_name or resource_name =="":
+    if not resource_name or resource_name == "":
         return module_path
     return os.path.join(module_path, *resource_name.split('/'))
 
@@ -96,7 +96,7 @@ class BaseTestCase(unittest.TestCase):
             exc_pattern = None
 
         argv = [repr(a) for a in args]\
-               + ["%s=%r" % (k,v)  for k,v in kwargs.items()]
+            + ["%s=%r" % (k, v) for k, v in kwargs.items()]
         callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
 
         try:
@@ -104,20 +104,20 @@ class BaseTestCase(unittest.TestCase):
         except exception, exc:
             if exc_args is not None:
                 self.failIf(exc.args != exc_args,
-                            "%s raised %s with unexpected args: "\
-                            "expected=%r, actual=%r"\
+                            "%s raised %s with unexpected args: "
+                            "expected=%r, actual=%r"
                             % (callsig, exc.__class__, exc_args, exc.args))
             if exc_pattern is not None:
                 self.assertTrue(exc_pattern.search(str(exc)),
-                                "%s raised %s, but the exception "\
-                                "does not match '%s': %r"\
+                                "%s raised %s, but the exception "
+                                "does not match '%s': %r"
                                 % (callsig, exc.__class__, exc_pattern.pattern,
                                    str(exc)))
         except:
             exc_info = sys.exc_info()
             print exc_info
-            self.fail("%s raised an unexpected exception type: "\
-                      "expected=%s, actual=%s"\
+            self.fail("%s raised an unexpected exception type: "
+                      "expected=%s, actual=%s"
                       % (callsig, exception, exc_info[0]))
         else:
             self.fail("%s did not raise %s" % (callsig, exception))
@@ -160,7 +160,7 @@ class BaseTestCase(unittest.TestCase):
             raise self.failureException(
                 "Expected to raise %s, didn't get an exception at all" %
                 excName
-                )
+            )
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """
@@ -242,6 +242,7 @@ class GenerateTests(type):
                 stringed_case = cls.make_case_repr(case)
                 case_name = "%s_%s_%s" % (test_name, case_num, stringed_case)
                 # Force the closure binding
+
                 def make_wrapper(case=case, aobj=aobj):
                     def wrapper(self):
                         aobj(self, *case)

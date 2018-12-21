@@ -10,6 +10,7 @@ import basetest
 import cssutils.tokenize2 as tokenize2
 from cssutils.tokenize2 import *
 
+
 class TokenizerTestCase(basetest.BaseTestCase):
 
     testsall = {
@@ -31,16 +32,16 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'\\44\rb': [('IDENT', u'Db', 1, 1)],
         u'\\44\fb': [('IDENT', u'Db', 1, 1)],
         u'\\44\n*': [('IDENT', u'D', 1, 1),
-                    ('CHAR', u'*', 2, 1)],
+                     ('CHAR', u'*', 2, 1)],
         u'\\44  a': [('IDENT', u'D', 1, 1),
-                    ('S', u' ', 1, 5),
-                    ('IDENT', u'a', 1, 6)],
+                     ('S', u' ', 1, 5),
+                     ('IDENT', u'a', 1, 6)],
         # TODO:
         # Note that this means that a "real" space after the escape sequence
         # must itself either be escaped or doubled:
         u'\\44\ x': [('IDENT', u'D\\ x', 1, 1)],
         u'\\44  ': [('IDENT', u'D', 1, 1),
-                     ('S', u' ', 1, 5)],
+                    ('S', u' ', 1, 5)],
 
         ur'\44': [('IDENT', u'D', 1, 1)],
         ur'\\': [('IDENT', ur'\\', 1, 1)],
@@ -79,24 +80,24 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # STRING
         u' "" ': [('S', u' ', 1, 1),
-                 ('STRING', u'""', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('STRING', u'""', 1, 2),
+                  ('S', u' ', 1, 4)],
         u' "\'" ': [('S', u' ', 1, 1),
-                 ('STRING', u'"\'"', 1, 2),
-                 ('S', u' ', 1, 5)],
+                    ('STRING', u'"\'"', 1, 2),
+                    ('S', u' ', 1, 5)],
         u" '' ": [('S', u' ', 1, 1),
-                 ('STRING', u"''", 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('STRING', u"''", 1, 2),
+                  ('S', u' ', 1, 4)],
         u" '' ": [('S', u' ', 1, 1),
-                 ('STRING', u"''", 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('STRING', u"''", 1, 2),
+                  ('S', u' ', 1, 4)],
         # until 0.9.5.x
-        #u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
-        #u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
-        #u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
-        #u"'\\\r'": [('STRING', u"'\\\r'", 1, 1)],
-        #u"'\\\r\n'": [('STRING', u"'\\\r\n'", 1, 1)],
-        #u"'1\\\n2'": [('STRING', u"'1\\\n2'", 1, 1)],
+        # u"'\\\n'": [('STRING', u"'\\\n'", 1, 1)],
+        # u"'\\\n\\\n\\\n'": [('STRING', u"'\\\n\\\n\\\n'", 1, 1)],
+        # u"'\\\f'": [('STRING', u"'\\\f'", 1, 1)],
+        # u"'\\\r'": [('STRING', u"'\\\r'", 1, 1)],
+        # u"'\\\r\n'": [('STRING', u"'\\\r\n'", 1, 1)],
+        # u"'1\\\n2'": [('STRING', u"'1\\\n2'", 1, 1)],
         # from 0.9.6a0 escaped nl is removed from string
         u"'\\\n'": [('STRING', u"''", 1, 1)],
         u"'\\\n\\\n\\\n'": [('STRING', u"''", 1, 1)],
@@ -104,13 +105,13 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u"'\\\r'": [('STRING', u"''", 1, 1)],
         u"'1\\\n2'": [('STRING', u"'12'", 1, 1)],
         u"'1\\\r\n2'": [('STRING', u"'12'", 1, 1)],
-        #ur'"\0020|\0020"': [('STRING', u'"\\0020|\\0020"', 1, 1)],
+        # ur'"\0020|\0020"': [('STRING', u'"\\0020|\\0020"', 1, 1)],
         ur'"\61|\0061"': [('STRING', u'"a|a"', 1, 1)],
 
         # HASH
         u' #a ': [('S', u' ', 1, 1),
-                 ('HASH', u'#a', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('HASH', u'#a', 1, 2),
+                  ('S', u' ', 1, 4)],
 
         u'#ccc': [('HASH', u'#ccc', 1, 1)],
         u'#111': [('HASH', u'#111', 1, 1)],
@@ -122,53 +123,53 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('NUMBER', u'0', 1, 2),
                  ('S', u' ', 1, 3)],
         u' 0.1 ': [('S', u' ', 1, 1),
-                 ('NUMBER', u'0.1', 1, 2),
-                 ('S', u' ', 1, 5)],
+                   ('NUMBER', u'0.1', 1, 2),
+                   ('S', u' ', 1, 5)],
         u' .0 ': [('S', u' ', 1, 1),
-                 ('NUMBER', u'.0', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('NUMBER', u'.0', 1, 2),
+                  ('S', u' ', 1, 4)],
 
         u' -0 ': [('S', u' ', 1, 1),
-                 #('CHAR', u'-', 1, 2),
-                 #('NUMBER', u'0', 1, 3),
-                 ('NUMBER', u'-0', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  #('CHAR', u'-', 1, 2),
+                  #('NUMBER', u'0', 1, 3),
+                  ('NUMBER', u'-0', 1, 2),
+                  ('S', u' ', 1, 4)],
 
         # PERCENTAGE
         u' 0% ': [('S', u' ', 1, 1),
-                 ('PERCENTAGE', u'0%', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('PERCENTAGE', u'0%', 1, 2),
+                  ('S', u' ', 1, 4)],
         u' .5% ': [('S', u' ', 1, 1),
-                 ('PERCENTAGE', u'.5%', 1, 2),
-                 ('S', u' ', 1, 5)],
+                   ('PERCENTAGE', u'.5%', 1, 2),
+                   ('S', u' ', 1, 5)],
 
         # URI
         u' url() ': [('S', u' ', 1, 1),
-                 ('URI', u'url()', 1, 2),
-                 ('S', u' ', 1, 7)],
+                     ('URI', u'url()', 1, 2),
+                     ('S', u' ', 1, 7)],
         u' url(a) ': [('S', u' ', 1, 1),
-                 ('URI', u'url(a)', 1, 2),
-                 ('S', u' ', 1, 8)],
+                      ('URI', u'url(a)', 1, 2),
+                      ('S', u' ', 1, 8)],
         u' url("a") ': [('S', u' ', 1, 1),
-                 ('URI', u'url("a")', 1, 2),
-                 ('S', u' ', 1, 10)],
+                        ('URI', u'url("a")', 1, 2),
+                        ('S', u' ', 1, 10)],
         u' url( a ) ': [('S', u' ', 1, 1),
-                 ('URI', u'url( a )', 1, 2),
-                 ('S', u' ', 1, 10)],
+                        ('URI', u'url( a )', 1, 2),
+                        ('S', u' ', 1, 10)],
 
         # UNICODE-RANGE
 
         # CDO
         u' <!-- ': [('S', u' ', 1, 1),
-                   ('CDO', u'<!--', 1, 2),
-                   ('S', u' ', 1, 6)],
+                    ('CDO', u'<!--', 1, 2),
+                    ('S', u' ', 1, 6)],
         u'"<!--""-->"': [('STRING', u'"<!--"', 1, 1),
-                    ('STRING', u'"-->"', 1, 7)],
+                         ('STRING', u'"-->"', 1, 7)],
 
         # CDC
         u' --> ': [('S', u' ', 1, 1),
-                  ('CDC', u'-->', 1, 2),
-                  ('S', u' ', 1, 5)],
+                   ('CDC', u'-->', 1, 2),
+                   ('S', u' ', 1, 5)],
 
         # S
         u' ': [('S', u' ', 1, 1)],
@@ -204,8 +205,8 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # CHAR
         u' @ ': [('S', u' ', 1, 1),
-                  ('CHAR', u'@', 1, 2),
-                  ('S', u' ', 1, 3)],
+                 ('CHAR', u'@', 1, 2),
+                 ('S', u' ', 1, 3)],
 
         # --- overwritten for CSS 2.1 ---
         # LBRACE
@@ -226,57 +227,57 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('S', u' ', 1, 3)],
         # class
         u' . ': [('S', u' ', 1, 1),
-                  ('CHAR', u'.', 1, 2),
-                  ('S', u' ', 1, 3)],
-        }
+                 ('CHAR', u'.', 1, 2),
+                 ('S', u' ', 1, 3)],
+    }
 
     tests3 = {
         # UNICODE-RANGE
         u' u+0 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+0', 1, 2),
-                  ('S', u' ', 1, 5)],
+                   ('UNICODE-RANGE', u'u+0', 1, 2),
+                   ('S', u' ', 1, 5)],
         u' u+01 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+01', 1, 2),
-                  ('S', u' ', 1, 6)],
+                    ('UNICODE-RANGE', u'u+01', 1, 2),
+                    ('S', u' ', 1, 6)],
         u' u+012 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+012', 1, 2),
-                  ('S', u' ', 1, 7)],
+                     ('UNICODE-RANGE', u'u+012', 1, 2),
+                     ('S', u' ', 1, 7)],
         u' u+0123 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+0123', 1, 2),
-                  ('S', u' ', 1, 8)],
+                      ('UNICODE-RANGE', u'u+0123', 1, 2),
+                      ('S', u' ', 1, 8)],
         u' u+01234 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+01234', 1, 2),
-                  ('S', u' ', 1, 9)],
+                       ('UNICODE-RANGE', u'u+01234', 1, 2),
+                       ('S', u' ', 1, 9)],
         u' u+012345 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+012345', 1, 2),
-                  ('S', u' ', 1, 10)],
+                        ('UNICODE-RANGE', u'u+012345', 1, 2),
+                        ('S', u' ', 1, 10)],
         u' u+0123456 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+012345', 1, 2),
-                  ('NUMBER', u'6', 1, 10),
-                  ('S', u' ', 1, 11)],
+                         ('UNICODE-RANGE', u'u+012345', 1, 2),
+                         ('NUMBER', u'6', 1, 10),
+                         ('S', u' ', 1, 11)],
         u' U+123456 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'U+123456', 1, 2),
-                  ('S', u' ', 1, 10)],
+                        ('UNICODE-RANGE', u'U+123456', 1, 2),
+                        ('S', u' ', 1, 10)],
         u' \\55+abcdef ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'U+abcdef', 1, 2),
-                  ('S', u' ', 1, 12)],
+                           ('UNICODE-RANGE', u'U+abcdef', 1, 2),
+                           ('S', u' ', 1, 12)],
         u' \\75+abcdef ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+abcdef', 1, 2),
-                  ('S', u' ', 1, 12)],
+                           ('UNICODE-RANGE', u'u+abcdef', 1, 2),
+                           ('S', u' ', 1, 12)],
         u' u+0-1 ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+0-1', 1, 2),
-                  ('S', u' ', 1, 7)],
+                     ('UNICODE-RANGE', u'u+0-1', 1, 2),
+                     ('S', u' ', 1, 7)],
         u' u+0-1, u+123456-abcdef ': [('S', u' ', 1, 1),
-                  ('UNICODE-RANGE', u'u+0-1', 1, 2),
-                  ('CHAR', u',', 1, 7),
-                  ('S', u' ', 1, 8),
-                  ('UNICODE-RANGE', u'u+123456-abcdef', 1, 9),
-                  ('S', u' ', 1, 24)],
+                                      ('UNICODE-RANGE', u'u+0-1', 1, 2),
+                                      ('CHAR', u',', 1, 7),
+                                      ('S', u' ', 1, 8),
+                                      ('UNICODE-RANGE', u'u+123456-abcdef', 1, 9),
+                                      ('S', u' ', 1, 24)],
 
         # specials
         u'c\\olor': [('IDENT', u'c\\olor', 1, 1)],
-        #u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
-        #u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
+        # u'-1': [('CHAR', u'-', 1, 1), ('NUMBER', u'1', 1, 2)],
+        # u'-1px': [('CHAR', u'-', 1, 1), ('DIMENSION', u'1px', 1, 2)],
         u'-1': [('NUMBER', u'-1', 1, 1)],
         u'-1px': [('DIMENSION', u'-1px', 1, 1)],
 
@@ -288,30 +289,30 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'@\\x': [('ATKEYWORD', u'@\\x', 1, 1)],
         # -
         u'@1x': [('CHAR', u'@', 1, 1),
-                  ('DIMENSION', u'1x', 1, 2)],
+                 ('DIMENSION', u'1x', 1, 2)],
 
         # DIMENSION
         u' 0px ': [('S', u' ', 1, 1),
-                 ('DIMENSION', u'0px', 1, 2),
-                 ('S', u' ', 1, 5)],
+                   ('DIMENSION', u'0px', 1, 2),
+                   ('S', u' ', 1, 5)],
         u' 1s ': [('S', u' ', 1, 1),
-                 ('DIMENSION', u'1s', 1, 2),
-                 ('S', u' ', 1, 4)],
+                  ('DIMENSION', u'1s', 1, 2),
+                  ('S', u' ', 1, 4)],
         u'0.2EM': [('DIMENSION', u'0.2EM', 1, 1)],
         u'1p\\x': [('DIMENSION', u'1p\\x', 1, 1)],
         u'1PX': [('DIMENSION', u'1PX', 1, 1)],
 
         # NUMBER
         u' - 0 ': [('S', u' ', 1, 1),
-                 ('CHAR', u'-', 1, 2),
-                 ('S', u' ', 1, 3),
-                 ('NUMBER', u'0', 1, 4),
-                 ('S', u' ', 1, 5)],
+                   ('CHAR', u'-', 1, 2),
+                   ('S', u' ', 1, 3),
+                   ('NUMBER', u'0', 1, 4),
+                   ('S', u' ', 1, 5)],
         u' + 0 ': [('S', u' ', 1, 1),
-                 ('CHAR', u'+', 1, 2),
-                 ('S', u' ', 1, 3),
-                 ('NUMBER', u'0', 1, 4),
-                 ('S', u' ', 1, 5)],
+                   ('CHAR', u'+', 1, 2),
+                   ('S', u' ', 1, 3),
+                   ('NUMBER', u'0', 1, 4),
+                   ('S', u' ', 1, 5)],
 
         # PREFIXMATCH
         u' ^= ': [('S', u' ', 1, 1),
@@ -332,43 +333,43 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u'*==': [('SUBSTRINGMATCH', u'*=', 1, 1), ('CHAR', u'=', 1, 3)],
 
         # BOM only at start
-#        u'\xFEFF ': [('BOM', u'\xfeFF', 1, 1),
-#                  ('S', u' ', 1, 1)],
-#        u' \xFEFF ': [('S', u' ', 1, 1),
-#                  ('IDENT', u'\xfeFF', 1, 2),
-#                  ('S', u' ', 1, 5)],
+        #        u'\xFEFF ': [('BOM', u'\xfeFF', 1, 1),
+        #                  ('S', u' ', 1, 1)],
+        #        u' \xFEFF ': [('S', u' ', 1, 1),
+        #                  ('IDENT', u'\xfeFF', 1, 2),
+        #                  ('S', u' ', 1, 5)],
         u'\xfe\xff ': [('BOM', u'\xfe\xff', 1, 1),
-                  ('S', u' ', 1, 1)],
+                       ('S', u' ', 1, 1)],
         u' \xfe\xff ': [('S', u' ', 1, 1),
-                  ('IDENT', u'\xfe\xff', 1, 2),
-                  ('S', u' ', 1, 4)],
+                        ('IDENT', u'\xfe\xff', 1, 2),
+                        ('S', u' ', 1, 4)],
         u'\xef\xbb\xbf ': [('BOM', u'\xef\xbb\xbf', 1, 1),
-                  ('S', u' ', 1, 1)],
+                           ('S', u' ', 1, 1)],
         u' \xef\xbb\xbf ': [('S', u' ', 1, 1),
-                  ('IDENT', u'\xef\xbb\xbf', 1, 2),
-                  ('S', u' ', 1, 5)],        }
+                            ('IDENT', u'\xef\xbb\xbf', 1, 2),
+                            ('S', u' ', 1, 5)], }
 
     tests2 = {
         # escapes work not for a-f!
         # IMPORT_SYM
         u' @import ': [('S', u' ', 1, 1),
-                 ('IMPORT_SYM', u'@import', 1, 2),
-                 ('S', u' ', 1, 9)],
+                       ('IMPORT_SYM', u'@import', 1, 2),
+                       ('S', u' ', 1, 9)],
         u'@IMPORT': [('IMPORT_SYM', u'@IMPORT', 1, 1)],
         u'@\\49\r\nMPORT': [('IMPORT_SYM', u'@\\49\r\nMPORT', 1, 1)],
         ur'@\i\m\p\o\r\t': [('IMPORT_SYM', ur'@\i\m\p\o\r\t', 1, 1)],
         ur'@\I\M\P\O\R\T': [('IMPORT_SYM', ur'@\I\M\P\O\R\T', 1, 1)],
         ur'@\49 \04d\0050\0004f\000052\54': [('IMPORT_SYM',
-                                        ur'@\49 \04d\0050\0004f\000052\54',
-                                        1, 1)],
+                                              ur'@\49 \04d\0050\0004f\000052\54',
+                                              1, 1)],
         ur'@\69 \06d\0070\0006f\000072\74': [('IMPORT_SYM',
-                                        ur'@\69 \06d\0070\0006f\000072\74',
-                                        1, 1)],
+                                              ur'@\69 \06d\0070\0006f\000072\74',
+                                              1, 1)],
 
         # PAGE_SYM
         u' @page ': [('S', u' ', 1, 1),
-                 ('PAGE_SYM', u'@page', 1, 2),
-                 ('S', u' ', 1, 7)],
+                     ('PAGE_SYM', u'@page', 1, 2),
+                     ('S', u' ', 1, 7)],
         u'@PAGE': [('PAGE_SYM', u'@PAGE', 1, 1)],
         ur'@\pa\ge': [('PAGE_SYM', ur'@\pa\ge', 1, 1)],
         ur'@\PA\GE': [('PAGE_SYM', ur'@\PA\GE', 1, 1)],
@@ -377,87 +378,87 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # MEDIA_SYM
         u' @media ': [('S', u' ', 1, 1),
-                 ('MEDIA_SYM', u'@media', 1, 2),
-                 ('S', u' ', 1, 8)],
+                      ('MEDIA_SYM', u'@media', 1, 2),
+                      ('S', u' ', 1, 8)],
         u'@MEDIA': [('MEDIA_SYM', u'@MEDIA', 1, 1)],
         ur'@\med\ia': [('MEDIA_SYM', ur'@\med\ia', 1, 1)],
         ur'@\MED\IA': [('MEDIA_SYM', ur'@\MED\IA', 1, 1)],
         u'@\\4d\n\\45\r\\44\t\\49\r\nA': [('MEDIA_SYM', u'@\\4d\n\\45\r\\44\t\\49\r\nA', 1, 1)],
         u'@\\4d\n\\45\r\\44\t\\49\r\\41\f': [('MEDIA_SYM',
-                                        u'@\\4d\n\\45\r\\44\t\\49\r\\41\f',
-                                        1, 1)],
+                                              u'@\\4d\n\\45\r\\44\t\\49\r\\41\f',
+                                              1, 1)],
         u'@\\6d\n\\65\r\\64\t\\69\r\\61\f': [('MEDIA_SYM',
-                                        u'@\\6d\n\\65\r\\64\t\\69\r\\61\f',
-                                        1, 1)],
+                                              u'@\\6d\n\\65\r\\64\t\\69\r\\61\f',
+                                              1, 1)],
 
         # FONT_FACE_SYM
         u' @font-face ': [('S', u' ', 1, 1),
-                 ('FONT_FACE_SYM', u'@font-face', 1, 2),
-                 ('S', u' ', 1, 12)],
+                          ('FONT_FACE_SYM', u'@font-face', 1, 2),
+                          ('S', u' ', 1, 12)],
         u'@FONT-FACE': [('FONT_FACE_SYM', u'@FONT-FACE', 1, 1)],
         ur'@f\o\n\t\-face': [('FONT_FACE_SYM', ur'@f\o\n\t\-face', 1, 1)],
         ur'@F\O\N\T\-FACE': [('FONT_FACE_SYM', ur'@F\O\N\T\-FACE', 1, 1)],
         # TODO: "-" as hex!
         ur'@\46\4f\4e\54\-\46\41\43\45': [('FONT_FACE_SYM',
-            ur'@\46\4f\4e\54\-\46\41\43\45', 1, 1)],
+                                           ur'@\46\4f\4e\54\-\46\41\43\45', 1, 1)],
         ur'@\66\6f\6e\74\-\66\61\63\65': [('FONT_FACE_SYM',
-            ur'@\66\6f\6e\74\-\66\61\63\65', 1, 1)],
+                                           ur'@\66\6f\6e\74\-\66\61\63\65', 1, 1)],
 
         # CHARSET_SYM only if "@charset "!
         u'@charset  ': [('CHARSET_SYM', u'@charset ', 1, 1),
                         ('S', u' ', 1, 10)],
         u' @charset  ': [('S', u' ', 1, 1),
-                 ('CHARSET_SYM', u'@charset ', 1, 2), # not at start
-                 ('S', u' ', 1, 11)],
-        u'@charset': [('ATKEYWORD', u'@charset', 1, 1)], # no ending S
-        u'@CHARSET ': [('ATKEYWORD', u'@CHARSET', 1, 1),# uppercase
+                         ('CHARSET_SYM', u'@charset ', 1, 2),  # not at start
+                         ('S', u' ', 1, 11)],
+        u'@charset': [('ATKEYWORD', u'@charset', 1, 1)],  # no ending S
+        u'@CHARSET ': [('ATKEYWORD', u'@CHARSET', 1, 1),  # uppercase
                        ('S', u' ', 1, 9)],
-        u'@cha\\rset ': [('ATKEYWORD', u'@cha\\rset', 1, 1), # not literal
+        u'@cha\\rset ': [('ATKEYWORD', u'@cha\\rset', 1, 1),  # not literal
                          ('S', u' ', 1, 10)],
 
         # NAMESPACE_SYM
         u' @namespace ': [('S', u' ', 1, 1),
-                 ('NAMESPACE_SYM', u'@namespace', 1, 2),
-                 ('S', u' ', 1, 12)],
+                          ('NAMESPACE_SYM', u'@namespace', 1, 2),
+                          ('S', u' ', 1, 12)],
         ur'@NAMESPACE': [('NAMESPACE_SYM', ur'@NAMESPACE', 1, 1)],
         ur'@\na\me\s\pace': [('NAMESPACE_SYM', ur'@\na\me\s\pace', 1, 1)],
         ur'@\NA\ME\S\PACE': [('NAMESPACE_SYM', ur'@\NA\ME\S\PACE', 1, 1)],
         ur'@\4e\41\4d\45\53\50\41\43\45': [('NAMESPACE_SYM',
-            ur'@\4e\41\4d\45\53\50\41\43\45', 1, 1)],
+                                            ur'@\4e\41\4d\45\53\50\41\43\45', 1, 1)],
         ur'@\6e\61\6d\65\73\70\61\63\65': [('NAMESPACE_SYM',
-            ur'@\6e\61\6d\65\73\70\61\63\65', 1, 1)],
+                                            ur'@\6e\61\6d\65\73\70\61\63\65', 1, 1)],
 
         # ATKEYWORD
         u' @unknown ': [('S', u' ', 1, 1),
-                 ('ATKEYWORD', u'@unknown', 1, 2),
-                 ('S', u' ', 1, 10)],
+                        ('ATKEYWORD', u'@unknown', 1, 2),
+                        ('S', u' ', 1, 10)],
 
         # STRING
         # strings with linebreak in it
         u' "\\na"\na': [('S', u' ', 1, 1),
-                   ('STRING', u'"\\na"', 1, 2),
-                   ('S', u'\n', 1, 7),
-                   ('IDENT', u'a', 2, 1)],
+                        ('STRING', u'"\\na"', 1, 2),
+                        ('S', u'\n', 1, 7),
+                        ('IDENT', u'a', 2, 1)],
         u" '\\na'\na": [('S', u' ', 1, 1),
-                   ('STRING', u"'\\na'", 1, 2),
-                   ('S', u'\n', 1, 7),
-                   ('IDENT', u'a', 2, 1)],
+                        ('STRING', u"'\\na'", 1, 2),
+                        ('S', u'\n', 1, 7),
+                        ('IDENT', u'a', 2, 1)],
         u' "\\r\\n\\t\\n\\ra"a': [('S', u' ', 1, 1),
-                   ('STRING', u'"\\r\\n\\t\\n\\ra"', 1, 2),
-                   ('IDENT', u'a', 1, 15)],
+                                  ('STRING', u'"\\r\\n\\t\\n\\ra"', 1, 2),
+                                  ('IDENT', u'a', 1, 15)],
 
         # IMPORTANT_SYM is not IDENT!!!
         u' !important ': [('S', u' ', 1, 1),
-                ('CHAR', u'!', 1, 2),
-                 ('IDENT', u'important', 1, 3),
-                 ('S', u' ', 1, 12)],
+                          ('CHAR', u'!', 1, 2),
+                          ('IDENT', u'important', 1, 3),
+                          ('S', u' ', 1, 12)],
         u'! /*1*/ important ': [
-                ('CHAR', u'!', 1, 1),
-                ('S', u' ', 1, 2),
-                ('COMMENT', u'/*1*/', 1, 3),
-                ('S', u' ', 1, 8),
-                 ('IDENT', u'important', 1, 9),
-                 ('S', u' ', 1, 18)],
+            ('CHAR', u'!', 1, 1),
+            ('S', u' ', 1, 2),
+            ('COMMENT', u'/*1*/', 1, 3),
+            ('S', u' ', 1, 8),
+            ('IDENT', u'important', 1, 9),
+            ('S', u' ', 1, 18)],
         u'! important': [('CHAR', u'!', 1, 1),
                          ('S', u' ', 1, 2),
                          ('IDENT', u'important', 1, 3)],
@@ -480,7 +481,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                                            ('IDENT',
                                             ur'important',
                                             1, 2)],
-        }
+    }
 
     # overwriting tests in testsall
     tests2only = {
@@ -504,7 +505,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' . ': [('S', u' ', 1, 1),
                  ('CLASS', u'.', 1, 2),
                  ('S', u' ', 1, 3)],
-        }
+    }
 
     testsfullsheet = {
         # escape ends with explicit space but \r\n as single space
@@ -522,26 +523,26 @@ class TokenizerTestCase(basetest.BaseTestCase):
 
         # strings with linebreak in it
         u' "\\na\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"\\na', 1, 2),
-                   ('S', u'\n', 1, 6),
-                   ('IDENT', u'a', 2, 1)],
+                       ('INVALID', u'"\\na', 1, 2),
+                       ('S', u'\n', 1, 6),
+                       ('IDENT', u'a', 2, 1)],
         u' "\\r\\n\\t\\n\\ra\na': [('S', u' ', 1, 1),
-                   ('INVALID', u'"\\r\\n\\t\\n\\ra', 1, 2),
-                   ('S', u'\n', 1, 14),
-                   ('IDENT', u'a', 2, 1)],
+                                   ('INVALID', u'"\\r\\n\\t\\n\\ra', 1, 2),
+                                   ('S', u'\n', 1, 14),
+                                   ('IDENT', u'a', 2, 1)],
         # URI
         u'ur\\l(a)': [('URI', u'ur\\l(a)', 1, 1)],
         u'url(a)': [('URI', u'url(a)', 1, 1)],
         u'\\55r\\4c(a)': [('URI', u'UrL(a)', 1, 1)],
         u'\\75r\\6c(a)': [('URI', u'url(a)', 1, 1)],
         u' url())': [('S', u' ', 1, 1),
-                 ('URI', u'url()', 1, 2),
-                 ('CHAR', u')', 1, 7)],
+                     ('URI', u'url()', 1, 2),
+                     ('CHAR', u')', 1, 7)],
         u'url("x"))': [('URI', u'url("x")', 1, 1),
                        ('CHAR', u')', 1, 9)],
         u"url('x'))": [('URI', u"url('x')", 1, 1),
                        ('CHAR', u')', 1, 9)],
-        }
+    }
 
     # tests if fullsheet=False is set on tokenizer
     testsfullsheetfalse = {
@@ -553,29 +554,29 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u' " ': [('S', u' ', 1, 1),
                  ('INVALID', u'" ', 1, 2)],
         u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
-                 ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
+                                       ('INVALID', u"'abc\"with quote\" in it", 1, 2)],
 
         # URI incomplete
         u'url(a': [('FUNCTION', u'url(', 1, 1),
                    ('IDENT', u'a', 1, 5)],
         u'url("a': [('FUNCTION', u'url(', 1, 1),
-                   ('INVALID', u'"a', 1, 5)],
+                    ('INVALID', u'"a', 1, 5)],
         u"url('a": [('FUNCTION', u'url(', 1, 1),
-                   ('INVALID', u"'a", 1, 5)],
+                    ('INVALID', u"'a", 1, 5)],
         u"UR\\l('a": [('FUNCTION', u'UR\\l(', 1, 1),
-                   ('INVALID', u"'a", 1, 6)],
-        }
+                      ('INVALID', u"'a", 1, 6)],
+    }
 
     # tests if fullsheet=True is set on tokenizer
     testsfullsheettrue = {
         # COMMENT incomplete
         u'/*': [('COMMENT', u'/**/', 1, 1)],
 
-#        # INVALID incomplete => STRING
+        #        # INVALID incomplete => STRING
         u' " ': [('S', u' ', 1, 1),
                  ('STRING', u'" "', 1, 2)],
         u" 'abc\"with quote\" in it": [('S', u' ', 1, 1),
-                 ('STRING', u"'abc\"with quote\" in it'", 1, 2)],
+                                       ('STRING', u"'abc\"with quote\" in it'", 1, 2)],
 
         # URI incomplete FUNC => URI
         u'url(a': [('URI', u'url(a)', 1, 1)],
@@ -585,7 +586,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         u"url('a": [('URI', u"url('a')", 1, 1)],
         u'url("a"': [('URI', u'url("a")', 1, 1)],
         u"url('a'": [('URI', u"url('a')", 1, 1)],
-        }
+    }
 
     def setUp(self):
         #log = cssutils.errorhandler.ErrorHandler()
@@ -662,54 +663,53 @@ class TokenizerTestCase(basetest.BaseTestCase):
             # EOF is added so -1
             self.assertEqual(len(tokens) - 1, len(tests[css]))
 
-
     # --------------
 
     def __old(self):
 
         testsOLD = {
             u'x x1 -x .-x #_x -': [(1, 1, tt.IDENT, u'x'),
-               (1, 2, 'S', u' '),
-               (1, 3, tt.IDENT, u'x1'),
-               (1, 5, 'S', u' '),
-               (1, 6, tt.IDENT, u'-x'),
-               (1, 8, 'S', u' '),
-               (1, 9, tt.CLASS, u'.'),
-               (1, 10, tt.IDENT, u'-x'),
-               (1, 12, 'S', u' '),
-               (1, 13, tt.HASH, u'#_x'),
-               (1, 16, 'S', u' '),
-               (1, 17, 'DELIM', u'-')],
+                                   (1, 2, 'S', u' '),
+                                   (1, 3, tt.IDENT, u'x1'),
+                                   (1, 5, 'S', u' '),
+                                   (1, 6, tt.IDENT, u'-x'),
+                                   (1, 8, 'S', u' '),
+                                   (1, 9, tt.CLASS, u'.'),
+                                   (1, 10, tt.IDENT, u'-x'),
+                                   (1, 12, 'S', u' '),
+                                   (1, 13, tt.HASH, u'#_x'),
+                                   (1, 16, 'S', u' '),
+                                   (1, 17, 'DELIM', u'-')],
 
             # num
             u'1 1.1 -1 -1.1 .1 -.1 1.': [(1, 1, tt.NUMBER, u'1'),
-               (1, 2, 'S', u' '), (1, 3, tt.NUMBER, u'1.1'),
-               (1, 6, 'S', u' '), (1, 7, tt.NUMBER, u'-1'),
-               (1, 9, 'S', u' '), (1, 10, tt.NUMBER, u'-1.1'),
-               (1, 14, 'S', u' '), (1, 15, tt.NUMBER, u'0.1'),
-               (1, 17, 'S', u' '), (1, 18, tt.NUMBER, u'-0.1'),
-               (1, 21, 'S', u' '),
-               (1, 22, tt.NUMBER, u'1'), (1, 23, tt.CLASS, u'.')
+                                         (1, 2, 'S', u' '), (1, 3, tt.NUMBER, u'1.1'),
+                                         (1, 6, 'S', u' '), (1, 7, tt.NUMBER, u'-1'),
+                                         (1, 9, 'S', u' '), (1, 10, tt.NUMBER, u'-1.1'),
+                                         (1, 14, 'S', u' '), (1, 15, tt.NUMBER, u'0.1'),
+                                         (1, 17, 'S', u' '), (1, 18, tt.NUMBER, u'-0.1'),
+                                         (1, 21, 'S', u' '),
+                                         (1, 22, tt.NUMBER, u'1'), (1, 23, tt.CLASS, u'.')
                                          ],
             # CSS3 pseudo
             u'::': [(1, 1, tt.PSEUDO_ELEMENT, u'::')],
 
             # SPECIALS
             u'*+>~{},': [(1, 1, tt.UNIVERSAL, u'*'),
-               (1, 2, tt.PLUS, u'+'),
-               (1, 3, tt.GREATER, u'>'),
-               (1, 4, tt.TILDE, u'~'),
-               (1, 5, tt.LBRACE, u'{'),
-               (1, 6, tt.RBRACE, u'}'),
-               (1, 7, tt.COMMA, u',')],
+                         (1, 2, tt.PLUS, u'+'),
+                         (1, 3, tt.GREATER, u'>'),
+                         (1, 4, tt.TILDE, u'~'),
+                         (1, 5, tt.LBRACE, u'{'),
+                         (1, 6, tt.RBRACE, u'}'),
+                         (1, 7, tt.COMMA, u',')],
 
             # DELIM
             u'!%:&$|': [(1, 1, 'DELIM', u'!'),
-               (1, 2, 'DELIM', u'%'),
-               (1, 3, 'DELIM', u':'),
-               (1, 4, 'DELIM', u'&'),
-               (1, 5, 'DELIM', u'$'),
-               (1, 6, 'DELIM', u'|')],
+                        (1, 2, 'DELIM', u'%'),
+                        (1, 3, 'DELIM', u':'),
+                        (1, 4, 'DELIM', u'&'),
+                        (1, 5, 'DELIM', u'$'),
+                        (1, 6, 'DELIM', u'|')],
 
 
             # DIMENSION
@@ -732,16 +732,16 @@ class TokenizerTestCase(basetest.BaseTestCase):
             u'5em5_-': [(1, 1, tt.DIMENSION, u'5em5_-')],
 
             u'a a5 a5a 5 5a 5a5': [(1, 1, tt.IDENT, u'a'),
-               (1, 2, 'S', u' '),
-               (1, 3, tt.IDENT, u'a5'),
-               (1, 5, 'S', u' '),
-               (1, 6, tt.IDENT, u'a5a'),
-               (1, 9, 'S', u' '),
-               (1, 10, tt.NUMBER, u'5'),
-               (1, 11, 'S', u' '),
-               (1, 12, tt.DIMENSION, u'5a'),
-               (1, 14, 'S', u' '),
-               (1, 15, tt.DIMENSION, u'5a5')],
+                                   (1, 2, 'S', u' '),
+                                   (1, 3, tt.IDENT, u'a5'),
+                                   (1, 5, 'S', u' '),
+                                   (1, 6, tt.IDENT, u'a5a'),
+                                   (1, 9, 'S', u' '),
+                                   (1, 10, tt.NUMBER, u'5'),
+                                   (1, 11, 'S', u' '),
+                                   (1, 12, tt.DIMENSION, u'5a'),
+                                   (1, 14, 'S', u' '),
+                                   (1, 15, tt.DIMENSION, u'5a5')],
 
             # URI
             u'url()': [(1, 1, tt.URI, u'url()')],
@@ -756,7 +756,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
             u'url("x") ': [
                 (1, 1, tt.URI, u'url("x")'),
                 (1, 9, 'S', u' '),
-                ],
+            ],
             u'url(ab)': [(1, 1, tt.URI, u'url(ab)')],
             u'url($#/ab)': [(1, 1, tt.URI, u'url($#/ab)')],
             u'url(\1233/a/b)': [(1, 1, tt.URI, u'url(\1233/a/b)')],
@@ -766,27 +766,27 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 (1, 5, tt.STRING, u'"1"'),
                 (1, 8, tt.STRING, u'"2"'),
                 (1, 11, tt.RPARANTHESIS, u')'),
-                ],
+            ],
             u'url(a"2")': [
                 (1, 1, tt.FUNCTION, u'url('),
                 (1, 5, tt.IDENT, u'a'),
                 (1, 6, tt.STRING, u'"2"'),
                 (1, 9, tt.RPARANTHESIS, u')'),
-                ],
+            ],
             u'url(a b)': [
                 (1, 1, tt.FUNCTION, u'url('),
                 (1, 5, tt.IDENT, u'a'),
                 (1, 6, 'S', u' '),
                 (1, 7, tt.IDENT, u'b'),
                 (1, 8, tt.RPARANTHESIS, u')'),
-                ],
+            ],
 
             # FUNCTION
             u' counter("x")': [
-               (1,1, 'S', u' '),
-               (1, 2, tt.FUNCTION, u'counter('),
-               (1, 10, tt.STRING, u'"x"'),
-               (1, 13, tt.RPARANTHESIS, u')')],
+                (1, 1, 'S', u' '),
+                (1, 2, tt.FUNCTION, u'counter('),
+                (1, 10, tt.STRING, u'"x"'),
+                (1, 13, tt.RPARANTHESIS, u')')],
             # HASH
             u'# #a #_a #-a #1': [
                 (1, 1, 'DELIM', u'#'),
@@ -798,49 +798,49 @@ class TokenizerTestCase(basetest.BaseTestCase):
                 (1, 10, tt.HASH, u'#-a'),
                 (1, 13, 'S', u' '),
                 (1, 14, tt.HASH, u'#1')
-                ],
+            ],
             u'#1a1 ': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u' '),
-                ],
+            ],
             u'#1a1\n': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u'\n'),
-                ],
+            ],
             u'#1a1{': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, tt.LBRACE, u'{'),
-                ],
+            ],
             u'#1a1 {': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u' '),
                 (1, 6, tt.LBRACE, u'{'),
-                ],
+            ],
             u'#1a1\n{': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u'\n'),
                 (2, 1, tt.LBRACE, u'{'),
-                ],
+            ],
             u'#1a1\n {': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u'\n '),
                 (2, 2, tt.LBRACE, u'{'),
-                ],
+            ],
             u'#1a1 \n{': [
                 (1, 1, tt.HASH, u'#1a1'),
                 (1, 5, 'S', u' \n'),
                 (2, 1, tt.LBRACE, u'{'),
-                ],
+            ],
             # STRINGS with NL
-            u'"x\n': [(1,1, tt.INVALID, u'"x\n')],
-            u'"x\r': [(1,1, tt.INVALID, u'"x\r')],
-            u'"x\f': [(1,1, tt.INVALID, u'"x\f')],
+            u'"x\n': [(1, 1, tt.INVALID, u'"x\n')],
+            u'"x\r': [(1, 1, tt.INVALID, u'"x\r')],
+            u'"x\f': [(1, 1, tt.INVALID, u'"x\f')],
             u'"x\n ': [
-               (1,1, tt.INVALID, u'"x\n'),
-               (2,1, 'S', u' ')
-               ]
+                (1, 1, tt.INVALID, u'"x\n'),
+                (2, 1, 'S', u' ')
+            ]
 
-            }
+        }
 
         tests = {
             u'/*a': xml.dom.SyntaxErr,
@@ -853,7 +853,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
             u"\\00000": xml.dom.SyntaxErr,
             u"\\000000": xml.dom.SyntaxErr,
             u"\\0000001": xml.dom.SyntaxErr
-            }
+        }
 #        self.tokenizer.log.raiseExceptions = True #!!
 #        for css, exception in tests.items():
 #            self.assertRaises(exception, self.tokenizer.tokenize, css)
