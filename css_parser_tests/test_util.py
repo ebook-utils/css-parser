@@ -410,8 +410,8 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
         tests = {
             # _readUrl('http://cthedot.de/__UNKNOWN__.css')
-            'e2': (HTTPError, ['u', 500, 'server error', {}, None]),
-            'e3': (HTTPError, ['u', 404, 'not found', {}, None]),
+            'http://e2': (HTTPError, ['u', 500, 'server error', {}, None]),
+            'http://e3': (HTTPError, ['u', 404, 'not found', {}, None]),
         }
         for url, (exception, args) in tests.items():
             def do(url):
