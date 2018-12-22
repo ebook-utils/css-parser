@@ -5,8 +5,7 @@ from __future__ import with_statement, unicode_literals
 import cgi
 import re
 import urllib2
-
-import mock
+from contextlib import contextmanager
 
 import basetest
 
@@ -293,126 +292,127 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
     def test_defaultFetcher(self):
         """util._defaultFetcher"""
-        if mock:
 
-            class Response(object):
-                """urllib2.Reponse mock"""
+        class Response(object):
+            """urllib2.Reponse mock"""
 
-                def __init__(self, url,
-                             contenttype, content,
-                             exception=None, args=None):
-                    self.url = url
+            def __init__(self, url, contenttype, content, exception=None, args=None):
+                self.url = url
 
-                    mt, params = cgi.parse_header(contenttype)
-                    self.mimetype = mt
-                    self.charset = params.get('charset', None)
+                mt, params = cgi.parse_header(contenttype)
+                self.mimetype = mt
+                self.charset = params.get('charset', None)
 
-                    self.text = content
+                self.text = content
 
-                    self.exception = exception
-                    self.args = args
+                self.exception = exception
+                self.args = args
 
-                def geturl(self):
-                    return self.url
+            def geturl(self):
+                return self.url
 
-                def info(self):
-                    mimetype, charset = self.mimetype, self.charset
+            def info(self):
+                mimetype, charset = self.mimetype, self.charset
 
-                    class Info(object):
+                class Info(object):
 
-                        # py2x
-                        def gettype(self):
-                            return mimetype
+                    # py2x
+                    def gettype(self):
+                        return mimetype
 
-                        def getparam(self, name=None):
-                            return charset
+                    def getparam(self, name=None):
+                        return charset
 
-                        # py 3x
-                        get_content_type = gettype
-                        get_content_charset = getparam  # here always charset!
+                    # py 3x
+                    get_content_type = gettype
+                    get_content_charset = getparam  # here always charset!
 
-                    return Info()
+                return Info()
 
-                def read(self):
-                    # returns fake text or raises fake exception
-                    if not self.exception:
-                        return self.text
-                    else:
-                        raise self.exception(*self.args)
+            def read(self):
+                # returns fake text or raises fake exception
+                if not self.exception:
+                    return self.text
+                else:
+                    raise self.exception(*self.args)
 
-            def urlopen(url,
-                        contenttype=None, content=None,
-                        exception=None, args=None):
-                # return an mock which returns parameterized Response
-                def x(*ignored):
-                    if exception:
-                        raise exception(*args)
-                    else:
-                        return Response(url,
-                                        contenttype, content,
-                                        exception=exception, args=args)
-                return x
+        def urlopen(url,
+                    contenttype=None, content=None,
+                    exception=None, args=None):
+            # return an mock which returns parameterized Response
+            def x(*ignored):
+                if exception:
+                    raise exception(*args)
+                else:
+                    return Response(url,
+                                    contenttype, content,
+                                    exception=exception, args=args)
+            return x
 
-            urlopenpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.urlopen'
+        # positive tests
+        tests = {
+            # content-type, contentstr: encoding, contentstr
+            ('text/css', u'€'.encode('utf-8')):
+            (None, u'€'.encode('utf-8')),
+            ('text/css;charset=utf-8', u'€'.encode('utf-8')):
+            ('utf-8', u'€'.encode('utf-8')),
+            ('text/css;charset=ascii', 'a'):
+            ('ascii', 'a')
+        }
 
-            # positive tests
-            tests = {
-                # content-type, contentstr: encoding, contentstr
-                ('text/css', u'€'.encode('utf-8')):
-                (None, u'€'.encode('utf-8')),
-                ('text/css;charset=utf-8', u'€'.encode('utf-8')):
-                ('utf-8', u'€'.encode('utf-8')),
-                ('text/css;charset=ascii', 'a'):
-                ('ascii', 'a')
-            }
-            url = 'http://example.com/test.css'
-            for (contenttype, content), exp in tests.items():
-                @mock.patch(urlopenpatch, new=urlopen(url, contenttype, content))
-                def do(url):
-                    return _defaultFetcher(url)
+        @contextmanager
+        def patch_urlopen(*a, **kw):
+            import cssutils._fetch as fetch
+            orig = fetch.urllib_urlopen
+            fetch.urllib_urlopen = urlopen(*a, **kw)
+            try:
+                yield
+            finally:
+                fetch.urllib_urlopen = orig
 
-                self.assertEqual(exp, do(url))
-
-            # wrong mimetype
-            @mock.patch(urlopenpatch, new=urlopen(url, 'text/html', 'a'))
+        url = 'http://example.com/test.css'
+        for (contenttype, content), exp in tests.items():
             def do(url):
                 return _defaultFetcher(url)
 
-            self.assertRaises(ValueError, do, url)
+            with patch_urlopen(url, contenttype, content):
+                self.assertEqual(exp, do(url))
 
-            # calling url results in fake exception
+        # wrong mimetype
+        def do(url):
+            with patch_urlopen(url, 'text/html', 'a'):
+                return _defaultFetcher(url)
 
-            # py2 ~= py3 raises error earlier than urlopen!
-            tests = {
-                '1': (ValueError, ['invalid value for url']),
-                # _readUrl('mailto:a.css')
-                'mailto:e4': (urllib2.URLError, ['urlerror']),
-                # cannot resolve x, IOError
-                'http://x': (urllib2.URLError, ['ioerror']),
-            }
-            for url, (exception, args) in tests.items():
-                @mock.patch(urlopenpatch, new=urlopen(url, exception=exception, args=args))
-                def do(url):
+        self.assertRaises(ValueError, do, url)
+
+        # calling url results in fake exception
+
+        # py2 ~= py3 raises error earlier than urlopen!
+        tests = {
+            '1': (ValueError, ['invalid value for url']),
+            # _readUrl('mailto:a.css')
+            'mailto:e4': (urllib2.URLError, ['urlerror']),
+            # cannot resolve x, IOError
+            'http://x': (urllib2.URLError, ['ioerror']),
+        }
+        for url, (exception, args) in tests.items():
+            def do(url):
+                with patch_urlopen(url, exception=exception, args=args):
                     return _defaultFetcher(url)
 
-                self.assertRaises(exception, do, url)
+            self.assertRaises(exception, do, url)
 
-            # py2 != py3 raises error earlier than urlopen!
-            urlrequestpatch = 'urllib2.urlopen' if basetest.PY2x else 'urllib.request.Request'
-            tests = {
-                # _readUrl('http://cthedot.de/__UNKNOWN__.css')
-                'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-                'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
-            }
-            for url, (exception, args) in tests.items():
-                @mock.patch(urlrequestpatch, new=urlopen(url, exception=exception, args=args))
-                def do(url):
+        tests = {
+            # _readUrl('http://cthedot.de/__UNKNOWN__.css')
+            'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
+            'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+        }
+        for url, (exception, args) in tests.items():
+            def do(url):
+                with patch_urlopen(url, exception=exception, args=args):
                     return _defaultFetcher(url)
 
-                self.assertRaises(exception, do, url)
-
-        else:
-            self.assertEqual(False, u'Mock needed for this test')
+            self.assertRaises(exception, do, url)
 
 
 class TestLazyRegex(basetest.BaseTestCase):
