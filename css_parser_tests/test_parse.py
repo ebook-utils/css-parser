@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 """Tests for parsing which does not raise Exceptions normally"""
-from __future__ import with_statement, unicode_literals
+from __future__ import absolute_import, unicode_literals, with_statement
 
-from __future__ import absolute_import
+import sys
 import xml.dom
-from . import basetest
+
 import cssutils
-import urllib2
+
+from . import basetest
+
+if sys.version_info.major > 2:
+    from urllib.error import HTTPError
+else:
+    from urllib2 import HTTPError
 
 
 class CSSParserTestCase(basetest.BaseTestCase):
@@ -136,7 +142,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
 
         self.assertRaises(ValueError, parser.parseUrl,
                           '../not-valid-in-urllib')
-        self.assertRaises(urllib2.HTTPError, parser.parseUrl,
+        self.assertRaises(HTTPError, parser.parseUrl,
                           'http://cthedot.de/not-present.css')
 
     def test_parseString(self):

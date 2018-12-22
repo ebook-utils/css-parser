@@ -37,7 +37,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         p = cssutils.profiles.Profiles()
         p.removeProfile(all=True)
         p.addProfile('test', self.P1, self.M1)
-        self.assertEqual(p.knownNames, self.P1.keys())
+        self.assertEqual(list(p.knownNames), list(self.P1.keys()))
         p.removeProfile(all=True)
         self.assertEqual(p.knownNames, [])
 
@@ -93,7 +93,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         # new profile
         cssutils.profile.addProfile('test', self.P1, self.M1)
 
-        props = self.P1.keys()
+        props = list(self.P1.keys())
         props.sort()
         self.assertEqual(props, list(cssutils.profile.propertiesByProfile('test')))
 
@@ -195,7 +195,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                              cssutils.profile.validateWithProfile('color', color))
 
             # CSS2 only:
-        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
+        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'  # noqa
         for color in uicolor.split('|'):
             self.assertEqual(False, cssutils.profile.validate('color', color))
 
@@ -516,11 +516,8 @@ class ProfilesTestCase(basetest.BaseTestCase):
 #                    print '###############', name, value
 #                    print (valid, matching, list(profile)), cssutils.profile.validateWithProfile(name, value)
 
-             # TODO: fix
-#                self.assertEqual((valid, matching, list(profile)),
-#                                 cssutils.profile.validateWithProfile(name, value))
 
-     # TODO: fix
+# TODO: fix
 #    def test_validateByProfile(self):
 #        "Profiles.validateByProfile()"
 #        # testing for valid values overwritten in a profile

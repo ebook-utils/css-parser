@@ -1,12 +1,19 @@
 """Testcases for cssutils.css.CSSCharsetRule"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
-__version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
+from __future__ import absolute_import, unicode_literals
 
 import sys
 import xml.dom
+
+from cssutils.prodparser import (Choice, Exhausted, ParseError, PreDef, Prod,
+                                 ProdParser, Sequence)
+
 from . import basetest
-from cssutils.prodparser import ParseError, Exhausted, Prod, Sequence, Choice, ProdParser, PreDef
+
+__version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
+
+
+if sys.version_info.major > 2:
+    basestring = str
 
 
 class ProdTestCase(basetest.BaseTestCase):

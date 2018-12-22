@@ -2,14 +2,18 @@
 """
 tests for encutils.py
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import httplib
-from StringIO import StringIO
+from __future__ import absolute_import, unicode_literals
+
 import sys
 import unittest
+from io import StringIO
 
 PY2x = sys.version_info < (3, 0)
+
+if PY2x:
+    from httplib import HTTPMessage
+else:
+    from http.client import HTTPMessage
 
 try:
     import cssutils.encutils as encutils
@@ -28,9 +32,9 @@ class AutoEncodingTestCase(unittest.TestCase):
             def __init__(self, content):
                 if PY2x:
                     fp = StringIO(content)
-                    self._info = httplib.HTTPMessage(fp)
+                    self._info = HTTPMessage(fp)
                 else:
-                    self._info = httplib.HTTPMessage()
+                    self._info = HTTPMessage()
                     # Adjust to testdata.
                     la = content.split(':')
                     if len(la) > 1:

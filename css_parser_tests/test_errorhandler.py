@@ -4,11 +4,11 @@ from __future__ import unicode_literals
 __version__ = '$Id: test_parse.py 1281 2008-06-04 21:12:29Z cthedot $'
 
 import logging
-import StringIO
 import sys
 import xml.dom
 from . import basetest
 import cssutils
+from io import StringIO
 
 
 class ErrorHandlerTestCase(basetest.BaseTestCase):
@@ -30,7 +30,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
     def _setHandler(self):
         "sets new handler and returns StringIO instance to getvalue"
-        s = StringIO.StringIO()
+        s = StringIO()
         h = logging.StreamHandler(s)
         h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
         # remove if present already
@@ -106,9 +106,6 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
         cssutils.log.setLevel(logging.DEBUG)
         cssutils.parseString('a { color: 1 }')
-        # TODO: Fix?
-#        self.assertEqual(s.getvalue(),
-#                         u'ERROR    Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 1 [1:5: color]\n')
         self.assertEqual(s.getvalue(),
                          'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
 

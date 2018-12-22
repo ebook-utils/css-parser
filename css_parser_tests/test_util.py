@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
-from __future__ import with_statement, unicode_literals
-"""Testcases for cssutils.util"""
+from __future__ import absolute_import, unicode_literals, with_statement
 
-from __future__ import absolute_import
 import cgi
 import re
-import urllib2
+import sys
 from contextlib import contextmanager
+
+from cssutils.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
 
 from . import basetest
 
-from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
+if sys.version_info.major > 2:
+    from urllib.error import URLError, HTTPError
+else:
+    from urllib2 import URLError, HTTPError
+
+"""Testcases for cssutils.util"""
 
 
 class ListSeqTestCase(basetest.BaseTestCase):
@@ -392,9 +397,9 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         tests = {
             '1': (ValueError, ['invalid value for url']),
             # _readUrl('mailto:a.css')
-            'mailto:e4': (urllib2.URLError, ['urlerror']),
+            'mailto:e4': (URLError, ['urlerror']),
             # cannot resolve x, IOError
-            'http://x': (urllib2.URLError, ['ioerror']),
+            'http://x': (URLError, ['ioerror']),
         }
         for url, (exception, args) in tests.items():
             def do(url):
@@ -405,8 +410,8 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
         tests = {
             # _readUrl('http://cthedot.de/__UNKNOWN__.css')
-            'e2': (urllib2.HTTPError, ['u', 500, 'server error', {}, None]),
-            'e3': (urllib2.HTTPError, ['u', 404, 'not found', {}, None]),
+            'e2': (HTTPError, ['u', 500, 'server error', {}, None]),
+            'e3': (HTTPError, ['u', 404, 'not found', {}, None]),
         }
         for url, (exception, args) in tests.items():
             def do(url):

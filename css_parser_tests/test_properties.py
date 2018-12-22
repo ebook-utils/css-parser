@@ -1,16 +1,20 @@
 """Testcases for cssutils.css.property._Property."""
-from __future__ import absolute_import
-from __future__ import print_function
-from __future__ import unicode_literals
-__version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
+from __future__ import absolute_import, print_function, unicode_literals
 
 import copy
-import xml.dom
-from . import basetest
+import sys
+
 import cssutils
 from cssutils.css.property import Property
 
+from . import basetest
+
+__version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
+
+
 debug = False
+if sys.version_info.major > 2:
+    basestring = str
 
 
 class PropertiesTestCase(basetest.BaseTestCase):
