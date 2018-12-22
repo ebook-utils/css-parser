@@ -1,23 +1,14 @@
 # -*- coding: utf-8 -*-
+from __future__ import with_statement, unicode_literals
 """Testcases for cssutils.util"""
-from __future__ import with_statement
 
 import cgi
-from email import message_from_string, message_from_file
-import StringIO
 import re
-import sys
 import urllib2
-import xml.dom
 
-try:
-    import mock
-except ImportError:
-    mock = None
-    print "install mock library to run all tests"
+import mock
 
 import basetest
-import encutils
 
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 
@@ -58,11 +49,12 @@ class BaseTestCase(basetest.BaseTestCase):
     def test_normalize(self):
         "Base._normalize()"
         b = Base()
-        tests = {u'abcdefg ABCDEFG äöüß€ AÖÜ': u'abcdefg abcdefg äöüß€ aöü',
-                 ur'\ga\Ga\\\ ': ur'gaga\ ',
-                 ur'0123456789': u'0123456789',
-                 # unicode escape seqs should have been done by
-                 # the tokenizer...
+        tests = {
+                'abcdefg ABCDEFG äöüß€ AÖÜ': u'abcdefg abcdefg äöüß€ aöü',
+                r'\ga\Ga\\\ ': r'gaga\ ',
+                r'0123456789': '0123456789',
+                # unicode escape seqs should have been done by
+                # the tokenizer...
                  }
         for test, exp in tests.items():
             self.assertEqual(b._normalize(test), exp)

@@ -5,16 +5,10 @@ import logging
 import os
 import re
 import sys
-import StringIO
 import unittest
-import urllib2
-from email import message_from_string, message_from_file
+from contextlib import contextmanager
 
-# add src to PYTHONPATH
-sys.path.append(os.path.join(os.path.abspath('.'), '..'))
-TEST_HOME = os.path.abspath('.')
-
-
+TEST_HOME = os.path.dirname(os.path.abspath(__file__))
 PY2x = sys.version_info < (3, 0)
 
 
@@ -28,33 +22,14 @@ def msg3x(msg):
 
 def get_resource_filename(resource_name):
     """Get the resource filename.
-
-    If the module is zipped, the file will be extracted and the temporary name
-    is returned instead.
     """
-    print cssutils.__path__
-    amodule = sys.modules['cssutils']
-    module_path = os.path.dirname(getattr(amodule, '__file__', ''))
-    if not module_path.startswith('/'):
-        module_path = os.path.join(TEST_HOME, module_path)
-    if not resource_name or resource_name == "":
-        return module_path
-    return os.path.join(module_path, *resource_name.split('/'))
-
-    # try:
-    #     from pkg_resources import resource_filename
-    # except ImportError:
-    # this_dir = os.path.dirname(__file__)
-    # parts = resource_name.split('/')
-    # return os.path.normpath(os.path.join(this_dir, '..', *parts))
-    # else:
-    #    return resource_filename('cssutils', resource_name)
+    return os.path.join(TEST_HOME, *resource_name.split('/'))
 
 
 def get_sheet_filename(sheet_name):
     """Get the filename for the given sheet."""
     # Extract all sheets since they might use @import
-    sheet_dir = get_resource_filename('tests2/sheets')
+    sheet_dir = get_resource_filename('sheets')
     return os.path.join(sheet_dir, sheet_name)
 
 
@@ -74,6 +49,22 @@ class BaseTestCase(unittest.TestCase):
         cssutils.log.raiseExceptions = True
         cssutils.log.setLevel(logging.FATAL)
         self.p = cssutils.CSSParser(raiseExceptions=True)
+
+    @contextmanager
+    def patch_default_fetcher(self, return_value):
+        import cssutils.util as cu
+        orig = cu._defaultFetcher
+
+        def defaultFetcher(*a):
+            return return_value
+        if callable(return_value):
+            cu._defaultFetcher = return_value
+        else:
+            cu._defaultFetcher = defaultFetcher
+        try:
+            yield
+        finally:
+            cu._defaultFetcher = orig
 
     def tearDown(self):
         if hasattr(self, '_ser'):
@@ -101,7 +92,7 @@ class BaseTestCase(unittest.TestCase):
 
         try:
             callable(*args, **kwargs)
-        except exception, exc:
+        except exception as exc:
             if exc_args is not None:
                 self.failIf(exc.args != exc_args,
                             "%s raised %s with unexpected args: "
@@ -113,9 +104,8 @@ class BaseTestCase(unittest.TestCase):
                                 "does not match '%s': %r"
                                 % (callsig, exc.__class__, exc_pattern.pattern,
                                    str(exc)))
-        except:
+        except Exception:
             exc_info = sys.exc_info()
-            print exc_info
             self.fail("%s raised an unexpected exception type: "
                       "expected=%s, actual=%s"
                       % (callsig, exception, exc_info[0]))
@@ -139,7 +129,7 @@ class BaseTestCase(unittest.TestCase):
         """
         try:
             callableObj(*args, **kwargs)
-        except excClass, exc:
+        except excClass as exc:
             excMsg = unicode(exc)
             if not msg:
                 # No message provided: any message is fine.
@@ -170,7 +160,7 @@ class BaseTestCase(unittest.TestCase):
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             s = p.parseString(test)
             if expected is None:
                 expected = test
@@ -181,14 +171,14 @@ class BaseTestCase(unittest.TestCase):
         p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(expected, p.parseString, test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
         for test, expected in tests.items():
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -198,14 +188,14 @@ class BaseTestCase(unittest.TestCase):
         # sets self.r and asserts raise
         for test, expected in tests.items():
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
-                print '"%s"' % test
+                print('"%s"' % test)
             self.assertRaises(err, self.r.__getattribute__(att), test)
 
 

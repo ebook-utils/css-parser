@@ -10,7 +10,6 @@ __version__ = '$Id$'
 from .helper import path2url
 import codecs
 import cssutils
-import os
 import sys
 from . import tokenize2
 
@@ -174,7 +173,6 @@ class CSSParser(object):
         :returns:
             :class:`~cssutils.css.CSSStyleSheet`.
         """
-        print("\n\nWWWWWWWWWW", href, filename, encoding)
         if not href:
             href = path2url(filename)
 

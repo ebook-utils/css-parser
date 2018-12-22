@@ -100,7 +100,7 @@ Usage may be::
 
 """
 
-__all__ = ['css', 'stylesheets', 'CSSParser', 'CSSSerializer']
+__all__ = list(map(str, ('css', 'stylesheets', 'CSSParser', 'CSSSerializer')))
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'

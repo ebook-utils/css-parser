@@ -4,8 +4,7 @@ __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 import sys
 import xml.dom
 import basetest
-from cssutils.prodparser import *
-from cssutils.prodparser import ParseError, Done, Exhausted, NoMatch  # not in __all__
+from cssutils.prodparser import ParseError, Exhausted, Prod, Sequence, Choice, ProdParser, PreDef
 
 
 class ProdTestCase(basetest.BaseTestCase):
@@ -86,7 +85,6 @@ class SequenceTestCase(basetest.BaseTestCase):
     def test_init(self):
         "Sequence.__init__()"
         p1 = Prod('p1', lambda t, v: t == 1)
-        p2 = Prod('p2', lambda t, v: t == 2)
         seq = Sequence(p1, p1)
 
         self.assertEqual(1, seq._min)
@@ -362,6 +360,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  '3 3': "No match: ('NUMBER', '3', 1, 3)",
                  }
         for text, exp in tests.items():
+            if sys.version_info.major == 2 and hasattr(exp, 'replace'):
+                exp = exp.replace("('", "(u'")
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1, 2)),
                            p3)
             if exp is True:
@@ -383,6 +383,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  '3': "Missing token for production Choice(Sequence(p1), p2): ('NUMBER', '3', 1, 1)",
                  }
         for text, exp in tests.items():
+            if sys.version_info.major == 2 and hasattr(exp, 'replace'):
+                exp = exp.replace("('", "(u'")
             prods = Sequence(Choice(Sequence(p1, minmax=lambda: (1, 2)),
                                     p2),
                              p3)
