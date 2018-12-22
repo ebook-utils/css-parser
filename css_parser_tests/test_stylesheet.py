@@ -1,8 +1,10 @@
 """Testcases for cssutils.stylesheets.StyleSheet"""
+from __future__ import absolute_import
+from __future__ import unicode_literals
 __version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 
 
@@ -15,7 +17,7 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.type, 'text/css')
         self.assertEqual(s.href, None)
         self.assertEqual(s.media, None)
-        self.assertEqual(s.title, u'')
+        self.assertEqual(s.title, '')
         self.assertEqual(s.ownerNode, None)
         self.assertEqual(s.parentStyleSheet, None)
         self.assertEqual(s.alternate, False)
@@ -24,7 +26,7 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         s = cssutils.stylesheets.StyleSheet(type='unknown',
                                             href='test.css',
                                             media=None,
-                                            title=u'title',
+                                            title='title',
                                             ownerNode=None,
                                             parentStyleSheet=None,
                                             alternate=True,
@@ -33,7 +35,7 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.type, 'unknown')
         self.assertEqual(s.href, 'test.css')
         self.assertEqual(s.media, None)
-        self.assertEqual(s.title, u'title')
+        self.assertEqual(s.title, 'title')
         self.assertEqual(s.ownerNode, None)
         self.assertEqual(s.parentStyleSheet, None)
         self.assertEqual(s.alternate, True)

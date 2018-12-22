@@ -1,5 +1,4 @@
-import cssutils
-"""Base class for all tests"""
+from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 import os
@@ -7,6 +6,11 @@ import re
 import sys
 import unittest
 from contextlib import contextmanager
+
+import cssutils
+
+"""Base class for all tests"""
+
 
 TEST_HOME = os.path.dirname(os.path.abspath(__file__))
 PY2x = sys.version_info < (3, 0)
@@ -130,7 +134,7 @@ class BaseTestCase(unittest.TestCase):
         try:
             callableObj(*args, **kwargs)
         except excClass as exc:
-            excMsg = unicode(exc)
+            excMsg = str(exc)
             if not msg:
                 # No message provided: any message is fine.
                 return
@@ -140,7 +144,7 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                    u"Right exception, wrong message: got '%s' instead of '%s'" %
+                    "Right exception, wrong message: got '%s' instead of '%s'" %
                     (excMsg, msg))
         else:
             if hasattr(excClass, '__name__'):
@@ -160,25 +164,28 @@ class BaseTestCase(unittest.TestCase):
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(('"%s"' % test))
             s = p.parseString(test)
             if expected is None:
                 expected = test
-            self.assertEqual(expected, unicode(s.__getattribute__(att), 'utf-8'))
+            ans = s.__getattribute__(att)
+            if isinstance(ans, bytes):
+                ans = ans.decode('utf-8')
+            self.assertEqual(expected, ans)
 
     def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
         p = cssutils.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(('"%s"' % test))
             self.assertRaises(expected, p.parseString, test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(('"%s"' % test))
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -188,14 +195,14 @@ class BaseTestCase(unittest.TestCase):
         # sets self.r and asserts raise
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(('"%s"' % test))
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
-                print('"%s"' % test)
+                print(('"%s"' % test))
             self.assertRaises(err, self.r.__getattribute__(att), test)
 
 
@@ -238,7 +245,7 @@ class GenerateTests(type):
                         aobj(self, *case)
                     return wrapper
                 wrapper = make_wrapper()
-                wrapper.__name__ = case_name
+                wrapper.__name__ = str(case_name)
                 wrapper.__doc__ = "%s(%s)" % (test_name,
                                               ", ".join(map(repr, case)))
                 if aobj.__doc__ is not None:
@@ -248,7 +255,7 @@ class GenerateTests(type):
 
     @classmethod
     def make_case_repr(cls, case):
-        if isinstance(case, str):
+        if isinstance(case, type('')):
             value = case
         else:
             try:

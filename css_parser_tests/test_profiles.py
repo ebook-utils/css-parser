@@ -1,9 +1,11 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
+from __future__ import absolute_import
+from __future__ import unicode_literals
 __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
 import sys
 import platform
-import basetest
+from . import basetest
 import cssutils
 
 CSS2 = (cssutils.profile.CSS_LEVEL_2,)
@@ -27,7 +29,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',
         # custom validation function
-        '-test-funcval': lambda(v): int(v) > 0
+        '-test-funcval': lambda v: int(v) > 0
     }
 
     def test_knownNames(self):
@@ -119,19 +121,19 @@ class ProfilesTestCase(basetest.BaseTestCase):
         cssutils.log.raiseExceptions = True
 
         # raises:
-        expmsg = u"invalid literal for int() with base 10: 'x'"
+        expmsg = "invalid literal for int() with base 10: 'x'"
         # Python upto 2.4 and Jython have different msg format...
         if sys.version_info[0:2] == (2, 4):
-            expmsg = u"invalid literal for int(): x"
+            expmsg = "invalid literal for int(): x"
         elif sys.platform.startswith('java'):
-            expmsg = u"invalid literal for int() with base 10: x"
+            expmsg = "invalid literal for int() with base 10: x"
         # PyPy adds the u prefix, but only in versions lower than Python 3
         elif (platform.python_implementation() == "PyPy" and
               sys.version_info < (3, 0)):
-            expmsg = u"invalid literal for int() with base 10: u'x'"
+            expmsg = "invalid literal for int() with base 10: u'x'"
 
         self.assertRaisesMsg(Exception, expmsg,
-                             cssutils.profile.validate, u'-test-funcval', u'x')
+                             cssutils.profile.validate, '-test-funcval', 'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"

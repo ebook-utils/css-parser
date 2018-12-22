@@ -1,9 +1,12 @@
 """Testcases for cssutils.css.property._Property."""
+from __future__ import absolute_import
+from __future__ import print_function
+from __future__ import unicode_literals
 __version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
 
 import copy
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 from cssutils.css.property import Property
 
@@ -105,13 +108,13 @@ class PropertiesTestCase(basetest.BaseTestCase):
 
         for value in self._valuesofkeys(keys):
             if name == debug:
-                print '+True?', Property(name, value).valid, value
+                print('+True?', Property(name, value).valid, value)
             self.assertEqual(True, Property(name, value).valid)
             if value in notvalid:
                 notvalid.remove(value)
         for value in notvalid:
             if name == debug:
-                print '-False?', Property(name, value).valid, value
+                print('-False?', Property(name, value).valid, value)
             self.assertEqual(False, Property(name, value).valid)
 
     def test_properties(self):

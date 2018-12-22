@@ -817,3 +817,5 @@
 # if __name__ == '__main__':
 #    import unittest
 #    unittest.main()
+
+from __future__ import unicode_literals

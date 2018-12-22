@@ -1,7 +1,9 @@
 """Testcases for cssutils.css.cssproperties."""
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import xml.dom
-import basetest
+from . import basetest
 import cssutils.css
 import cssutils.profiles
 

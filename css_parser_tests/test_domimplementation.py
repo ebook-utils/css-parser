@@ -1,5 +1,7 @@
 """Testcases for cssutils.css.DOMImplementation"""
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 import xml.dom
 import xml.dom.minidom
 import unittest

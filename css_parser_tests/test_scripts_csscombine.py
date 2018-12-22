@@ -1,7 +1,9 @@
 """Testcases for cssutils.scripts.csscombine"""
 
+from __future__ import absolute_import
+from __future__ import unicode_literals
 from cssutils.script import csscombine
-import basetest
+from . import basetest
 import cssutils
 import os
 

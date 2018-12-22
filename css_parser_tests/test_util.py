@@ -2,12 +2,13 @@
 from __future__ import with_statement, unicode_literals
 """Testcases for cssutils.util"""
 
+from __future__ import absolute_import
 import cgi
 import re
 import urllib2
 from contextlib import contextmanager
 
-import basetest
+from . import basetest
 
 from cssutils.util import Base, ListSeq, _readUrl, _defaultFetcher, LazyRegex
 
@@ -49,7 +50,7 @@ class BaseTestCase(basetest.BaseTestCase):
         "Base._normalize()"
         b = Base()
         tests = {
-                'abcdefg ABCDEFG äöüß€ AÖÜ': u'abcdefg abcdefg äöüß€ aöü',
+                'abcdefg ABCDEFG äöüß€ AÖÜ': 'abcdefg abcdefg äöüß€ aöü',
                 r'\ga\Ga\\\ ': r'gaga\ ',
                 r'0123456789': '0123456789',
                 # unicode escape seqs should have been done by
@@ -67,26 +68,26 @@ class BaseTestCase(basetest.BaseTestCase):
         b = Base()
 
         tests = [
-            ('default', u'a[{1}]({2}) { } NOT', u'a[{1}]({2}) { }', False),
-            ('default', u'a[{1}]({2}) { } NOT', u'a[{1}]func({2}) { }', True),
-            ('blockstartonly', u'a[{1}]({2}) { NOT', u'a[{1}]({2}) {', False),
-            ('blockstartonly', u'a[{1}]({2}) { NOT', u'a[{1}]func({2}) {', True),
-            ('propertynameendonly', u'a[(2)1] { }2 : a;', u'a[(2)1] { }2 :', False),
-            ('propertynameendonly', u'a[(2)1] { }2 : a;', u'a[func(2)1] { }2 :', True),
-            ('propertyvalueendonly', u'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
-                u'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1;', False),
-            ('propertyvalueendonly', u'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
-                u'a{;{;}[;]func(;)}[;{;}[;]func(;)]func(;{;}[;]func(;)) 1;', True),
-            ('funcendonly', u'a{[1]}([3])[{[1]}[2]([3])]) NOT',
-                u'a{[1]}([3])[{[1]}[2]([3])])', False),
-            ('funcendonly', u'a{[1]}([3])[{[1]}[2]([3])]) NOT',
-                u'a{[1]}func([3])[{[1]}[2]func([3])])', True),
-            ('selectorattendonly', u'[a[()]{()}([()]{()}())] NOT',
-                u'[a[()]{()}([()]{()}())]', False),
-            ('selectorattendonly', u'[a[()]{()}([()]{()}())] NOT',
-                u'[a[func()]{func()}func([func()]{func()}func())]', True),
+            ('default', 'a[{1}]({2}) { } NOT', 'a[{1}]({2}) { }', False),
+            ('default', 'a[{1}]({2}) { } NOT', 'a[{1}]func({2}) { }', True),
+            ('blockstartonly', 'a[{1}]({2}) { NOT', 'a[{1}]({2}) {', False),
+            ('blockstartonly', 'a[{1}]({2}) { NOT', 'a[{1}]func({2}) {', True),
+            ('propertynameendonly', 'a[(2)1] { }2 : a;', 'a[(2)1] { }2 :', False),
+            ('propertynameendonly', 'a[(2)1] { }2 : a;', 'a[func(2)1] { }2 :', True),
+            ('propertyvalueendonly', 'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
+                'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1;', False),
+            ('propertyvalueendonly', 'a{;{;}[;](;)}[;{;}[;](;)](;{;}[;](;)) 1; NOT',
+                'a{;{;}[;]func(;)}[;{;}[;]func(;)]func(;{;}[;]func(;)) 1;', True),
+            ('funcendonly', 'a{[1]}([3])[{[1]}[2]([3])]) NOT',
+                'a{[1]}([3])[{[1]}[2]([3])])', False),
+            ('funcendonly', 'a{[1]}([3])[{[1]}[2]([3])]) NOT',
+                'a{[1]}func([3])[{[1]}[2]func([3])])', True),
+            ('selectorattendonly', '[a[()]{()}([()]{()}())] NOT',
+                '[a[()]{()}([()]{()}())]', False),
+            ('selectorattendonly', '[a[()]{()}([()]{()}())] NOT',
+                '[a[func()]{func()}func([func()]{func()}func())]', True),
             # issue 50
-            ('withstarttoken [', u'a];x', u'[a];', False)
+            ('withstarttoken [', 'a];x', '[a];', False)
         ]
 
         for typ, values, exp, paransasfunc in tests:
@@ -98,8 +99,8 @@ class BaseTestCase(basetest.BaseTestCase):
             tokens = maketokens(list(values))
             if paransasfunc:
                 for i, t in enumerate(tokens):
-                    if u'(' == t[1]:
-                        tokens[i] = ('FUNCTION', u'func(', t[2], t[3])
+                    if '(' == t[1]:
+                        tokens[i] = ('FUNCTION', 'func(', t[2], t[3])
 
             if 'default' == typ:
                 restokens = b._tokensupto2(tokens)
@@ -121,7 +122,7 @@ class BaseTestCase(basetest.BaseTestCase):
             elif 'withstarttoken [' == typ:
                 restokens = b._tokensupto2(tokens, ('CHAR', '[', 0, 0))
 
-            res = u''.join([t[1] for t in restokens])
+            res = ''.join([t[1] for t in restokens])
             self.assertEqual(exp, res)
 
 
@@ -142,11 +143,11 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         tests = {
             # defaultFetcher returns: readUrl returns
             None: (None, None, None),
-            (None, ''): ('utf-8', 5, u''),
-            (None, u'€'.encode('utf-8')): ('utf-8', 5, u'€'),
-            ('utf-8', u'€'.encode('utf-8')): ('utf-8', 1, u'€'),
-            ('ISO-8859-1', u'ä'.encode('iso-8859-1')): ('ISO-8859-1', 1, u'ä'),
-            ('ASCII', u'a'.encode('ascii')): ('ASCII', 1, u'a')
+            (None, ''): ('utf-8', 5, ''),
+            (None, '€'.encode('utf-8')): ('utf-8', 5, '€'),
+            ('utf-8', '€'.encode('utf-8')): ('utf-8', 1, '€'),
+            ('ISO-8859-1', 'ä'.encode('iso-8859-1')): ('ISO-8859-1', 1, 'ä'),
+            ('ASCII', 'a'.encode('ascii')): ('ASCII', 1, 'a')
         }
 
         for r, exp in tests.items():
@@ -158,127 +159,127 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
             # ===== 0. OVERRIDE WINS =====
             # override + parent + http
-            ('latin1', 'ascii', ('utf-16', u''.encode())): ('latin1', 0, u''),
-            ('latin1', 'ascii', ('utf-16', u'123'.encode())): ('latin1', 0, u'123'),
-            ('latin1', 'ascii', ('utf-16', u'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, u'ä'),
-            ('latin1', 'ascii', ('utf-16', u'a'.encode('ascii'))):
-                ('latin1', 0,  u'a'),
+            ('latin1', 'ascii', ('utf-16', ''.encode())): ('latin1', 0, ''),
+            ('latin1', 'ascii', ('utf-16', '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', 'ascii', ('utf-16', 'ä'.encode('iso-8859-1'))):
+                ('latin1', 0, 'ä'),
+            ('latin1', 'ascii', ('utf-16', 'a'.encode('ascii'))):
+                ('latin1', 0,  'a'),
             # + @charset
-            ('latin1', 'ascii', ('utf-16', u'@charset "ascii";'.encode())):
-                ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', 'ascii', ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            ('latin1', 'ascii', ('utf-16', '@charset "ascii";'.encode())):
+                ('latin1', 0, '@charset "latin1";'),
+            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 0, '@charset "latin1";ä'),
+            ('latin1', 'ascii', ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override only
             ('latin1', None, None): (None, None, None),
-            ('latin1', None, (None, u''.encode())): ('latin1', 0, u''),
-            ('latin1', None, (None, u'123'.encode())): ('latin1', 0, u'123'),
-            ('latin1', None, (None, u'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, u'ä'),
-            ('latin1', None, (None, u'a'.encode('ascii'))):
-                ('latin1', 0, u'a'),
+            ('latin1', None, (None, ''.encode())): ('latin1', 0, ''),
+            ('latin1', None, (None, '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', None, (None, 'ä'.encode('iso-8859-1'))):
+                ('latin1', 0, 'ä'),
+            ('latin1', None, (None, 'a'.encode('ascii'))):
+                ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, (None, u'@charset "ascii";'.encode())):
-                ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            ('latin1', None, (None, '@charset "ascii";'.encode())):
+                ('latin1', 0, '@charset "latin1";'),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 0, '@charset "latin1";ä'),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override + parent
             ('latin1', 'ascii', None): (None, None, None),
-            ('latin1', 'ascii', (None, u''.encode())): ('latin1', 0, u''),
-            ('latin1', 'ascii', (None, u'123'.encode())): ('latin1', 0, u'123'),
-            ('latin1', 'ascii', (None, u'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, u'ä'),
-            ('latin1', 'ascii', (None, u'a'.encode('ascii'))):
-                ('latin1', 0, u'a'),
+            ('latin1', 'ascii', (None, ''.encode())): ('latin1', 0, ''),
+            ('latin1', 'ascii', (None, '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', 'ascii', (None, 'ä'.encode('iso-8859-1'))):
+                ('latin1', 0, 'ä'),
+            ('latin1', 'ascii', (None, 'a'.encode('ascii'))):
+                ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', 'ascii', (None, u'@charset "ascii";'.encode())):
-                ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            ('latin1', 'ascii', (None, '@charset "ascii";'.encode())):
+                ('latin1', 0, '@charset "latin1";'),
+            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 0, '@charset "latin1";ä'),
+            ('latin1', 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override + http
-            ('latin1', None, ('utf-16', u''.encode())): ('latin1', 0, u''),
-            ('latin1', None, ('utf-16', u'123'.encode())): ('latin1', 0, u'123'),
-            ('latin1', None, ('utf-16', u'ä'.encode('iso-8859-1'))):
-                ('latin1', 0, u'ä'),
-            ('latin1', None, ('utf-16', u'a'.encode('ascii'))):
-                ('latin1', 0, u'a'),
+            ('latin1', None, ('utf-16', ''.encode())): ('latin1', 0, ''),
+            ('latin1', None, ('utf-16', '123'.encode())): ('latin1', 0, '123'),
+            ('latin1', None, ('utf-16', 'ä'.encode('iso-8859-1'))):
+                ('latin1', 0, 'ä'),
+            ('latin1', None, ('utf-16', 'a'.encode('ascii'))):
+                ('latin1', 0, 'a'),
             # + @charset
-            ('latin1', None, ('utf-16', u'@charset "ascii";'.encode())):
-                ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, ('utf-16', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            ('latin1', None, ('utf-16', '@charset "ascii";'.encode())):
+                ('latin1', 0, '@charset "latin1";'),
+            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 0, '@charset "latin1";ä'),
+            ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # override ü @charset
-            ('latin1', None, (None, u'@charset "ascii";'.encode())):
-                ('latin1', 0, u'@charset "latin1";'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, u'@charset "latin1";ä'),
-            ('latin1', None, (None, u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            ('latin1', None, (None, '@charset "ascii";'.encode())):
+                ('latin1', 0, '@charset "latin1";'),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 0, '@charset "latin1";ä'),
+            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
 
             # ===== 1. HTTP WINS =====
-            (None, 'ascii', ('latin1', u''.encode())): ('latin1', 1, u''),
-            (None, 'ascii', ('latin1', u'123'.encode())): ('latin1', 1, u'123'),
-            (None, 'ascii', ('latin1', u'ä'.encode('iso-8859-1'))):
-                ('latin1', 1, u'ä'),
-            (None, 'ascii', ('latin1', u'a'.encode('ascii'))):
-                ('latin1', 1, u'a'),
+            (None, 'ascii', ('latin1', ''.encode())): ('latin1', 1, ''),
+            (None, 'ascii', ('latin1', '123'.encode())): ('latin1', 1, '123'),
+            (None, 'ascii', ('latin1', 'ä'.encode('iso-8859-1'))):
+                ('latin1', 1, 'ä'),
+            (None, 'ascii', ('latin1', 'a'.encode('ascii'))):
+                ('latin1', 1, 'a'),
             # + @charset
-            (None, 'ascii', ('latin1', u'@charset "ascii";'.encode())):
-                ('latin1', 1, u'@charset "latin1";'),
-            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 1, u'@charset "latin1";ä'),
-            (None, 'ascii', ('latin1', u'@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 1, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            (None, 'ascii', ('latin1', '@charset "ascii";'.encode())):
+                ('latin1', 1, '@charset "latin1";'),
+            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('latin1'))):
+                ('latin1', 1, '@charset "latin1";ä'),
+            (None, 'ascii', ('latin1', '@charset "utf-8";ä'.encode('utf-8'))):
+                ('latin1', 1, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
 
             # ===== 2. @charset WINS =====
-            (None, 'ascii', (None, u'@charset "latin1";'.encode())):
-                ('latin1', 2, u'@charset "latin1";'),
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('latin1'))):
-                ('latin1', 2, u'@charset "latin1";ä'),
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8'))):
-                ('latin1', 2, u'@charset "latin1";\xc3\xa4'),  # read as latin1!
+            (None, 'ascii', (None, '@charset "latin1";'.encode())):
+                ('latin1', 2, '@charset "latin1";'),
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('latin1'))):
+                ('latin1', 2, '@charset "latin1";ä'),
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8'))):
+                ('latin1', 2, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
             # ===== 2. BOM WINS =====
-            (None, 'ascii', (None, u'ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'\xe4'),  # read as latin1!
-            (None, 'ascii', (None, u'@charset "utf-8";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'),  # read as latin1!
-            (None, 'ascii', (None, u'@charset "latin1";ä'.encode('utf-8-sig'))):
-                ('utf-8-sig', 2, u'@charset "utf-8";\xe4'),  # read as latin1!
+            (None, 'ascii', (None, 'ä'.encode('utf-8-sig'))):
+                ('utf-8-sig', 2, '\xe4'),  # read as latin1!
+            (None, 'ascii', (None, '@charset "utf-8";ä'.encode('utf-8-sig'))):
+                ('utf-8-sig', 2, '@charset "utf-8";\xe4'),  # read as latin1!
+            (None, 'ascii', (None, '@charset "latin1";ä'.encode('utf-8-sig'))):
+                ('utf-8-sig', 2, '@charset "utf-8";\xe4'),  # read as latin1!
 
 
             # ===== 4. parentEncoding WINS =====
-            (None, 'latin1', (None, u''.encode())): ('latin1', 4, u''),
-            (None, 'latin1', (None, u'123'.encode())): ('latin1', 4, u'123'),
-            (None, 'latin1', (None, u'ä'.encode('iso-8859-1'))):
-                ('latin1', 4, u'ä'),
-            (None, 'latin1', (None, u'a'.encode('ascii'))):
-                ('latin1', 4, u'a'),
-            (None, 'latin1', (None, u'ä'.encode('utf-8'))):
-                ('latin1', 4, u'\xc3\xa4'),  # read as latin1!
+            (None, 'latin1', (None, ''.encode())): ('latin1', 4, ''),
+            (None, 'latin1', (None, '123'.encode())): ('latin1', 4, '123'),
+            (None, 'latin1', (None, 'ä'.encode('iso-8859-1'))):
+                ('latin1', 4, 'ä'),
+            (None, 'latin1', (None, 'a'.encode('ascii'))):
+                ('latin1', 4, 'a'),
+            (None, 'latin1', (None, 'ä'.encode('utf-8'))):
+                ('latin1', 4, '\xc3\xa4'),  # read as latin1!
 
             # ===== 5. default WINS which in this case is None! =====
-            (None, None, (None, u''.encode())): ('utf-8', 5, u''),
-            (None, None, (None, u'123'.encode())): ('utf-8', 5, u'123'),
-            (None, None, (None, u'a'.encode('ascii'))):
-                ('utf-8', 5, u'a'),
-            (None, None, (None, u'ä'.encode('utf-8'))):
-                ('utf-8', 5, u'ä'),  # read as utf-8
-            (None, None, (None, u'ä'.encode('iso-8859-1'))):  # trigger UnicodeDecodeError!
+            (None, None, (None, ''.encode())): ('utf-8', 5, ''),
+            (None, None, (None, '123'.encode())): ('utf-8', 5, '123'),
+            (None, None, (None, 'a'.encode('ascii'))):
+                ('utf-8', 5, 'a'),
+            (None, None, (None, 'ä'.encode('utf-8'))):
+                ('utf-8', 5, 'ä'),  # read as utf-8
+            (None, None, (None, 'ä'.encode('iso-8859-1'))):  # trigger UnicodeDecodeError!
                 ('utf-8', 5, None),
 
 
@@ -352,10 +353,10 @@ class _readUrl_TestCase(basetest.BaseTestCase):
         # positive tests
         tests = {
             # content-type, contentstr: encoding, contentstr
-            ('text/css', u'€'.encode('utf-8')):
-            (None, u'€'.encode('utf-8')),
-            ('text/css;charset=utf-8', u'€'.encode('utf-8')):
-            ('utf-8', u'€'.encode('utf-8')),
+            ('text/css', '€'.encode('utf-8')):
+            (None, '€'.encode('utf-8')),
+            ('text/css;charset=utf-8', '€'.encode('utf-8')):
+            ('utf-8', '€'.encode('utf-8')),
             ('text/css;charset=ascii', 'a'):
             ('ascii', 'a')
         }

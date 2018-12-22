@@ -1,9 +1,11 @@
 """Testcases for cssutils.css.CSSValue and CSSPrimitiveValue."""
+from __future__ import absolute_import
+from __future__ import unicode_literals
 __version__ = '$Id: test_cssvalue.py 1473 2008-09-15 21:15:54Z cthedot $'
 
 # from decimal import Decimal # maybe for later tests?
 import xml.dom
-import basetest
+from . import basetest
 import cssutils
 import types
 
@@ -18,8 +20,8 @@ class XTestCase(basetest.BaseTestCase):
 
     def test_prioriy(self):
         "Property.priority"
-        s = cssutils.parseString(u'a { color: red }')
-        self.assertEqual(s.cssText, u'a {\n    color: red\n    }'.encode())
+        s = cssutils.parseString('a { color: red }')
+        self.assertEqual(s.cssText, 'a {\n    color: red\n    }'.encode())
 #        self.assertEqual(u'', s.cssRules[0].style.getPropertyPriority('color'))
 #
 #        s = cssutils.parseString('a { color: red !important }')

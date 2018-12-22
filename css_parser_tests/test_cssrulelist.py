@@ -1,6 +1,8 @@
 """Testcases for cssutils.css.CSSRuleList"""
 
-import basetest
+from __future__ import absolute_import
+from __future__ import unicode_literals
+from . import basetest
 import cssutils
 
 
