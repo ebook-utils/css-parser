@@ -12,6 +12,7 @@ matrix:
         - os: osx
           language: generic
 install:
-    pip install chardet
+    pip install chardet flake8
 script:
     - python setup.py test
+    - flake8 src
