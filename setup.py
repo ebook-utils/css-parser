@@ -10,25 +10,42 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald and lots of other people'
 __date__ = '$LastChangedDate::                            $:'
 
-import os
 import re
+import sys
+import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
+from setuptools.command.test import test
 
 # extract the version without importing the module
 VERSION = re.search(r"^VERSION\s+=\s+'(.+?)'", open('src/cssutils/version.py', 'rb').read().decode('utf-8'))
-long_description = '\n' + open('README.txt', 'rb').read().decode('utf-8') + '\n'  # + read('CHANGELOG.txt')
+long_description = '\n' + open('README.md', 'rb').read().decode('utf-8') + '\n'  # + read('CHANGELOG.txt')
 
 
-def list_files(package, dir_name):
-    prefix = os.path.join('src', package)
-    dir_path = os.path.join(prefix, dir_name)
-    result = []
-    for root, dirs, files in os.walk(dir_path):
-        fullpaths = [os.path.join(root, file) for file in files]
-        # strip off the prefix and the slash of the prefix
-        result.extend(path[len(prefix) + 1:] for path in fullpaths)
-    return result
+class Test(test):
+
+    user_options = [
+        ('which-test=', 'w', "Specify which test to run as either"
+            " the test method name (without the leading test_)"
+            " or a module name with a trailing period"),
+    ]
+
+    def initialize_options(self):
+        self.which_test = None
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        import importlib
+        orig = sys.path[:]
+        try:
+            sys.path.insert(0, os.getcwd())
+            m = importlib.import_module('run_tests')
+            which_test = (self.which_test,) if self.which_test else ()
+            m.run_tests(which_test)
+        finally:
+            sys.path = orig
 
 
 setup(
@@ -46,6 +63,7 @@ setup(
     },
     description='A CSS Cascading Style Sheets library for Python',
     long_description=long_description,
+    cmdclass={'test': Test},
     author='Christof Hoeke',
     author_email='c@cthedot.de',
     url='http://cthedot.de/cssutils/',

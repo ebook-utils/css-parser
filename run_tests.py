@@ -4,7 +4,6 @@
 
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import argparse
 import importlib
 import os
 import sys
@@ -71,9 +70,29 @@ def find_tests():
     return unittest.TestSuite(suites)
 
 
+def run_tests(test_names=()):
+    sys.path = [base, os.path.join(base, 'src')] + sys.path
+    tests = find_tests()
+    suites = []
+    for name in test_names:
+        if name.endswith('.'):
+            module_name = name[:-1]
+            if not module_name.startswith('test_'):
+                module_name = 'test_' + module_name
+            suites.append(filter_tests_by_module(tests, module_name))
+        else:
+            suites.append(filter_tests_by_name(tests, name))
+    tests = unittest.TestSuite(suites) if suites else tests
+
+    r = unittest.TextTestRunner
+    result = r().run(tests)
+
+    if not result.wasSuccessful():
+        raise SystemExit(1)
+
+
 def main():
-    sys.path.insert(0, base)
-    sys.path.insert(0, os.path.join(base, 'src'))
+    import argparse
     parser = argparse.ArgumentParser(
         description='''\
 Run the specified tests, or all tests if none are specified. Tests
@@ -90,21 +109,7 @@ or a module name with a trailing period.
         )
     )
     args = parser.parse_args()
-
-    tests = find_tests()
-    suites = []
-    for name in args.test_name:
-        if name.endswith('.'):
-            suites.append(filter_tests_by_module(tests, name[:-1]))
-        else:
-            suites.append(filter_tests_by_name(tests, name))
-    tests = unittest.TestSuite(suites) if suites else tests
-
-    r = unittest.TextTestRunner
-    result = r().run(tests)
-
-    if not result.wasSuccessful():
-        raise SystemExit(1)
+    run_tests(args.test_name)
 
 
 if __name__ == '__main__':
