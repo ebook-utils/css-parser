@@ -74,7 +74,7 @@ class CSSRule(cssutils.util.Base2):
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
         self._setSeq(self._tempSeq())
-        #self._atkeyword = None
+        # self._atkeyword = None
         # must be set after initialization of #inheriting rule is done
         self._readonly = False
 

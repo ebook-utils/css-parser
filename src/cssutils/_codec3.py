@@ -4,7 +4,6 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'
 __version__ = '$Id: util.py 1114 2008-03-05 13:22:59Z cthedot $'
 
-import sys
 import codecs
 import marshal
 
@@ -59,7 +58,7 @@ def detectencoding_str(input, final=False):
 
     candidates = 1023  # all candidates
 
-    #input = chars(input)
+    # input = chars(input)
     li = len(input)
     if li >= 1:
         # Check first byte
@@ -208,7 +207,7 @@ def decode(input, errors="strict", encoding=None, force=True):
     try:
         # py 3 only, memory?! object to bytes
         input = input.tobytes()
-    except AttributeError as e:
+    except AttributeError:
         pass
 
     if encoding is None or not force:
@@ -478,7 +477,7 @@ class StreamWriter(codecs.StreamWriter):
         try:
             if self.streamwriter is not None:
                 self.streamwriter.errors = errors
-        except AttributeError as e:
+        except AttributeError:
             # TODO: py3 only exception?
             pass
 
@@ -525,7 +524,7 @@ class StreamReader(codecs.StreamReader):
         try:
             if self.streamreader is not None:
                 self.streamreader.errors = errors
-        except AttributeError as e:
+        except AttributeError:
             # TODO: py3 only exception?
             pass
 

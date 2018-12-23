@@ -74,7 +74,7 @@ class Choice(object):
 
         try:
             self.optional = options['optional']
-        except KeyError as e:
+        except KeyError:
             for p in self._prods:
                 if p.optional:
                     self.optional = True
@@ -105,7 +105,7 @@ class Choice(object):
         - raise Exhausted if choice already done
 
         ``token`` may be None but this occurs when no tokens left."""
-        #print u'TEST for %s in %s' % (token, self)
+        # print u'TEST for %s in %s' % (token, self)
         if not self._exhausted:
             optional = False
             for p in self._prods:
@@ -120,7 +120,7 @@ class Choice(object):
                 if not optional:
                     # None matched but also None is optional
                     raise NoMatch('No match for %s in %s' % (token, self))
-                    #raise ParseError(u'No match in %s for %s' % (self, token))
+                    # raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted('Extra token')
 
@@ -198,7 +198,7 @@ class Sequence(object):
         - raises ParseError if nothing matches
         - raises Exhausted if sequence already done
         """
-        #print u'TEST for %s in %s' % (token, self)
+        # print u'TEST for %s in %s' % (token, self)
         while self._round < self._max:
 
             # for this round
@@ -375,18 +375,13 @@ class ProdParser(object):
             # DEFAULT, to tokenize strip space
             return tokenizer.tokenize(text.strip())
 
-        elif type(text) == types.GeneratorType:
+        elif type(text) is types.GeneratorType:  # noqa
             # DEFAULT, already tokenized, should be generator
             return text
 
         elif isinstance(text, tuple):
-            # OLD: (token, tokens) or a single token
-            if len(text) == 2:
-                # (token, tokens)
-                chain([token], tokens)
-            else:
-                # single token
-                return iter([text])
+            # single token
+            return iter([text])
 
         elif isinstance(text, list):
             # OLD: generator from list
@@ -480,20 +475,19 @@ class ProdParser(object):
         defaultS = True
 
         stopIfNoMoreMatch = False
-        stopIfNoMoreMatchNow = False
 
         while True:
             # get from savedTokens or normal tokens
             try:
-                #print debug, "SAVED", savedTokens
+                # print debug, "SAVED", savedTokens
                 token = savedTokens.pop()
-            except IndexError as e:
+            except IndexError:
                 try:
                     token = next(tokens)
                 except StopIteration:
                     break
 
-            #print debug, token, stopIfNoMoreMatch
+            # print debug, token, stopIfNoMoreMatch
 
             type_, val, line, col = token
 
@@ -526,14 +520,13 @@ class ProdParser(object):
 
             else:
                 started = True  # check S now
-                nextSor = False  # reset
 
                 try:
                     while True:
                         # find next matching production
                         try:
                             prod = prods[-1].nextProd(token)
-                        except (Exhausted, NoMatch) as e:
+                        except (Exhausted, NoMatch):
                             # try next
                             prod = None
 
@@ -552,10 +545,9 @@ class ProdParser(object):
 
                 except NoMatch as e:
                     if stopIfNoMoreMatch:  # and token:
-                        #print "\t1stopIfNoMoreMatch", e, token, prod, 'PUSHING'
+                        # print "\t1stopIfNoMoreMatch", e, token, prod, 'PUSHING'
                         # tokenizer.push(token)
                         savedTokens.append(token)
-                        stopIfNoMoreMatchNow = True
                         stopall = True
 
                     else:
@@ -566,9 +558,8 @@ class ProdParser(object):
                 except ParseError as e:
                     # needed???
                     if stopIfNoMoreMatch:  # and token:
-                        #print "\t2stopIfNoMoreMatch", e, token, prod
+                        # print "\t2stopIfNoMoreMatch", e, token, prod
                         tokenizer.push(token)
-                        stopIfNoMoreMatchNow = True
                         stopall = True
 
                     else:
@@ -577,7 +568,7 @@ class ProdParser(object):
                     break
 
                 else:
-                    #print '\t1', debug, 'PROD', prod
+                    # print '\t1', debug, 'PROD', prod
 
                     # may stop next time, once set stays
                     stopIfNoMoreMatch = prod.stopIfNoMoreMatch or stopIfNoMoreMatch
@@ -621,7 +612,7 @@ class ProdParser(object):
                         defaultS = True
 
         lastprod = prod
-        #print debug, 'parse done', token, stopall, '\n'
+        # print debug, 'parse done', token, stopall, '\n'
         if not stopall:
             # stop immediately
 
@@ -629,7 +620,7 @@ class ProdParser(object):
                 # all productions exhausted?
                 try:
                     prod = prods[-1].nextProd(token=None)
-                except Done as e:
+                except Done:
                     # ok
                     prod = None
 

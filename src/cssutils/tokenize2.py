@@ -8,7 +8,7 @@ __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .cssproductions import *
+from .cssproductions import CSSProductions, MACROS, PRODUCTIONS
 from .helper import normalize
 import itertools
 import re
@@ -221,7 +221,7 @@ class Tokenizer(object):
                                 try:
                                     # get actual ATKEYWORD SYM
                                     name = self._atkeywords[_normalize(found)]
-                                except KeyError as e:
+                                except KeyError:
                                     # might also be misplace @charset...
                                     if ('@charset' == found and
                                             has_at(text, pos + len(found), ' ')):

@@ -186,7 +186,7 @@ class Base(_BaseClass):
 
     @staticmethod
     def _normalize(x):
-        """
+        r"""
         normalizes x, namely:
 
         - remove any \ before non unicode sequences (0-9a-zA-Z) so for
@@ -787,7 +787,7 @@ class _Namespaces(object):
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
-        except KeyError as e:
+        except KeyError:
             self._log.error('Prefix %s not found.' % prefix,
                             error=xml.dom.NamespaceErr)
 
@@ -958,7 +958,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                 # encoding may still be wrong if encoding *is lying*!
                 try:
                     decodedCssText = codecs.lookup("css")[1](content, encoding=encoding)[0]
-                except AttributeError as ae:
+                except AttributeError:
                     # at least in GAE
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
 

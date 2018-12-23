@@ -24,7 +24,7 @@ def as_list(p):
 
 class Selector(cssutils.util.Base2):
     """
-    (cssutils) a single selector in a :class:`~cssutils.css.SelectorList` 
+    (cssutils) a single selector in a :class:`~cssutils.css.SelectorList`
     of a :class:`~cssutils.css.CSSStyleRule`.
 
     Format::
@@ -197,7 +197,7 @@ class Selector(cssutils.util.Base2):
         """
         :param selectorText:
             parsable string or a tuple of (selectorText, dict-of-namespaces).
-            Given namespaces are ignored if this object is attached to a 
+            Given namespaces are ignored if this object is attached to a
             CSSStyleSheet!
 
         :exceptions:
@@ -306,9 +306,9 @@ class Selector(cssutils.util.Base2):
                 """
                 appends to seq
 
-                namespace_prefix, IDENT will be combined to a tuple 
+                namespace_prefix, IDENT will be combined to a tuple
                 (prefix, name) where prefix might be None, the empty string
-                or a prefix. 
+                or a prefix.
 
                 Saved are also:
                     - specificity definition: style, id, class/att, type
@@ -464,7 +464,7 @@ class Selector(cssutils.util.Base2):
                 # pseudo-class or pseudo-element :a ::a :a( ::a(
                 """
                 /* '::' starts a pseudo-element, ':' a pseudo-class */
-                /* Exceptions: :first-line, :first-letter, :before and 
+                /* Exceptions: :first-line, :first-letter, :before and
                 :after. */
                 /* Note that pseudo-elements are restricted to one per selector
                 and */
@@ -712,7 +712,6 @@ class Selector(cssutils.util.Base2):
 
             def _negation(expected, seq, token, tokenizer=None):
                 # not(
-                context = new['context'][-1]
                 val = self._tokenvalue(token, normalize=True)
                 if 'negation' in expected:
                     new['context'].append('negation')
@@ -796,17 +795,17 @@ class Selector(cssutils.util.Base2):
                                 "the selector.")
 
     specificity = property(lambda self: self._specificity,
-                           doc="""Specificity of this selector (READONLY). 
-                Tuple of (a, b, c, d) where: 
-                
+                           doc="""Specificity of this selector (READONLY).
+                Tuple of (a, b, c, d) where:
+
                 a
-                    presence of style in document, always 0 if not used on a 
+                    presence of style in document, always 0 if not used on a
                     document
                 b
                     number of ID selectors
-                c 
+                c
                     number of .class selectors
-                d 
+                d
                     number of Element (type) selectors""")
 
     wellformed = property(lambda self: bool(len(self.seq)))

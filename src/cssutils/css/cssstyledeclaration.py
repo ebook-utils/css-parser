@@ -58,7 +58,6 @@ __version__ = '$Id$'
 from .cssproperties import CSS2Properties
 from .property import Property
 import cssutils
-import xml.dom
 
 
 class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
@@ -209,7 +208,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         names = []
         for item in reversed(self.seq):
             val = item.value
-            if isinstance(val, Property) and not val.name in names:
+            if isinstance(val, Property) and val.name not in names:
                 names.append(val.name)
         return reversed(names)
 
@@ -289,9 +288,6 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         """
         self._checkReadonly()
         tokenizer = self._tokenize2(cssText)
-
-        # for closures: must be a mutable
-        new = {'wellformed': True}
 
         def ident(expected, seq, token, tokenizer=None):
             # a property
@@ -404,12 +400,12 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             for item in self.seq:
                 val = item.value
                 if isinstance(val, Property) and (
-                   (bool(nname) == False) or (val.name == nname)):
+                   (bool(nname) is False) or (val.name == nname)):
                     properties.append(val)
             return properties
 
     def getProperty(self, name, normalize=True):
-        """
+        r"""
         :param name:
             of the CSS property, always lowercase (even if not normalized)
         :param normalize:
@@ -434,7 +430,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
         return found
 
     def getPropertyCSSValue(self, name, normalize=True):
-        """
+        r"""
         :param name:
             of the CSS property, always lowercase (even if not normalized)
         :param normalize:
@@ -476,7 +472,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return None
 
     def getPropertyValue(self, name, normalize=True):
-        """
+        r"""
         :param name:
             of the CSS property, always lowercase (even if not normalized)
         :param normalize:
@@ -497,7 +493,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return ''
 
     def getPropertyPriority(self, name, normalize=True):
-        """
+        r"""
         :param name:
             of the CSS property, always lowercase (even if not normalized)
         :param normalize:
@@ -518,7 +514,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
             return ''
 
     def removeProperty(self, name, normalize=True):
-        """
+        r"""
         (DOM)
         Used to remove a CSS property if it has been explicitly set within
         this declaration block.
@@ -567,7 +563,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
 
     def setProperty(self, name, value=None, priority='',
                     normalize=True, replace=True):
-        """(DOM) Set a property value and priority within this declaration
+        r"""(DOM) Set a property value and priority within this declaration
         block.
 
         :param name:
@@ -645,7 +641,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                            % (name, value, priority))
 
     def item(self, index):
-        """(DOM) Retrieve the properties that have been explicitly set in
+        r"""(DOM) Retrieve the properties that have been explicitly set in
         this declaration block. The order of the properties retrieved using
         this method does not have to be the order in which they were set.
         This method can be used to iterate over all properties in this

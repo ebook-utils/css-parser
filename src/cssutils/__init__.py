@@ -3,7 +3,6 @@ from __future__ import unicode_literals, division, absolute_import, print_functi
 from .profiles import Profiles
 from .serialize import CSSSerializer
 from .parse import CSSParser
-from . import stylesheets
 from . import css
 from . import errorhandler
 from .version import VERSION

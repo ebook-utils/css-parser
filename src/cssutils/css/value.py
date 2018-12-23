@@ -411,7 +411,7 @@ class ColorValue(Value):
                 for item in seq:
                     try:
                         type_ = item.value.type
-                    except AttributeError as e:
+                    except AttributeError:
                         # type of function, e.g. rgb(
                         if item.type == 'FUNCTION':
                             functiontype = item.value
@@ -434,9 +434,9 @@ class ColorValue(Value):
                 if HSL:
                     # convert to rgb
                     # h is 360 based (circle)
-                    h, s, l = raw[0] / 360.0, raw[1], raw[2]
-                    # ORDER h l s !!!
-                    r, g, b = colorsys.hls_to_rgb(h, l, s)
+                    h, s, l_ = raw[0] / 360.0, raw[1], raw[2]
+                    # ORDER h l_ s !!!
+                    r, g, b = colorsys.hls_to_rgb(h, l_, s)
                     # back to 255 based
                     rgba = [int(round(r*255)),
                             int(round(g*255)),
@@ -603,7 +603,7 @@ class URIValue(Value):
         try:
             # TODO: better way?
             styleSheet = self.parent.parent.parent.parentRule.parentStyleSheet
-        except AttributeError as e:
+        except AttributeError:
             return self.uri
         else:
             return urllib_urljoin(styleSheet.href, self.uri)

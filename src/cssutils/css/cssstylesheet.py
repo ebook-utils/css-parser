@@ -378,7 +378,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             self.encoding = encoding
             try:
                 del self.__newEncoding
-            except AttributeError as e:
+            except AttributeError:
                 pass
 
     def _setFetcher(self, fetcher=None):
@@ -578,7 +578,7 @@ class CSSStyleSheet(cssutils.stylesheets.StyleSheet):
             rule._parentStyleSheet = None  # done later?
 
             # TODO:
-            #tempsheet._namespaces = self._namespaces
+            # tempsheet._namespaces = self._namespaces
             # variables?
 
         elif isinstance(rule, cssutils.css.CSSRuleList):

@@ -91,12 +91,6 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)
 
-        try:
-            # use parent style sheet ones if available
-            namespaces = self.parentStyleSheet.namespaces
-        except AttributeError:
-            pass
-
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.MEDIA_SYM:
@@ -107,7 +101,6 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         else:
             # save if parse goes wrong
             oldMedia = self._media
-            oldName = self._name
             oldCssRules = self._cssRules
 
             ok = True

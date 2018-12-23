@@ -1,13 +1,11 @@
 #!/usr/bin/env python
+from __future__ import unicode_literals, division, absolute_import, print_function
 from . import tokenize2
-import os
 from . import errorhandler
 import codecs
 from . import helper
 """A validating CSSParser"""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
-__all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1754 2009-05-30 14:50:13Z cthedot $'
 
@@ -30,7 +28,7 @@ class ErrorHandler(object):
     up to the application whether to throw an exception for different types of
     errors and warnings. Note, however, that there is no requirement that the
     parser continue to provide useful information after a call to fatalError
-    (in other words, a CSS driver class could catch an exception and report a 
+    (in other words, a CSS driver class could catch an exception and report a
     fatalError).
     """
 
@@ -184,7 +182,7 @@ class Parser(object):
           Allow an application to register an error event handler.
      void     setLocale(java.util.Locale locale)
           Allow an application to request a locale for errors and warnings.
-     void     setSelectorFactory(SelectorFactory selectorFactory) 
+     void     setSelectorFactory(SelectorFactory selectorFactory)
     """
 
     def __init__(self, documentHandler=None, errorHandler=None):

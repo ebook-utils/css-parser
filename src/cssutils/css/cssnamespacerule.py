@@ -20,7 +20,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
     used in namespace-qualified names such as those described in the
     Selectors Module [SELECT] or the Values and Units module [CSS3VAL].
 
-    Dealing with these rules directly is not needed anymore, easier is 
+    Dealing with these rules directly is not needed anymore, easier is
     the use of :attr:`cssutils.css.CSSStyleSheet.namespaces`.
 
     Format::
@@ -223,7 +223,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         :param namespaceURI: the initial value for this rules namespaceURI
         :exceptions:
             - :exc:`~xml.dom.NoModificationAllowedErr`:
-              (CSSRule) Raised if this rule is readonly or a namespaceURI is 
+              (CSSRule) Raised if this rule is readonly or a namespaceURI is
               already set in this rule.
         """
         self._checkReadonly()
@@ -255,7 +255,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
 
     def _setPrefix(self, prefix=None):
         """
-        :param prefix: the new prefix 
+        :param prefix: the new prefix
         :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified CSS string value has a syntax error and

@@ -1,5 +1,4 @@
 from __future__ import unicode_literals, division, absolute_import, print_function
-import xml.dom
 import cssutils
 from .value import PropertyValue
 from cssutils.helper import Deprecated
@@ -436,7 +435,8 @@ class Property(cssutils.util.Base):
 
             WARNING Property: Unknown Property name. [2:9: unknown-property]
             ERROR   Property: Invalid value for "CSS Color Module Level 3/CSS Level 2.1" property: 4 [3:9: color]
-            WARNING Property: Not valid for profile "CSS Level 2.1" but valid "CSS Color Module Level 3" value: rgba(1, 2, 3, 4)  [4:9: color]
+            WARNING Property: Not valid for profile "CSS Level 2.1" but valid
+            "CSS Color Module Level 3" value: rgba(1, 2, 3, 4)  [4:9: color]
             DEBUG   Property: Found valid "CSS Level 2.1" value: red [5:9: color]
         """
         valid = False
@@ -454,13 +454,13 @@ class Property(cssutils.util.Base):
                 # TODO: same for @page
 
         if self.name and self.value:
-
-            cv = self.propertyValue
+            pass
             # TODO
-#            if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
-#                # TODO: false alarms too!
-#                cssutils.log.warn(u'No value for variable "%s" found, keeping '
-#                                  u'variable.' % cv.name, neverraise=True)
+            # cv = self.propertyValue
+            # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
+            #     # TODO: false alarms too!
+            #     cssutils.log.warn(u'No value for variable "%s" found, keeping '
+            #                       u'variable.' % cv.name, neverraise=True)
 
             if self.name in cssutils.profile.knownNames:
                 # add valid, matching, validprofiles...

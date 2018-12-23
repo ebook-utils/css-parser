@@ -25,7 +25,7 @@ def as_list(p):
 
 
 def _escapecss(e):
-    """
+    r"""
     Escapes characters not allowed in the current encoding the CSS way
     with a backslash followed by a uppercase hex code point
 
@@ -40,7 +40,7 @@ codecs.register_error('escapecss', _escapecss)
 
 
 class Preferences(object):
-    """Control output of CSSSerializer.
+    r"""Control output of CSSSerializer.
 
     defaultAtKeyword = True
         Should the literal @keyword from src CSS be used or the default
@@ -133,10 +133,9 @@ class Preferences(object):
                                                   ))
 
     def __str__(self):
-        return "<cssutils.css.%s object %s at 0x%x" % (self.__class__.__name__,
-                                                       ' '.join(['%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]
-                                                                ),
-                                                       id(self))
+        return "<cssutils.css.%s object %s at 0x%x" % (
+                self.__class__.__name__, ' '.join([
+                    '%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]), id(self))
 
     def useDefaults(self):
         "Reset all preference options to their default value."
@@ -614,7 +613,6 @@ class CSSSerializer(object):
         + CSSComments
         """
         # rules
-        rules = ''
         rulesout = []
         for r in rule.cssRules:
             rtext = r.cssText
@@ -911,7 +909,7 @@ class CSSSerializer(object):
             omitLastSemicolon = omit and self.prefs.omitLastSemicolon
 
             for i, item in enumerate(seq):
-                type_, val = item.type, item.value
+                val = item.value
                 if isinstance(val, cssutils.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
@@ -1078,7 +1076,7 @@ class CSSSerializer(object):
                     'IDENT': self.do_css_Value
                     }[value.colorType](value,
                                        valuesOnly=valuesOnly)
-        except KeyError as e:
+        except KeyError:
             return ''
 
     def do_css_CSSFunction(self, cssvalue, valuesOnly=False):
@@ -1123,8 +1121,8 @@ class CSSSerializer(object):
         else:
             out = Out(self)
             for item in cssvalue.seq:
-                type_, val = item.type, item.value
-                #val = self._possiblezero(cssvalue, type_, val)
+                val = item.value
+                # val = self._possiblezero(cssvalue, type_, val)
                 # do no send type_ so no special cases!
                 out.append(val, None, space=False)
 
@@ -1167,7 +1165,7 @@ class CSSSerializer(object):
             firstdone = False
 
             for item in seq:
-                type_, val = item.type, item.value
+                type_ = item.type
 
                 if type_ == 'MediaQuery':
                     if firstdone:

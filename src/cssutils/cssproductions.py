@@ -88,7 +88,7 @@ PRODUCTIONS = [
     ('STRING', r'{string}'),
     ('INVALID', r'{invalid}'),  # from CSS2.1
     ('ATKEYWORD', r'@{ident}'),  # other keywords are done in the tokenizer
-    ('INCLUDES', '\~\='),
+    ('INCLUDES', r'\~\='),
     ('DASHMATCH', r'\|\='),
     ('PREFIXMATCH', r'\^\='),
     ('SUFFIXMATCH', r'\$\='),

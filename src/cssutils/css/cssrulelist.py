@@ -18,7 +18,7 @@ class CSSRuleList(list):
     ``extend`` or ``__setslice__`` are added later on instances of this
     class if so desired.
     E.g. CSSStyleSheet adds ``append`` which is not available in a simple
-    instance of this class! 
+    instance of this class!
     """
 
     def __init__(self, *ignored):
@@ -50,7 +50,7 @@ class CSSRuleList(list):
                       doc="(DOM) The number of CSSRules in the list.")
 
     def rulesOfType(self, type):
-        """Yield the rules which have the given `type` only, one of the 
+        """Yield the rules which have the given `type` only, one of the
         constants defined in :class:`cssutils.css.CSSRule`."""
         for r in self:
             if r.type == type:

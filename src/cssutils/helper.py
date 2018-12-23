@@ -46,7 +46,7 @@ _simpleescapes = re.compile(r'(\\[^0-9a-fA-F])').sub
 
 
 def normalize(x):
-    """
+    r"""
     normalizes x, namely:
 
     - remove any \ before non unicode sequences (0-9a-zA-Z) so for

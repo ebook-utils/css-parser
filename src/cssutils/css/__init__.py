@@ -26,7 +26,7 @@ currently implemented
 todo
     - RGBColor, Rect, Counter
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import division, absolute_import, print_function
 
 __all__ = [
     'CSSStyleSheet',
@@ -34,7 +34,7 @@ __all__ = [
     'CSSRule',
     'CSSComment',
     'CSSCharsetRule',
-    'CSSFontFaceRule'
+    'CSSFontFaceRule',
     'CSSImportRule',
     'CSSMediaRule',
     'CSSNamespaceRule',
@@ -46,7 +46,7 @@ __all__ = [
     'CSSVariablesDeclaration',
     'Selector', 'SelectorList',
     'CSSStyleDeclaration', 'Property',
-    #'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
+    # 'CSSValue', 'CSSPrimitiveValue', 'CSSValueList'
     'PropertyValue',
     'Value',
     'ColorValue',
@@ -54,29 +54,28 @@ __all__ = [
     'URIValue',
     'CSSFunction',
     'CSSVariable',
-    'MSValue'
+    'MSValue',
 ]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .cssstylesheet import *
-from .cssrulelist import *
-from .cssrule import *
-from .csscomment import *
-from .csscharsetrule import *
-from .cssfontfacerule import *
-from .cssimportrule import *
-from .cssmediarule import *
-from .cssnamespacerule import *
-from .csspagerule import *
-from .marginrule import *
-from .cssstylerule import *
-from .cssvariablesrule import *
-from .cssunknownrule import *
-from .selector import *
-from .selectorlist import *
-from .cssstyledeclaration import *
-from .cssvariablesdeclaration import *
-from .property import *
-#from cssvalue import *
-from .value import *
+from .cssstylesheet import CSSStyleSheet
+from .cssrulelist import CSSRuleList
+from .cssrule import CSSRule
+from .csscomment import CSSComment
+from .csscharsetrule import CSSCharsetRule
+from .cssfontfacerule import CSSFontFaceRule
+from .cssimportrule import CSSImportRule
+from .cssmediarule import CSSMediaRule
+from .cssnamespacerule import CSSNamespaceRule
+from .csspagerule import CSSPageRule
+from .marginrule import MarginRule
+from .cssstylerule import CSSStyleRule
+from .cssvariablesrule import CSSVariablesRule
+from .cssunknownrule import CSSUnknownRule
+from .selector import Selector
+from .selectorlist import SelectorList
+from .cssstyledeclaration import CSSStyleDeclaration
+from .cssvariablesdeclaration import CSSVariablesDeclaration
+from .property import Property
+from .value import PropertyValue, Value, ColorValue, DimensionValue, URIValue, CSSFunction, CSSVariable, MSValue

@@ -14,7 +14,7 @@ import sys
 
 def main(args=None):
     """
-    Parses given filename(s) or string or URL (using optional encoding) and 
+    Parses given filename(s) or string or URL (using optional encoding) and
     prints the parsed style sheet to stdout.
 
     Redirect stdout to save CSS. Redirect stderr to save parser log infos.

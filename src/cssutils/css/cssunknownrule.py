@@ -12,7 +12,7 @@ import xml.dom
 
 class CSSUnknownRule(cssrule.CSSRule):
     """
-    Represents an at-rule not supported by this user agent, so in 
+    Represents an at-rule not supported by this user agent, so in
     effect all other at-rules not defined in cssutils.
 
     Format::

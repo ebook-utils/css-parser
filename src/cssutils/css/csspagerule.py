@@ -161,7 +161,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
         # for closures: must be a mutable
         new = {'wellformed': True, 'last-S': False,
                'name': 0, 'first': 0, 'lr': 0}
-        specificity = (0, 0, 0)
 
         def _char(expected, seq, token, tokenizer=None):
             # pseudo_page, :left, :right or :first
@@ -180,7 +179,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                         self._log.error('CSSPageRule selectorText: Expected '
                                         'IDENT but found: %r' % ival, token)
                     else:
-                        if not ival in ('first', 'left', 'right'):
+                        if ival not in ('first', 'left', 'right'):
                             self._log.warn('CSSPageRule: Unknown @page '
                                            'selector: %r'
                                            % (':'+ival,), neverraise=True)

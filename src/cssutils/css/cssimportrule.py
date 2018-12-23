@@ -58,7 +58,7 @@ class CSSImportRule(cssrule.CSSRule):
         # prepare seq
         seq = self._tempSeq()
         seq.append(None, 'href')
-        #seq.append(None, 'media')
+        # seq.append(None, 'media')
         seq.append(None, 'name')
         self._setSeq(seq)
 
@@ -83,7 +83,7 @@ class CSSImportRule(cssrule.CSSRule):
         return "cssutils.css.%s(href=%r, mediaText=%r, name=%r)" % (
             self.__class__.__name__,
             self.href,
-            self.media.mediaText,
+            mediaText,
             self.name)
 
     def __str__(self):
@@ -271,7 +271,7 @@ class CSSImportRule(cssrule.CSSRule):
         self._href = href
         # update seq
         for i, item in enumerate(self.seq):
-            val, type_ = item.value, item.type
+            type_ = item.type
             if 'href' == type_:
                 self._seq[i] = (href, type_, item.line, item.col)
                 break
@@ -377,7 +377,7 @@ class CSSImportRule(cssrule.CSSRule):
 
             # update seq
             for i, item in enumerate(self.seq):
-                val, typ = item.value, item.type
+                typ = item.type
                 if 'name' == typ:
                     self._seq[i] = (name, typ, item.line, item.col)
                     break

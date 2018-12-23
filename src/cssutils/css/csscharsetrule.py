@@ -28,7 +28,7 @@ class CSSCharsetRule(cssrule.CSSRule):
     (see CSS document representation) but this is not reflected in the
     CSSCharsetRule.
 
-    This rule is not really needed anymore as setting 
+    This rule is not really needed anymore as setting
     :attr:`CSSStyleSheet.encoding` is much easier.
 
     Format::
@@ -133,7 +133,7 @@ class CSSCharsetRule(cssrule.CSSRule):
               Raised if this encoding rule is readonly.
             - :exc:`~xml.dom.SyntaxErr`:
               Raised if the specified encoding value has a syntax error and
-              is unparsable.  
+              is unparsable.
         """
         self._checkReadonly()
         tokenizer = self._tokenize2(encoding)

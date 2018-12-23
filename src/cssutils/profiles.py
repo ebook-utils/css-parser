@@ -93,10 +93,9 @@ class Profiles(object):
     _MACROS = {
         'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
         'rgbcolor': r'rgb\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\)|rgb\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\)',
-        'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
-        'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
+        'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',  # noqa
+        'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',  # noqa
         'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{uicolor}',
-        # 'color': r'(maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray|ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)|#[0-9a-f]{3}|#[0-9a-f]{6}|rgb\({w}{int}{w},{w}{int}{w},{w}{int}{w}\)|rgb\({w}{num}%{w},{w}{num}%{w},{w}{num}%{w}\)',
         'integer': r'{int}',
         'length': r'0|{num}(em|ex|px|in|cm|mm|pt|pc)',
         'positivelength': r'0|{positivenum}(em|ex|px|in|cm|mm|pt|pc)',
@@ -303,7 +302,7 @@ class Profiles(object):
             # might have been set by addProfiles before
             try:
                 macros = self._rawProfiles[profile]['macros']
-            except KeyError as e:
+            except KeyError:
                 macros = {}
 
         # save name and raw props/macros if macros change to completely reset
@@ -470,8 +469,7 @@ macros within the CSS property value regular expressions.
 macros[Profiles.CSS_LEVEL_2] = {
     'background-color': r'{color}|transparent|inherit',
     'background-image': r'{uri}|none|inherit',
-    # 'background-position': r'({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
-    'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',
+    'background-position': r'({percentage}|{length}|left|center|right)(\s*({percentage}|{length}|top|center|bottom))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?)|inherit',  # noqa
     'background-repeat': r'repeat|repeat-x|repeat-y|no-repeat|inherit',
     'background-attachment': r'scroll|fixed|inherit',
     'shape': r'rect\(({w}({length}|auto}){w},){3}{w}({length}|auto){w}\)',
@@ -489,13 +487,13 @@ macros[Profiles.CSS_LEVEL_2] = {
     'line-height': r'normal|{number}|{length}|{percentage}|inherit',
     'list-style-image': r'{uri}|none|inherit',
     'list-style-position': r'inside|outside|inherit',
-    'list-style-type': r'disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-(latin|alpha)|upper-(latin|alpha)|armenian|georgian|none|inherit',
+    'list-style-type': r'disc|circle|square|decimal|decimal-leading-zero|lower-roman|upper-roman|lower-greek|lower-(latin|alpha)|upper-(latin|alpha)|armenian|georgian|none|inherit',  # noqa
     'margin-width': r'{length}|{percentage}|auto',
     'padding-width': r'{length}|{percentage}',
     'specific-voice': r'{ident}',
     'generic-voice': r'male|female|child',
     'content': r'{string}|{uri}|{counter}|attr\({w}{ident}{w}\)|open-quote|close-quote|no-open-quote|no-close-quote',
-    'background-attrs': r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}',
+    'background-attrs': r'{background-color}|{background-image}|{background-repeat}|{background-attachment}|{background-position}',  # noqa
     'list-attrs': r'{list-style-type}|{list-style-position}|{list-style-image}',
     'font-attrs': r'{font-style}|{font-variant}|{font-weight}',
     'text-attrs': r'underline|overline|line-through|blink',
@@ -506,7 +504,7 @@ macros[Profiles.CSS_LEVEL_2] = {
 Define the regular expressions for validation all CSS values
 """
 properties[Profiles.CSS_LEVEL_2] = {
-    'azimuth': r'{angle}|(behind\s+)?(left-side|far-left|left|center-left|center|center-right|right|far-right|right-side)(\s+behind)?|behind|leftwards|rightwards|inherit',
+    'azimuth': r'{angle}|(behind\s+)?(left-side|far-left|left|center-left|center|center-right|right|far-right|right-side)(\s+behind)?|behind|leftwards|rightwards|inherit',  # noqa
     'background-attachment': r'{background-attachment}',
     'background-color': r'{background-color}',
     'background-image': r'{background-image}',
@@ -527,9 +525,8 @@ properties[Profiles.CSS_LEVEL_2] = {
     'cue-after': r'{uri}|none|inherit',
     'cue-before': r'{uri}|none|inherit',
     'cue': r'({uri}|none|inherit){1,2}|inherit',
-    # 'cursor': r'((({uri}{w},{w})*)?(auto|crosshair|default|pointer|move|(e|ne|nw|n|se|sw|s|w)-resize|text|wait|help|progress))|inherit',
     'direction': r'ltr|rtl|inherit',
-    'display': r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit',
+    'display': r'inline|block|list-item|run-in|inline-block|table|inline-table|table-row-group|table-header-group|table-footer-group|table-row|table-column-group|table-column|table-cell|table-caption|none|inherit',  # noqa
     'elevation': r'{angle}|below|level|above|higher|lower|inherit',
     'empty-cells': r'show|hide|inherit',
     'float': r'left|right|none|inherit',
@@ -538,7 +535,7 @@ properties[Profiles.CSS_LEVEL_2] = {
     'font-style': r'{font-style}',
     'font-variant': r'{font-variant}',
     'font-weight': r'{font-weight}',
-    'font': r'(({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family})|caption|icon|menu|message-box|small-caption|status-bar|inherit',
+    'font': r'(({font-attrs}\s+)*{font-size}({w}/{w}{line-height})?\s+{font-family})|caption|icon|menu|message-box|small-caption|status-bar|inherit',  # noqa
     'height': r'{length}|{percentage}|auto|inherit',
     'left': r'{length}|{percentage}|auto|inherit',
     'letter-spacing': r'normal|{length}|inherit',
@@ -611,7 +608,7 @@ macros[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'b5': r'{color}?({w}{border-style})?({w}{border-width})?',
     'b6': r'{color}?({w}{border-width})?({w}{border-style})?',
     'border-attrs': r'{b1}|{b2}|{b3}|{b4}|{b5}|{b6}',
-    'border-radius-part': '({length}|{percentage})(\s+({length}|{percentage}))?'
+    'border-radius-part': r'({length}|{percentage})(\s+({length}|{percentage}))?'
 }
 properties[Profiles.CSS3_BACKGROUNDS_AND_BORDERS] = {
     'border-color': r'({color}|transparent)(\s+({color}|transparent)){0,3}|inherit',
@@ -658,7 +655,7 @@ macros[Profiles.CSS3_BASIC_USER_INTERFACE] = {
 }
 properties[Profiles.CSS3_BASIC_USER_INTERFACE] = {
     'box-sizing': r'content-box|border-box',
-    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit',
+    'cursor': r'((({uri}{w}({number}{w}{number}{w})?,{w})*)?(auto|default|none|context-menu|help|pointer|progress|wait|cell|crosshair|text|vertical-text|alias|copy|move|no-drop|not-allowed|(e|n|ne|nw|s|se|sw|w|ew|ns|nesw|nwse|col|row)-resize|all-scroll))|inherit', # noqa
     'nav-index': r'auto|{number}|inherit',
     'outline-color': r'{outline-color}',
     'outline-style': r'{outline-style}',
@@ -682,12 +679,12 @@ properties[Profiles.CSS3_BOX] = {
 # CSS Color Module Level 3
 macros[Profiles.CSS3_COLOR] = {
     # orange and transparent in CSS 2.1
-    'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)',
+    'namedcolor': r'(currentcolor|transparent|aqua|black|blue|fuchsia|gray|green|lime|maroon|navy|olive|orange|purple|red|silver|teal|white|yellow)', # noqa
     # orange?
-    'rgbacolor': r'rgba\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\,{w}{num}{w}\)|rgba\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
-    'hslcolor': r'hsl\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\)|hsla\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)',
-    'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen',
-    'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)',
+    'rgbacolor': r'rgba\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\,{w}{num}{w}\)|rgba\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)', # noqa
+    'hslcolor': r'hsl\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\)|hsla\({w}{int}{w}\,{w}{num}%{w}\,{w}{num}%{w}\,{w}{num}{w}\)', # noqa
+    'x11color': r'aliceblue|antiquewhite|aqua|aquamarine|azure|beige|bisque|black|blanchedalmond|blue|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|cyan|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|fuchsia|gainsboro|ghostwhite|gold|goldenrod|gray|green|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavender|lavenderblush|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|lime|limegreen|linen|magenta|maroon|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|navy|oldlace|olive|olivedrab|orange|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|purple|red|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|silver|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|teal|thistle|tomato|turquoise|violet|wheat|white|whitesmoke|yellow|yellowgreen', # noqa
+    'uicolor': r'(ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText)', # noqa
     'color': r'{namedcolor}|{hexcolor}|{rgbcolor}|{rgbacolor}|{hslcolor}|{x11color}|inherit',
 }
 properties[Profiles.CSS3_COLOR] = {
@@ -698,8 +695,8 @@ properties[Profiles.CSS3_COLOR] = {
 macros[Profiles.CSS3_FONTS] = {
     # 'family-name': r'{string}|{ident}',
     'family-name': r'{string}|({ident}(\s+{ident})*)',
-    'font-face-name': 'local\({w}{family-name}{w}\)',
-    'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',
+    'font-face-name': r'local\({w}{family-name}{w}\)',
+    'font-stretch-names': r'(ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)',  # noqa
     'unicode-range': r'[uU]\+[0-9A-Fa-f?]{1,6}(\-[0-9A-Fa-f]{1,6})?'
 }
 properties[Profiles.CSS3_FONTS] = {
@@ -711,7 +708,7 @@ properties[Profiles.CSS3_FONT_FACE] = {
     'font-stretch': r'{font-stretch-names}',
     'font-style': r'normal|italic|oblique',
     'font-weight': r'normal|bold|[1-9]00',
-    'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',
+    'src': r'({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name})({w},{w}({uri}{w}(format\({w}{string}{w}(\,{w}{string}{w})*\))?|{font-face-name}))*',  # noqa
     'unicode-range': '{unicode-range}({w},{w}{unicode-range})*'
 }
 
@@ -726,7 +723,7 @@ macros[Profiles.CSS3_PAGED_MEDIA] = {
 }
 properties[Profiles.CSS3_PAGED_MEDIA] = {
     'fit': 'fill|hidden|meet|slice',
-    'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',
+    'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',  # noqa
     'image-orientation': 'auto|{angle}',
     'orphans': r'{integer}|inherit',
     'page': 'auto|{ident}',

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-"""Combine all sheets referred to a given CSS *proxy* sheet
+r"""Combine all sheets referred to a given CSS *proxy* sheet
 into a single new sheet.
 
 - no ``url()`` values are adjusted so currently when using relative references
-  for e.g. images it is best to have all sheets in a single folder 
+  for e.g. images it is best to have all sheets in a single folder
 - in @import rules only relative paths do work for now but should be used
   anyway
 - messages are send to stderr
@@ -67,9 +67,11 @@ def main(args=None):
     parser.add_option('-u', '--url', action='store',
                       dest='url',
                       help='URL to parse (path is ignored if URL given)')
-    parser.add_option('-s', '--sourceencoding', action='store',
-                      dest='sourceencoding',
-                      help='encoding of input, defaulting to "css". If given overwrites other encoding information like @charset declarations')
+    parser.add_option(
+        '-s', '--sourceencoding', action='store',
+        dest='sourceencoding',
+        help='encoding of input, defaulting to "css".'
+        'If given overwrites other encoding information like @charset declarations')
     parser.add_option('-t', '--targetencoding', action='store',
                       dest='targetencoding',
                       help='encoding of output, defaulting to "UTF-8"', default='utf-8')

@@ -4,18 +4,21 @@ TODO:
     - delete: maybe if deleting from all, replace *all* with all others?
     - is unknown media an exception?
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
+
+import xml.dom
+
+import cssutils
+from cssutils.helper import normalize, pushtoken
+from cssutils.prodparser import PreDef, Prod, ProdParser, Sequence
+
+from .mediaquery import MediaQuery
 
 __all__ = ['MediaList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from cssutils.prodparser import *
-from cssutils.helper import normalize, pushtoken
-from cssutils.css import csscomment
-from .mediaquery import MediaQuery
-import cssutils
-import xml.dom
 
 # class MediaList(cssutils.util.Base, cssutils.util.ListSeq):
 
@@ -25,7 +28,7 @@ class MediaList(cssutils.util._NewListBase):
     without defining or constraining how this collection is
     implemented.
 
-    A single media in the list is an instance of :class:`MediaQuery`. 
+    A single media in the list is an instance of :class:`MediaQuery`.
     An empty list is the same as a list that contains the medium "all".
 
     New format with :class:`MediaQuery`::
@@ -62,7 +65,8 @@ class MediaList(cssutils.util._NewListBase):
         return "cssutils.stylesheets.%s(mediaText=%r)" % (self.__class__.__name__, self.mediaText)
 
     def __str__(self):
-        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (self.__class__.__name__, self.mediaText, id(self))
+        return "<cssutils.stylesheets.%s object mediaText=%r at 0x%x>" % (
+                self.__class__.__name__, self.mediaText, id(self))
 
     def __iter__(self):
         for item in self._seq:
@@ -179,7 +183,7 @@ class MediaList(cssutils.util._NewListBase):
             self._seq[index] = (newMedium, 'MediaQuery', None, None)
 
     def appendMedium(self, newMedium):
-        """Add the `newMedium` to the end of the list. 
+        """Add the `newMedium` to the end of the list.
         If the `newMedium` is already used, it is first removed.
 
         :param newMedium:
@@ -206,8 +210,9 @@ class MediaList(cssutils.util._NewListBase):
             self._seq._readonly = False
 
             if 'all' in mts:
-                self._log.info('MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
-                               newMedium, error=xml.dom.InvalidModificationErr)
+                self._log.info(
+                    'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
+                    newMedium, error=xml.dom.InvalidModificationErr)
 
             elif newmt and newmt in mts:
                 # might be empty

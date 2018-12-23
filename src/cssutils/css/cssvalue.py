@@ -1,9 +1,10 @@
+from __future__ import unicode_literals, division, absolute_import, print_function
 import xml.dom
 import re
 import math
 import cssutils.helper
 import cssutils
-from cssutils.prodparser import *
+from cssutils.prodparser import Choice, Sequence, PreDef, Prod, ProdParser
 """CSSValue related classes
 
 - CSSValue implements DOM Level 2 CSS CSSValue
@@ -11,7 +12,6 @@ from cssutils.prodparser import *
 - CSSValueList implements DOM Level 2 CSS CSSValueList
 
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor',
            'CSSVariable']
@@ -713,7 +713,7 @@ class CSSPrimitiveValue(CSSValue):
                 self._getCSSPrimitiveTypeString(unitType))
         try:
             val = float(floatValue)
-        except ValueError as e:
+        except ValueError:
             raise xml.dom.InvalidAccessErr(
                 'CSSPrimitiveValue: floatValue %r is not a float' %
                 floatValue)
@@ -1098,7 +1098,7 @@ class RGBColor(CSSFunction):
                 self._colorType = 'Named Color'
             else:
                 self._colorType = store['colorType'].value[:-1]
-                #self._colorType = cssutils.helper.normalize(store['colorType'].value)[:-1]
+                # self._colorType = cssutils.helper.normalize(store['colorType'].value)[:-1]
 
             self._setSeq(seq)
 
@@ -1126,9 +1126,10 @@ class CalcValue(CSSFunction):
                                   ),
                              Sequence(Choice(Prod(name='nested function',
                                                   match=lambda t, v: t == self._prods.FUNCTION,
-                                                  toSeq=lambda t, tokens: (CSSFunction._functionName,
-                                                                           CSSFunction(cssutils.helper.pushtoken(t,
-                                                                                                                 tokens)))
+                                                  toSeq=lambda t, tokens: (
+                                                      CSSFunction._functionName,
+                                                      CSSFunction(
+                                                          cssutils.helper.pushtoken(t, tokens)))
                                                   ),
                                              Prod(name='part',
                                                   match=lambda t, v: v != ')',
@@ -1167,9 +1168,9 @@ class ExpressionValue(CSSFunction):
                                   ),
                              Sequence(Choice(Prod(name='nested function',
                                                   match=lambda t, v: t == self._prods.FUNCTION,
-                                                  toSeq=lambda t, tokens: (ExpressionValue._functionName,
-                                                                           ExpressionValue(cssutils.helper.pushtoken(t,
-                                                                                                                     tokens)))
+                                                  toSeq=lambda t, tokens: (
+                                                      ExpressionValue._functionName,
+                                                      ExpressionValue(cssutils.helper.pushtoken(t, tokens)))
                                                   ),
                                              Prod(name='part',
                                                   match=lambda t, v: v != ')',
@@ -1183,7 +1184,7 @@ class ExpressionValue(CSSFunction):
         return cssutils.ser.do_css_ExpressionValue(self)
 
     def _setCssText(self, cssText):
-        #self._log.warn(u'CSSValue: Unoffial and probably invalid MS value used!')
+        # self._log.warn(u'CSSValue: Unoffial and probably invalid MS value used!')
         return super(ExpressionValue, self)._setCssText(cssText)
 
     cssText = property(_getCssText, _setCssText,
