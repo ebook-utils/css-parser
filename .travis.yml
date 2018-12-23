@@ -2,12 +2,15 @@ env:
     global:
         - PYTHONHASHSEED=random
 language: python
-os:
-    - linux
-    - osx
-python:
-  - "2.7"
-  - "3.6"
+dist: xenial
+matrix:
+    include:
+        - os: linux
+          python: 2.7
+        - os: linux
+          python: 3.6
+        - os: osx
+          language: generic
 install:
     pip install chardet
 script:
