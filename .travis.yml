@@ -2,9 +2,13 @@ env:
     global:
         - PYTHONHASHSEED=random
 language: python
+os:
+    - linux
+    - osx
 python:
   - "2.7"
   - "3.6"
-  - "3.7"
+install:
+    pip install chardet
 script:
     - python setup.py test
