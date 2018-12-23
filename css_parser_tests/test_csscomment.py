@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-"""Testcases for cssutils.css.CSSComment"""
+"""Testcases for css_parser.css.CSSComment"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml
 from . import test_cssrule
-import cssutils.css
+import css_parser.css
 
 
 class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSCommentTestCase, self).setUp()
-        self.r = cssutils.css.CSSComment()
-        self.rRO = cssutils.css.CSSComment(readonly=True)
-        self.r_type = cssutils.css.CSSComment.COMMENT
+        self.r = css_parser.css.CSSComment()
+        self.rRO = css_parser.css.CSSComment(readonly=True)
+        self.r_type = css_parser.css.CSSComment.COMMENT
         self.r_typeString = 'COMMENT'
 
     def test_init(self):
@@ -63,7 +63,7 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         "CSSComment.__repr__(), .__str__()"
         text = '/* test */'
 
-        s = cssutils.css.CSSComment(cssText=text)
+        s = css_parser.css.CSSComment(cssText=text)
 
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))

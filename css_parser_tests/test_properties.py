@@ -1,11 +1,11 @@
-"""Testcases for cssutils.css.property._Property."""
+"""Testcases for css_parser.css.property._Property."""
 from __future__ import absolute_import, print_function, unicode_literals
 
 import copy
 import sys
 
-import cssutils
-from cssutils.css.property import Property
+import css_parser
+from css_parser.css.property import Property
 
 from . import basetest
 
@@ -195,24 +195,24 @@ class PropertiesTestCase(basetest.BaseTestCase):
             p = Property('color', v)
 
             # TODO: Fix
-#            cssutils.profile.defaultProfiles = \
-#                cssutils.profile.CSS_LEVEL_2
+#            css_parser.profile.defaultProfiles = \
+#                css_parser.profile.CSS_LEVEL_2
 #            self.assertEqual(rs[0], p.valid)
 
-            cssutils.profile.defaultProfiles = None
+            css_parser.profile.defaultProfiles = None
             self.assertEqual(rs[1], p.valid)
 
             self.assertEqual(rs[2], p.validate())
 #            self.assertEqual(rs[3], p.validate(
-#                profiles=cssutils.profile.CSS_LEVEL_2))
+#                profiles=css_parser.profile.CSS_LEVEL_2))
 #            self.assertEqual(rs[4], p.validate(
-#                cssutils.profile.CSS3_COLOR))
+#                css_parser.profile.CSS3_COLOR))
 
 
 if __name__ == '__main__':
     debug = 'font-family'
     import logging
     import unittest
-    cssutils.log.setLevel(logging.FATAL)
+    css_parser.log.setLevel(logging.FATAL)
     #debug = True
     unittest.main()

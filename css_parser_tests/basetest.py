@@ -7,7 +7,7 @@ import sys
 import unittest
 from contextlib import contextmanager
 
-import cssutils
+import css_parser
 
 """Base class for all tests"""
 
@@ -41,22 +41,22 @@ class BaseTestCase(unittest.TestCase):
 
     def _tempSer(self):
         "Replace default ser with temp ser."
-        self._ser = cssutils.ser
-        cssutils.ser = cssutils.serialize.CSSSerializer()
+        self._ser = css_parser.ser
+        css_parser.ser = css_parser.serialize.CSSSerializer()
 
     def _restoreSer(self):
         "Restore the default ser."
-        cssutils.ser = self._ser
+        css_parser.ser = self._ser
 
     def setUp(self):
         # a raising parser!!!
-        cssutils.log.raiseExceptions = True
-        cssutils.log.setLevel(logging.FATAL)
-        self.p = cssutils.CSSParser(raiseExceptions=True)
+        css_parser.log.raiseExceptions = True
+        css_parser.log.setLevel(logging.FATAL)
+        self.p = css_parser.CSSParser(raiseExceptions=True)
 
     @contextmanager
     def patch_default_fetcher(self, return_value):
-        import cssutils.util as cu
+        import css_parser.util as cu
         orig = cu._defaultFetcher
 
         def defaultFetcher(*a):
@@ -160,7 +160,7 @@ class BaseTestCase(unittest.TestCase):
         """
         if raising self.p is used for parsing, else self.pf
         """
-        p = cssutils.CSSParser(raiseExceptions=raising)
+        p = css_parser.CSSParser(raiseExceptions=raising)
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
@@ -175,7 +175,7 @@ class BaseTestCase(unittest.TestCase):
 
     def do_raise_p(self, tests, debug=False, raising=True):
         # parses with self.p and expects raise
-        p = cssutils.CSSParser(raiseExceptions=raising)
+        p = css_parser.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
                 print(('"%s"' % test))

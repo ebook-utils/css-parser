@@ -1,16 +1,16 @@
-"""Testcases for cssutils.css.CSSRuleList"""
+"""Testcases for css_parser.css.CSSRuleList"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from . import basetest
-import cssutils
+import css_parser
 
 
 class CSSRuleListTestCase(basetest.BaseTestCase):
 
     def test_init(self):
         "CSSRuleList.__init__()"
-        r = cssutils.css.CSSRuleList()
+        r = css_parser.css.CSSRuleList()
         self.assertEqual(0, r.length)
         self.assertEqual(None, r.item(2))
 
@@ -20,17 +20,17 @@ class CSSRuleListTestCase(basetest.BaseTestCase):
 
     def test_rulesOfType(self):
         "CSSRuleList.rulesOfType()"
-        s = cssutils.parseString('''
+        s = css_parser.parseString('''
         /*c*/
         @namespace "a";
         a { color: red}
         b { left: 0 }''')
 
-        c = list(s.cssRules.rulesOfType(cssutils.css.CSSRule.COMMENT))
+        c = list(s.cssRules.rulesOfType(css_parser.css.CSSRule.COMMENT))
         self.assertEqual(1, len(c))
         self.assertEqual('/*c*/', c[0].cssText)
 
-        r = list(s.cssRules.rulesOfType(cssutils.css.CSSRule.STYLE_RULE))
+        r = list(s.cssRules.rulesOfType(css_parser.css.CSSRule.STYLE_RULE))
         self.assertEqual(2, len(r))
         self.assertEqual('b {\n    left: 0\n    }', r[1].cssText)
 

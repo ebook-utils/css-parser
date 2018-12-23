@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-"""Testcases for cssutils.helper"""
+"""Testcases for css_parser.helper"""
 from __future__ import absolute_import
 from __future__ import unicode_literals
 __version__ = '$Id: test_util.py 1437 2008-08-18 20:30:38Z cthedot $'
 
 from . import basetest
-from cssutils.helper import *
+from css_parser.helper import *
 
 
 class HelperTestCase(basetest.BaseTestCase):

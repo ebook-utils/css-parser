@@ -1,41 +1,41 @@
-"""Testcases for cssutils.css.CSSMediaRule"""
+"""Testcases for css_parser.css.CSSMediaRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSMediaRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSMediaRule()
-        self.rRO = cssutils.css.CSSMediaRule(readonly=True)
-        self.r_type = cssutils.css.CSSMediaRule.MEDIA_RULE
+        self.r = css_parser.css.CSSMediaRule()
+        self.rRO = css_parser.css.CSSMediaRule(readonly=True)
+        self.r_type = css_parser.css.CSSMediaRule.MEDIA_RULE
         self.r_typeString = 'MEDIA_RULE'
         # for tests
-        self.stylerule = cssutils.css.CSSStyleRule()
+        self.stylerule = css_parser.css.CSSStyleRule()
         self.stylerule.cssText = 'a {}'
 
     def test_init(self):
         "CSSMediaRule.__init__()"
         super(CSSMediaRuleTestCase, self).test_init()
 
-        r = cssutils.css.CSSMediaRule()
-        self.assertEqual(cssutils.css.CSSRuleList, type(r.cssRules))
+        r = css_parser.css.CSSMediaRule()
+        self.assertEqual(css_parser.css.CSSRuleList, type(r.cssRules))
         self.assertEqual([], r.cssRules)
         self.assertEqual('', r.cssText)
-        self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
+        self.assertEqual(css_parser.stylesheets.MediaList, type(r.media))
         self.assertEqual('all', r.media.mediaText)
         self.assertEqual(None, r.name)
 
-        r = cssutils.css.CSSMediaRule(mediaText='print', name='name')
-        self.assertEqual(cssutils.css.CSSRuleList, type(r.cssRules))
+        r = css_parser.css.CSSMediaRule(mediaText='print', name='name')
+        self.assertEqual(css_parser.css.CSSRuleList, type(r.cssRules))
         self.assertEqual([], r.cssRules)
         self.assertEqual('', r.cssText)
-        self.assertEqual(cssutils.stylesheets.MediaList, type(r.media))
+        self.assertEqual(css_parser.stylesheets.MediaList, type(r.media))
         self.assertEqual('print', r.media.mediaText)
         self.assertEqual('name', r.name)
 
@@ -44,11 +44,11 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_iter(self):
         "CSSMediaRule.__iter__()"
-        m = cssutils.css.CSSMediaRule()
+        m = css_parser.css.CSSMediaRule()
         m.cssText = '''@media all { /*1*/a { left: 0} b{ top:0} }'''
-        types = [cssutils.css.CSSRule.COMMENT,
-                 cssutils.css.CSSRule.STYLE_RULE,
-                 cssutils.css.CSSRule.STYLE_RULE]
+        types = [css_parser.css.CSSRule.COMMENT,
+                 css_parser.css.CSSRule.STYLE_RULE,
+                 css_parser.css.CSSRule.STYLE_RULE]
         for i, rule in enumerate(m):
             self.assertEqual(rule, m.cssRules[i])
             self.assertEqual(rule.type, types[i])
@@ -56,7 +56,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_refs(self):
         """CSSStylesheet references"""
-        s = cssutils.parseString('@media all {a {color: red}}')
+        s = css_parser.parseString('@media all {a {color: red}}')
         r = s.cssRules[0]
         rules = r.cssRules
         self.assertEqual(r.cssRules[0].parentStyleSheet, s)
@@ -67,7 +67,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         # not anymore: self.assertEqual(rules, r.cssRules)
 
         # set cssRules
-        r.cssRules = cssutils.parseString('''
+        r.cssRules = css_parser.parseString('''
             /**/
             @x;
             b {}').cssRules''').cssRules
@@ -79,22 +79,22 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssRules(self):
         "CSSMediaRule.cssRules"
-        r = cssutils.css.CSSMediaRule()
+        r = css_parser.css.CSSMediaRule()
         self.assertEqual([], r.cssRules)
-        sr = cssutils.css.CSSStyleRule()
+        sr = css_parser.css.CSSStyleRule()
         r.cssRules.append(sr)
         self.assertEqual([sr], r.cssRules)
-        ir = cssutils.css.CSSImportRule()
+        ir = css_parser.css.CSSImportRule()
         self.assertRaises(xml.dom.HierarchyRequestErr, r.cssRules.append, ir)
 
-        s = cssutils.parseString('@media all { /*1*/a {x:1} }')
+        s = css_parser.parseString('@media all { /*1*/a {x:1} }')
         m = s.cssRules[0]
         self.assertEqual(2, m.cssRules.length)
         del m.cssRules[0]
         self.assertEqual(1, m.cssRules.length)
         m.cssRules.append('/*2*/')
         self.assertEqual(2, m.cssRules.length)
-        m.cssRules.extend(cssutils.parseString('/*3*/x {y:2}').cssRules)
+        m.cssRules.extend(css_parser.parseString('/*3*/x {y:2}').cssRules)
         self.assertEqual(4, m.cssRules.length)
         self.assertEqual('@media all {\n    a {\n        x: 1\n        }\n    /*2*/\n    /*3*/\n    x {\n        y: 2\n        }\n    }',
                          m.cssText)
@@ -245,13 +245,13 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
         self.do_raise_r(tests)
 
-        m = cssutils.css.CSSMediaRule()
+        m = css_parser.css.CSSMediaRule()
         m.cssText = '''@media all {@x; /*1*/a{color: red;}}'''
         for r in m.cssRules:
             self.assertEqual(m, r.parentRule)
             self.assertEqual(m.parentStyleSheet, r.parentStyleSheet)
 
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_media(self):
         "CSSMediaRule.media"
@@ -267,13 +267,13 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.media.mediaText = 'print'
         self.r.insertRule(self.stylerule)
         self.assertEqual('', self.r.cssText)
-        cssutils.ser.prefs.keepEmptyRules = True
+        css_parser.ser.prefs.keepEmptyRules = True
         self.assertEqual('@media print {\n    a {}\n    }', self.r.cssText)
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_name(self):
         "CSSMediaRule.name"
-        r = cssutils.css.CSSMediaRule()
+        r = css_parser.css.CSSMediaRule()
         r.cssText = '@media all "\\n\\"ame" {a{left: 0}}'
 
         self.assertEqual('\\n"ame', r.name)
@@ -302,7 +302,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_deleteRuleIndex(self):
         "CSSMediaRule.deleteRule(index)"
         # see CSSStyleSheet.deleteRule
-        m = cssutils.css.CSSMediaRule()
+        m = css_parser.css.CSSMediaRule()
         m.cssText = '''@media all {
             @a;
             /* x */
@@ -338,7 +338,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_deleteRule(self):
         "CSSMediaRule.deleteRule(rule)"
-        m = cssutils.css.CSSMediaRule()
+        m = css_parser.css.CSSMediaRule()
         m.cssText = '''@media all {
             a { color: red; }
             b { color: blue; }
@@ -346,7 +346,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         }'''
         s1, s2, s3 = m.cssRules
 
-        r = cssutils.css.CSSStyleRule()
+        r = css_parser.css.CSSStyleRule()
         self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, r)
 
         self.assertEqual(3, m.cssRules.length)
@@ -359,9 +359,9 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_add(self):
         "CSSMediaRule.add()"
         # see CSSStyleSheet.add
-        r = cssutils.css.CSSMediaRule()
-        stylerule1 = cssutils.css.CSSStyleRule()
-        stylerule2 = cssutils.css.CSSStyleRule()
+        r = css_parser.css.CSSMediaRule()
+        stylerule1 = css_parser.css.CSSStyleRule()
+        stylerule2 = css_parser.css.CSSStyleRule()
         r.add(stylerule1)
         r.add(stylerule2)
         self.assertEqual(r.cssRules[0], stylerule1)
@@ -370,16 +370,16 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_insertRule(self):
         "CSSMediaRule.insertRule"
         # see CSSStyleSheet.insertRule
-        r = cssutils.css.CSSMediaRule()
-        charsetrule = cssutils.css.CSSCharsetRule('ascii')
-        importrule = cssutils.css.CSSImportRule('x')
-        namespacerule = cssutils.css.CSSNamespaceRule()
-        pagerule = cssutils.css.CSSPageRule()
-        unknownrule = cssutils.css.CSSUnknownRule('@x;')
-        stylerule = cssutils.css.CSSStyleRule('a')
+        r = css_parser.css.CSSMediaRule()
+        charsetrule = css_parser.css.CSSCharsetRule('ascii')
+        importrule = css_parser.css.CSSImportRule('x')
+        namespacerule = css_parser.css.CSSNamespaceRule()
+        pagerule = css_parser.css.CSSPageRule()
+        unknownrule = css_parser.css.CSSUnknownRule('@x;')
+        stylerule = css_parser.css.CSSStyleRule('a')
         stylerule.cssText = 'a { x: 1}'
-        comment1 = cssutils.css.CSSComment('/*1*/')
-        comment2 = cssutils.css.CSSComment('/*2*/')
+        comment1 = css_parser.css.CSSComment('/*1*/')
+        comment2 = css_parser.css.CSSComment('/*2*/')
 
         # hierarchy
         self.assertRaises(xml.dom.HierarchyRequestErr,
@@ -437,7 +437,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSMediaRule.__repr__(), .__str__()"
         mediaText = 'tv, print'
 
-        s = cssutils.css.CSSMediaRule(mediaText=mediaText)
+        s = css_parser.css.CSSMediaRule(mediaText=mediaText)
 
         self.assertTrue(mediaText in str(s))
 

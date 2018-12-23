@@ -1,10 +1,10 @@
-"""Testcases for cssutils.css.CSSPageRule"""
+"""Testcases for css_parser.css.CSSPageRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -12,22 +12,22 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
     def setUp(self):
         super(CSSPageRuleTestCase, self).setUp()
 
-        cssutils.ser.prefs.useDefaults()
-        self.r = cssutils.css.CSSPageRule()
-        self.rRO = cssutils.css.CSSPageRule(readonly=True)
-        self.r_type = cssutils.css.CSSPageRule.PAGE_RULE
+        css_parser.ser.prefs.useDefaults()
+        self.r = css_parser.css.CSSPageRule()
+        self.rRO = css_parser.css.CSSPageRule(readonly=True)
+        self.r_type = css_parser.css.CSSPageRule.PAGE_RULE
         self.r_typeString = 'PAGE_RULE'
 
     def tearDown(self):
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSPageRule.__init__()"
         super(CSSPageRuleTestCase, self).test_init()
 
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         self.assertEqual('', r.selectorText)
-        self.assertEqual(cssutils.css.CSSStyleDeclaration, type(r.style))
+        self.assertEqual(css_parser.css.CSSStyleDeclaration, type(r.style))
         self.assertEqual(r, r.style.parentRule)
 
         # until any properties
@@ -41,22 +41,22 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             for p in ff.style:
                 self.assertEqual(ff.style, p.parent)
 
-        checkrefs(cssutils.css.CSSPageRule(
-            style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+        checkrefs(css_parser.css.CSSPageRule(
+            style=css_parser.css.CSSStyleDeclaration('font-family: x')))
 
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.cssText = '@page { font-family: x }'
         checkrefs(r)
 
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.style.setProperty('font-family', 'y')
         checkrefs(r)
 
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.style['font-family'] = 'z'
         checkrefs(r)
 
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.style.fontFamily = 'a'
         checkrefs(r)
 
@@ -160,7 +160,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_cssText2(self):
         "CSSPageRule.cssText 2"
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         s = 'a:left'
         r.selectorText = s
         self.assertEqual(r.selectorText, s)
@@ -189,7 +189,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_selectorText(self):
         "CSSPageRule.selectorText"
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.selectorText = 'a:left'
         self.assertEqual(r.selectorText, 'a:left')
 
@@ -222,7 +222,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_specificity(self):
         "CSSPageRule.specificity"
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         tests = {
             '': (0, 0, 0),
             'name': (1, 0, 0),
@@ -239,30 +239,30 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             r.selectorText = sel
             self.assertEqual(r.specificity, exp)
 
-            r = cssutils.css.CSSPageRule()
+            r = css_parser.css.CSSPageRule()
             r.cssText = '@page %s {}' % sel
             self.assertEqual(r.specificity, exp)
 
     def test_cssRules(self):
         "CSSPageRule.cssRules"
-        s = cssutils.parseString('@page {}')
+        s = css_parser.parseString('@page {}')
         p = s.cssRules[0]
 
         self.assertEqual(len(p.cssRules), 0)
 
         # add and insert
-        m1 = cssutils.css.MarginRule('@top-left', 'color: red')
+        m1 = css_parser.css.MarginRule('@top-left', 'color: red')
         i = p.add(m1)
         self.assertEqual(i, 0)
         self.assertEqual(len(p.cssRules), 1)
 
-        m3 = cssutils.css.MarginRule()
+        m3 = css_parser.css.MarginRule()
         m3.cssText = '@top-right { color: blue }'
         i = p.insertRule(m3)
         self.assertEqual(i, 1)
         self.assertEqual(len(p.cssRules), 2)
 
-        m2 = cssutils.css.MarginRule()
+        m2 = css_parser.css.MarginRule()
         m2.margin = '@top-center'
         m2.style = 'color: green'
         i = p.insertRule(m2, 1)
@@ -320,7 +320,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_style(self):
         "CSSPageRule.style (and references)"
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         s1 = r.style
         self.assertEqual(r, s1.parentRule)
         self.assertEqual('', s1.cssText)
@@ -354,7 +354,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.style.cssText, 'font-family: x2')
 
         # set new style object s2
-        s2 = cssutils.css.CSSStyleDeclaration('font-family: y1')
+        s2 = css_parser.css.CSSStyleDeclaration('font-family: y1')
         r.style = s2
         self.assertEqual(r.style, s2)
         self.assertEqual(r, s2.parentRule)
@@ -387,7 +387,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_properties(self):
         "CSSPageRule.style properties"
-        r = cssutils.css.CSSPageRule()
+        r = css_parser.css.CSSPageRule()
         r.style.cssText = '''
         margin-top: 0;
         margin-right: 0;
@@ -420,7 +420,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSPageRule.__repr__(), .__str__()"
         sel = ':left'
 
-        s = cssutils.css.CSSPageRule(selectorText=sel)
+        s = css_parser.css.CSSPageRule(selectorText=sel)
 
         self.assertTrue(sel in str(s))
 

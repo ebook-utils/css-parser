@@ -8,6 +8,8 @@ import sys
 import unittest
 from io import StringIO
 
+import css_parser.encutils as encutils
+
 PY2x = sys.version_info < (3, 0)
 
 if PY2x:
@@ -15,10 +17,6 @@ if PY2x:
 else:
     from http.client import HTTPMessage
 
-try:
-    import cssutils.encutils as encutils
-except ImportError:
-    import encutils
 
 # helper log
 log = encutils.buildlog(stream=StringIO())

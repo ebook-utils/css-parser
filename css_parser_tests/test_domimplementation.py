@@ -1,23 +1,23 @@
-"""Testcases for cssutils.css.DOMImplementation"""
+"""Testcases for css_parser.css.DOMImplementation"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 import xml.dom.minidom
 import unittest
-import cssutils
+import css_parser
 
 
 class DOMImplementationTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.domimpl = cssutils.DOMImplementationCSS()
+        self.domimpl = css_parser.DOMImplementationCSS()
 
     def test_createCSSStyleSheet(self):
         "DOMImplementationCSS.createCSSStyleSheet()"
-        title, media = 'Test Title', cssutils.stylesheets.MediaList('all')
+        title, media = 'Test Title', css_parser.stylesheets.MediaList('all')
         sheet = self.domimpl.createCSSStyleSheet(title, media)
-        self.assertEqual(True, isinstance(sheet, cssutils.css.CSSStyleSheet))
+        self.assertEqual(True, isinstance(sheet, css_parser.css.CSSStyleSheet))
         self.assertEqual(title, sheet.title)
         self.assertEqual(media, sheet.media)
 

@@ -1,27 +1,27 @@
-"""Testcases for cssutils.settings"""
+"""Testcases for css_parser.settings"""
 from __future__ import absolute_import
 from __future__ import unicode_literals
 __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
 from . import test_cssrule
-import cssutils
-import cssutils.settings
+import css_parser
+import css_parser.settings
 
 
 class Settings(test_cssrule.CSSRuleTestCase):
 
     def test_set(self):
         "settings.set()"
-        cssutils.ser.prefs.useMinified()
+        css_parser.ser.prefs.useMinified()
         text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
 
-        self.assertEqual(cssutils.parseString(text).cssText, ''.encode())
+        self.assertEqual(css_parser.parseString(text).cssText, ''.encode())
 
-        cssutils.settings.set('DXImageTransform.Microsoft', True)
-        self.assertEqual(cssutils.parseString(text).cssText,
+        css_parser.settings.set('DXImageTransform.Microsoft', True)
+        self.assertEqual(css_parser.parseString(text).cssText,
                          'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode())
 
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
 
 if __name__ == '__main__':

@@ -1,35 +1,35 @@
-"""Testcases for cssutils.css.CSSStyleRuleTestCase"""
+"""Testcases for css_parser.css.CSSStyleRuleTestCase"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSStyleRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSStyleRule()
-        self.rRO = cssutils.css.CSSStyleRule(readonly=True)
-        self.r_type = cssutils.css.CSSStyleRule.STYLE_RULE
+        self.r = css_parser.css.CSSStyleRule()
+        self.rRO = css_parser.css.CSSStyleRule(readonly=True)
+        self.r_type = css_parser.css.CSSStyleRule.STYLE_RULE
         self.r_typeString = 'STYLE_RULE'
 
     def test_init(self):
         "CSSStyleRule.type and init"
         super(CSSStyleRuleTestCase, self).test_init()
         self.assertEqual('', self.r.cssText)
-        self.assertEqual(cssutils.css.selectorlist.SelectorList,
+        self.assertEqual(css_parser.css.selectorlist.SelectorList,
                          type(self.r.selectorList))
         self.assertEqual('', self.r.selectorText)
-        self.assertEqual(cssutils.css.CSSStyleDeclaration,
+        self.assertEqual(css_parser.css.CSSStyleDeclaration,
                          type(self.r.style))
         self.assertEqual(self.r, self.r.style.parentRule)
 
     def test_refs(self):
         "CSSStyleRule references"
-        s = cssutils.css.CSSStyleRule()
+        s = css_parser.css.CSSStyleRule()
         sel, style = s.selectorList, s.style
 
         self.assertEqual(s, sel.parentRule)
@@ -58,7 +58,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual('1', s.style.getPropertyValue('x'))
 
         # CHANGING
-        s = cssutils.parseString('a {s1: 1}')
+        s = css_parser.parseString('a {s1: 1}')
         r = s.cssRules[0]
         sel1 = r.selectorList
         st1 = r.style
@@ -75,7 +75,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('c', r.selectorList.selectorText)
         self.assertEqual('c', r.selectorText)
 
-        sel2 = cssutils.css.SelectorList('sel2')
+        sel2 = css_parser.css.SelectorList('sel2')
         s.selectorList = sel2
         self.assertEqual(sel2, s.selectorList)
         self.assertEqual('sel2', s.selectorList.selectorText)
@@ -93,7 +93,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertNotEqual(st1, r.style)
         self.assertEqual('s1: 2', r.style.cssText)
 
-        st2 = cssutils.parseStyle('s2: 1')
+        st2 = css_parser.parseStyle('s2: 1')
         r.style = st2
         self.assertEqual(st2, r.style)
         self.assertEqual('s2: 1', r.style.cssText)
@@ -121,7 +121,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests)  # parse
         # self.do_equal_r(tests) # set cssText # TODO: WHY?
 
-        cssutils.ser.prefs.keepEmptyRules = True
+        css_parser.ser.prefs.keepEmptyRules = True
         tests = {
             # u'''a{;display:block;float:left}''': 'a {\n    display:block;\n    float:left\n    }', # issue 28
 
@@ -166,11 +166,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
             '''a {} ''': xml.dom.SyntaxErr,
         })
         self.do_raise_r(tests)  # set cssText
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_selectorList(self):
         "CSSStyleRule.selectorList"
-        r = cssutils.css.CSSStyleRule()
+        r = css_parser.css.CSSStyleRule()
 
         r.selectorList.appendSelector('a')
         self.assertEqual(1, r.selectorList.length)
@@ -186,7 +186,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_selectorText(self):
         "CSSStyleRule.selectorText"
-        r = cssutils.css.CSSStyleRule()
+        r = css_parser.css.CSSStyleRule()
 
         r.selectorText = 'a'
         self.assertEqual(1, r.selectorList.length)
@@ -198,7 +198,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_style(self):
         "CSSStyleRule.style"
-        d = cssutils.css.CSSStyleDeclaration()
+        d = css_parser.css.CSSStyleDeclaration()
         self.r.style = d
         self.assertEqual(d.cssText, self.r.style.cssText)
 
@@ -207,7 +207,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_incomplete(self):
         "CSSStyleRule (incomplete)"
-        cssutils.ser.prefs.keepEmptyRules = True
+        css_parser.ser.prefs.keepEmptyRules = True
         tests = {
             'a {': 'a {}',  # no }
             'a { font-family: "arial sans':  # no "}
@@ -229,7 +229,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
                 ''': '''p {\n    color: green;\n    color: green\n    }'''
         }
         self.do_equal_p(tests, raising=False)  # parse
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
 # TODO:   def test_InvalidModificationErr(self):
 #        "CSSStyleRule.cssText InvalidModificationErr"
@@ -239,7 +239,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSStyleRule.__repr__(), .__str__()"
         sel = 'a > b + c'
 
-        s = cssutils.css.CSSStyleRule(selectorText=sel)
+        s = css_parser.css.CSSStyleRule(selectorText=sel)
 
         self.assertTrue(sel in str(s))
 
@@ -249,7 +249,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_valid(self):
         "CSSStyleRule.valid"
-        rule = cssutils.css.CSSStyleRule(selectorText='*', style='color: red')
+        rule = css_parser.css.CSSStyleRule(selectorText='*', style='color: red')
         self.assertTrue(rule.valid)
         rule.style = 'color: foobar'
         self.assertFalse(rule.valid)

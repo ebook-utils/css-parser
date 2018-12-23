@@ -1,10 +1,10 @@
-"""Testcases for cssutils.css.CSSCharsetRule"""
+"""Testcases for css_parser.css.CSSCharsetRule"""
 from __future__ import absolute_import, unicode_literals
 
 import sys
 import xml.dom
 
-from cssutils.prodparser import (Choice, Exhausted, ParseError, PreDef, Prod,
+from css_parser.prodparser import (Choice, Exhausted, ParseError, PreDef, Prod,
                                  ProdParser, Sequence)
 
 from . import basetest

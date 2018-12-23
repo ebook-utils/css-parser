@@ -1,10 +1,10 @@
-"""Testcases for cssutils.css.CSSImportRule"""
+"""Testcases for css_parser.css.CSSImportRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 from . import basetest
 
@@ -13,9 +13,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSImportRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSImportRule()
-        self.rRO = cssutils.css.CSSImportRule(readonly=True)
-        self.r_type = cssutils.css.CSSImportRule.IMPORT_RULE
+        self.r = css_parser.css.CSSImportRule()
+        self.rRO = css_parser.css.CSSImportRule(readonly=True)
+        self.r_type = css_parser.css.CSSImportRule.IMPORT_RULE
         self.r_typeString = 'IMPORT_RULE'
 
     def test_init(self):
@@ -28,54 +28,54 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(False, self.r.hrefFound)
         self.assertEqual('all', self.r.media.mediaText)
         self.assertEqual(
-            cssutils.stylesheets.MediaList, type(self.r.media))
+            css_parser.stylesheets.MediaList, type(self.r.media))
         self.assertEqual(None, self.r.name)
-        self.assertEqual(cssutils.css.CSSStyleSheet, type(self.r.styleSheet))
+        self.assertEqual(css_parser.css.CSSStyleSheet, type(self.r.styleSheet))
         self.assertEqual(0, self.r.styleSheet.cssRules.length)
         self.assertEqual('', self.r.cssText)
 
         # all
-        r = cssutils.css.CSSImportRule(href='href', mediaText='tv', name='name')
+        r = css_parser.css.CSSImportRule(href='href', mediaText='tv', name='name')
         self.assertEqual('@import url(href) tv "name";', r.cssText)
         self.assertEqual("href", r.href)
         self.assertEqual(None, r.hreftype)
         self.assertEqual('tv', r.media.mediaText)
         self.assertEqual(
-            cssutils.stylesheets.MediaList, type(r.media))
+            css_parser.stylesheets.MediaList, type(r.media))
         self.assertEqual('name', r.name)
         self.assertEqual(None, r.parentRule)  # see CSSRule
         self.assertEqual(None, r.parentStyleSheet)  # see CSSRule
-        self.assertEqual(cssutils.css.CSSStyleSheet, type(self.r.styleSheet))
+        self.assertEqual(css_parser.css.CSSStyleSheet, type(self.r.styleSheet))
         self.assertEqual(0, self.r.styleSheet.cssRules.length)
 
         # href
-        r = cssutils.css.CSSImportRule('x')
+        r = css_parser.css.CSSImportRule('x')
         self.assertEqual('@import url(x);', r.cssText)
         self.assertEqual('x', r.href)
         self.assertEqual(None, r.hreftype)
 
         # href + mediaText
-        r = cssutils.css.CSSImportRule('x', 'print')
+        r = css_parser.css.CSSImportRule('x', 'print')
         self.assertEqual('@import url(x) print;', r.cssText)
         self.assertEqual('x', r.href)
         self.assertEqual('print', r.media.mediaText)
 
         # href + name
-        r = cssutils.css.CSSImportRule('x', name='n')
+        r = css_parser.css.CSSImportRule('x', name='n')
         self.assertEqual('@import url(x) "n";', r.cssText)
         self.assertEqual('x', r.href)
         self.assertEqual('n', r.name)
 
         # href + mediaText + name
-        r = cssutils.css.CSSImportRule('x', 'print', 'n')
+        r = css_parser.css.CSSImportRule('x', 'print', 'n')
         self.assertEqual('@import url(x) print "n";', r.cssText)
         self.assertEqual('x', r.href)
         self.assertEqual('print', r.media.mediaText)
         self.assertEqual('n', r.name)
 
         # media +name only
-        self.r = cssutils.css.CSSImportRule(mediaText='print', name="n")
-        self.assertEqual(cssutils.stylesheets.MediaList,
+        self.r = css_parser.css.CSSImportRule(mediaText='print', name="n")
+        self.assertEqual(css_parser.stylesheets.MediaList,
                          type(self.r.media))
         self.assertEqual('', self.r.cssText)
         self.assertEqual('print', self.r.media.mediaText)
@@ -225,7 +225,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             else:
                 return None, None
 
-        parser = cssutils.CSSParser(fetcher=fetcher)
+        parser = css_parser.CSSParser(fetcher=fetcher)
         sheet = parser.parseString('@import "http://example.com/yes" "name"')
 
         r = sheet.cssRules[0]
@@ -243,7 +243,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_hreftype(self):
         "CSSImportRule.hreftype"
-        self.r = cssutils.css.CSSImportRule()
+        self.r = css_parser.css.CSSImportRule()
 
         self.r.cssText = '@import /*1*/url(org) /*2*/;'
         self.assertEqual('uri', self.r.hreftype)
@@ -273,15 +273,15 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('@import url(x) print, tv;', self.r.cssText)
 
         # for generated rule
-        r = cssutils.css.CSSImportRule(href='x')
+        r = css_parser.css.CSSImportRule(href='x')
         self.assertRaisesMsg(xml.dom.InvalidModificationErr,
                              basetest.msg3x(
-                                 '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
+                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
                              r.media.appendMedium, 'tv')
         self.assertEqual('@import url(x);', r.cssText)
         self.assertRaisesMsg(xml.dom.InvalidModificationErr,
                              basetest.msg3x(
-                                 '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
+                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
                              r.media.appendMedium, 'tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
@@ -290,17 +290,17 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('@import url(x) tv, print;', r.cssText)
 
         # for parsed rule without initial media
-        s = cssutils.parseString('@import url(x);')
+        s = css_parser.parseString('@import url(x);')
         r = s.cssRules[0]
 
         self.assertRaisesMsg(xml.dom.InvalidModificationErr,
                              basetest.msg3x(
-                                 '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
+                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
                              r.media.appendMedium, 'tv')
         self.assertEqual('@import url(x);', r.cssText)
         self.assertRaisesMsg(xml.dom.InvalidModificationErr,
                              basetest.msg3x(
-                                 '''MediaList: Ignoring new medium cssutils.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
+                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
                              r.media.appendMedium, 'tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
@@ -310,7 +310,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_name(self):
         "CSSImportRule.name"
-        r = cssutils.css.CSSImportRule('x', name='a000000')
+        r = css_parser.css.CSSImportRule('x', name='a000000')
         self.assertEqual('a000000', r.name)
         self.assertEqual('@import url(x) "a000000";', r.cssText)
 
@@ -345,7 +345,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             else:
                 return None, 'a { color: red }'
 
-        parser = cssutils.CSSParser(fetcher=fetcher)
+        parser = css_parser.CSSParser(fetcher=fetcher)
         sheet = parser.parseString('''@charset "ascii";
                                    @import "level1/anything.css" tv "title";''',
                                    href='/root/')
@@ -376,10 +376,10 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir2.styleSheet.cssText,
                          '@charset "ascii";\na {\n    color: red\n    }'.encode())
 
-        sheet = cssutils.parseString('@import "CANNOT-FIND.css";')
+        sheet = css_parser.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
         self.assertEqual(ir.href, "CANNOT-FIND.css")
-        self.assertEqual(type(ir.styleSheet), cssutils.css.CSSStyleSheet)
+        self.assertEqual(type(ir.styleSheet), css_parser.css.CSSStyleSheet)
 
         def fetcher(url):
             if url.endswith('level1.css'):
@@ -387,7 +387,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
             else:
                 return None, 'a { color: red }'.encode()
 
-        parser = cssutils.CSSParser(fetcher=fetcher)
+        parser = css_parser.CSSParser(fetcher=fetcher)
 
         sheet = parser.parseString('@charset "iso-8859-1";@import "level1.css";')
         self.assertEqual(sheet.encoding, 'iso-8859-1')
@@ -425,7 +425,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         href = 'x.css'
         mediaText = 'tv, print'
         name = 'name'
-        s = cssutils.css.CSSImportRule(href=href, mediaText=mediaText, name=name)
+        s = css_parser.css.CSSImportRule(href=href, mediaText=mediaText, name=name)
 
         # str(): mediaText nor name are present here
         self.assertTrue(href in str(s))

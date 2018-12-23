@@ -7,7 +7,7 @@ import logging
 import sys
 import xml.dom
 from . import basetest
-import cssutils
+import css_parser
 from io import StringIO
 
 
@@ -15,18 +15,18 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         "replace default log and ignore its output"
-        self._oldlog = cssutils.log._log
-        self._saved = cssutils.log.raiseExceptions
+        self._oldlog = css_parser.log._log
+        self._saved = css_parser.log.raiseExceptions
 
-        cssutils.log.raiseExceptions = False
-        cssutils.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
+        css_parser.log.raiseExceptions = False
+        css_parser.log.setLog(logging.getLogger('IGNORED-CSSUTILS-TEST'))
 
     def tearDown(self):
         "reset default log"
-        cssutils.log.setLog(self._oldlog)
+        css_parser.log.setLog(self._oldlog)
         # for tests only
-        cssutils.log.setLevel(logging.FATAL)
-        cssutils.log.raiseExceptions = self._saved
+        css_parser.log.setLevel(logging.FATAL)
+        css_parser.log.raiseExceptions = self._saved
 
     def _setHandler(self):
         "sets new handler and returns StringIO instance to getvalue"
@@ -34,53 +34,53 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         h = logging.StreamHandler(s)
         h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
         # remove if present already
-        cssutils.log.removeHandler(h)
-        cssutils.log.addHandler(h)
+        css_parser.log.removeHandler(h)
+        css_parser.log.addHandler(h)
         return s
 
     def test_calls(self):
-        "cssutils.log.*"
+        "css_parser.log.*"
         s = self._setHandler()
-        cssutils.log.setLevel(logging.DEBUG)
-        cssutils.log.debug('msg', neverraise=True)
+        css_parser.log.setLevel(logging.DEBUG)
+        css_parser.log.debug('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'DEBUG    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.INFO)
-        cssutils.log.info('msg', neverraise=True)
+        css_parser.log.setLevel(logging.INFO)
+        css_parser.log.info('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'INFO    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.WARNING)
-        cssutils.log.warn('msg', neverraise=True)
+        css_parser.log.setLevel(logging.WARNING)
+        css_parser.log.warn('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'WARNING    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.ERROR)
-        cssutils.log.error('msg', neverraise=True)
+        css_parser.log.setLevel(logging.ERROR)
+        css_parser.log.error('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'ERROR    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.FATAL)
-        cssutils.log.fatal('msg', neverraise=True)
+        css_parser.log.setLevel(logging.FATAL)
+        css_parser.log.fatal('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'CRITICAL    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.CRITICAL)
-        cssutils.log.critical('msg', neverraise=True)
+        css_parser.log.setLevel(logging.CRITICAL)
+        css_parser.log.critical('msg', neverraise=True)
         self.assertEqual(s.getvalue(), 'CRITICAL    msg\n')
 
         s = self._setHandler()
-        cssutils.log.setLevel(logging.CRITICAL)
-        cssutils.log.error('msg', neverraise=True)
+        css_parser.log.setLevel(logging.CRITICAL)
+        css_parser.log.error('msg', neverraise=True)
         self.assertEqual(s.getvalue(), '')
 
     def test_linecol(self):
-        "cssutils.log line col"
-        o = cssutils.log.raiseExceptions
-        cssutils.log.raiseExceptions = True
+        "css_parser.log line col"
+        o = css_parser.log.raiseExceptions
+        css_parser.log.raiseExceptions = True
 
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         try:
             s.cssText = '@import x;'
         except xml.dom.DOMException as e:
@@ -92,27 +92,27 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
             else:
                 self.assertEqual(e.args, ('CSSImportRule: Unexpected ident. [1:9: x]',))
 
-        cssutils.log.raiseExceptions = o
+        css_parser.log.raiseExceptions = o
 
     def test_handlers(self):
-        "cssutils.log"
+        "css_parser.log"
         s = self._setHandler()
 
-        cssutils.log.setLevel(logging.FATAL)
-        self.assertEqual(cssutils.log.getEffectiveLevel(), logging.FATAL)
+        css_parser.log.setLevel(logging.FATAL)
+        self.assertEqual(css_parser.log.getEffectiveLevel(), logging.FATAL)
 
-        cssutils.parseString('a { color: 1 }')
+        css_parser.parseString('a { color: 1 }')
         self.assertEqual(s.getvalue(), '')
 
-        cssutils.log.setLevel(logging.DEBUG)
-        cssutils.parseString('a { color: 1 }')
+        css_parser.log.setLevel(logging.DEBUG)
+        css_parser.parseString('a { color: 1 }')
         self.assertEqual(s.getvalue(),
                          'ERROR    Property: Invalid value for "CSS Level 2.1" property: 1 [1:5: color]\n')
 
         s = self._setHandler()
 
-        cssutils.log.setLevel(logging.ERROR)
-        cssutils.parseUrl('http://example.com')
+        css_parser.log.setLevel(logging.ERROR)
+        css_parser.parseUrl('http://example.com')
         self.assertEqual(s.getvalue()[:38],
                          'ERROR    Expected "text/css" mime type')
 
@@ -120,28 +120,28 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         style = 'color: 1'
         t = 'a { %s }' % style
 
-        cssutils.log.setLevel(logging.DEBUG)
+        css_parser.log.setLevel(logging.DEBUG)
 
         # sheet
         s = self._setHandler()
-        cssutils.parseString(t)
+        css_parser.parseString(t)
         self.assertNotEqual(len(s.getvalue()), 0)
 
         s = self._setHandler()
-        cssutils.parseString(t, validate=False)
+        css_parser.parseString(t, validate=False)
         self.assertEqual(s.getvalue(), '')
 
         # style
         s = self._setHandler()
-        cssutils.parseStyle(style)
+        css_parser.parseStyle(style)
         self.assertNotEqual(len(s.getvalue()), 0)
 
         s = self._setHandler()
-        cssutils.parseStyle(style, validate=True)
+        css_parser.parseStyle(style, validate=True)
         self.assertNotEqual(len(s.getvalue()), 0)
 
         s = self._setHandler()
-        cssutils.parseStyle(style, validate=False)
+        css_parser.parseStyle(style, validate=False)
         self.assertEqual(s.getvalue(), '')
 
 

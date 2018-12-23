@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Testcases for new cssutils.tokenize.Tokenizer
+"""Testcases for new css_parser.tokenize.Tokenizer
 
 TODO: old tests as new ones are **not complete**!
 """
@@ -9,8 +9,8 @@ from __future__ import unicode_literals
 import sys
 import xml.dom
 from . import basetest
-import cssutils.tokenize2 as tokenize2
-from cssutils.tokenize2 import *
+import css_parser.tokenize2 as tokenize2
+from css_parser.tokenize2 import *
 
 
 class TokenizerTestCase(basetest.BaseTestCase):
@@ -591,7 +591,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
     }
 
     def setUp(self):
-        #log = cssutils.errorhandler.ErrorHandler()
+        #log = css_parser.errorhandler.ErrorHandler()
         self.tokenizer = Tokenizer()
 
 #    NOT USED
@@ -616,10 +616,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
 #        pass
 
     def test_tokenize(self):
-        "cssutils Tokenizer().tokenize()"
-        import cssutils.cssproductions
-        tokenizer = Tokenizer(cssutils.cssproductions.MACROS,
-                              cssutils.cssproductions.PRODUCTIONS)
+        "css_parser Tokenizer().tokenize()"
+        import css_parser.cssproductions
+        tokenizer = Tokenizer(css_parser.cssproductions.MACROS,
+                              css_parser.cssproductions.PRODUCTIONS)
         tests = {}
         tests.update(self.testsall)
         tests.update(self.tests2)
@@ -638,10 +638,10 @@ class TokenizerTestCase(basetest.BaseTestCase):
             self.assertEqual(len(tokens), len(tests[css]))
 
     def test_tokenizefullsheet(self):
-        "cssutils Tokenizer().tokenize(fullsheet=True)"
-        import cssutils.cssproductions
-        tokenizer = Tokenizer(cssutils.cssproductions.MACROS,
-                              cssutils.cssproductions.PRODUCTIONS)
+        "css_parser Tokenizer().tokenize(fullsheet=True)"
+        import css_parser.cssproductions
+        tokenizer = Tokenizer(css_parser.cssproductions.MACROS,
+                              css_parser.cssproductions.PRODUCTIONS)
         tests = {}
         tests.update(self.testsall)
         tests.update(self.tests2)

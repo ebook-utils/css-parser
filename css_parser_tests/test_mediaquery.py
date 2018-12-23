@@ -1,18 +1,18 @@
 # -*- coding: iso-8859-1 -*-
-"""Testcases for cssutils.stylesheets.MediaQuery"""
+"""Testcases for css_parser.stylesheets.MediaQuery"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils.stylesheets
+import css_parser.stylesheets
 
 
 class MediaQueryTestCase(basetest.BaseTestCase):
 
     def setUp(self):
         super(MediaQueryTestCase, self).setUp()
-        self.r = cssutils.stylesheets.MediaQuery()
+        self.r = css_parser.stylesheets.MediaQuery()
 
     def test_mediaText(self):
         "MediaQuery.mediaText"
@@ -54,11 +54,11 @@ class MediaQueryTestCase(basetest.BaseTestCase):
 
     def test_mediaType(self):
         "MediaQuery.mediaType"
-        mq = cssutils.stylesheets.MediaQuery()
+        mq = css_parser.stylesheets.MediaQuery()
 
         self.assertEqual('', mq.mediaText)
 
-        for mt in cssutils.stylesheets.MediaQuery.MEDIA_TYPES:
+        for mt in css_parser.stylesheets.MediaQuery.MEDIA_TYPES:
             mq.mediaType = mt
             self.assertEqual(mq.mediaType, mt)
             mq.mediaType = mt.upper()
@@ -94,7 +94,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
     def test_reprANDstr(self):
         "MediaQuery.__repr__(), .__str__()"
         mediaText = 'tv and (color)'
-        s = cssutils.stylesheets.MediaQuery(mediaText=mediaText)
+        s = css_parser.stylesheets.MediaQuery(mediaText=mediaText)
         self.assertTrue(mediaText in str(s))
         s2 = eval(repr(s))
         self.assertEqual(mediaText, s2.mediaText)

@@ -1,10 +1,10 @@
-"""Testcases for cssutils.css.CSSRule"""
+"""Testcases for css_parser.css.CSSRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils.css
+import css_parser.css
 
 
 class CSSRuleTestCase(basetest.BaseTestCase):
@@ -29,15 +29,15 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         """
         super(CSSRuleTestCase, self).setUp()
 
-        self.sheet = cssutils.css.CSSStyleSheet()
-        self.r = cssutils.css.CSSRule()
-        self.rRO = cssutils.css.CSSRule()
+        self.sheet = css_parser.css.CSSStyleSheet()
+        self.r = css_parser.css.CSSRule()
+        self.rRO = css_parser.css.CSSRule()
         self.rRO._readonly = True  # must be set here!
-        self.r_type = cssutils.css.CSSRule.UNKNOWN_RULE
+        self.r_type = css_parser.css.CSSRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
     def tearDown(self):
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSRule.type and init"
@@ -50,23 +50,23 @@ class CSSRuleTestCase(basetest.BaseTestCase):
     def test_parentRule_parentStyleSheet_type(self):
         "CSSRule.parentRule .parentStyleSheet .type"
         rules = [
-            ('@charset "ascii";', cssutils.css.CSSRule.CHARSET_RULE),
-            ('@import "x";', cssutils.css.CSSRule.IMPORT_RULE),
-            ('@namespace "x";', cssutils.css.CSSRule.NAMESPACE_RULE),
-            ('@font-face { src: url(x) }', cssutils.css.CSSRule.FONT_FACE_RULE),
+            ('@charset "ascii";', css_parser.css.CSSRule.CHARSET_RULE),
+            ('@import "x";', css_parser.css.CSSRule.IMPORT_RULE),
+            ('@namespace "x";', css_parser.css.CSSRule.NAMESPACE_RULE),
+            ('@font-face { src: url(x) }', css_parser.css.CSSRule.FONT_FACE_RULE),
             ('''@media all {
                     @x;
                     a { color: red }
                     /* c  */
-                }''', cssutils.css.CSSRule.MEDIA_RULE),
-            ('@page :left { color: red }', cssutils.css.CSSRule.PAGE_RULE),
-            ('@unknown;', cssutils.css.CSSRule.UNKNOWN_RULE),
-            ('b { left: 0 }', cssutils.css.CSSRule.STYLE_RULE),
-            ('/*1*/', cssutils.css.CSSRule.COMMENT)  # must be last for add test
+                }''', css_parser.css.CSSRule.MEDIA_RULE),
+            ('@page :left { color: red }', css_parser.css.CSSRule.PAGE_RULE),
+            ('@unknown;', css_parser.css.CSSRule.UNKNOWN_RULE),
+            ('b { left: 0 }', css_parser.css.CSSRule.STYLE_RULE),
+            ('/*1*/', css_parser.css.CSSRule.COMMENT)  # must be last for add test
         ]
-        mrt = [cssutils.css.CSSRule.UNKNOWN_RULE,
-               cssutils.css.CSSRule.STYLE_RULE,
-               cssutils.css.CSSRule.COMMENT]
+        mrt = [css_parser.css.CSSRule.UNKNOWN_RULE,
+               css_parser.css.CSSRule.STYLE_RULE,
+               css_parser.css.CSSRule.COMMENT]
 
         def test(s):
             for i, rule in enumerate(s):
@@ -86,41 +86,41 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
         cssText = ''.join(r[0] for r in rules)
         # parsing
-        s = cssutils.parseString(cssText)
+        s = css_parser.parseString(cssText)
         test(s)
         # sheet.cssText
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         s.cssText = cssText
         test(s)
         # sheet.add CSS
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         for css, type_ in rules:
             s.add(css)
         test(s)
         # sheet.insertRule CSS
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         for css, type_ in rules:
             s.insertRule(css)
         test(s)
 
-        types = [cssutils.css.CSSCharsetRule,
-                 cssutils.css.CSSImportRule,
-                 cssutils.css.CSSNamespaceRule,
-                 cssutils.css.CSSFontFaceRule,
-                 cssutils.css.CSSMediaRule,
-                 cssutils.css.CSSPageRule,
-                 cssutils.css.CSSUnknownRule,
-                 cssutils.css.CSSStyleRule,
-                 cssutils.css.CSSComment]
+        types = [css_parser.css.CSSCharsetRule,
+                 css_parser.css.CSSImportRule,
+                 css_parser.css.CSSNamespaceRule,
+                 css_parser.css.CSSFontFaceRule,
+                 css_parser.css.CSSMediaRule,
+                 css_parser.css.CSSPageRule,
+                 css_parser.css.CSSUnknownRule,
+                 css_parser.css.CSSStyleRule,
+                 css_parser.css.CSSComment]
         # sheet.add CSSRule
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         for i, (css, type_) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
             s.add(rule)
         test(s)
         # sheet.insertRule CSSRule
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         for i, (css, type_) in enumerate(rules):
             rule = types[i]()
             rule.cssText = css
@@ -130,9 +130,9 @@ class CSSRuleTestCase(basetest.BaseTestCase):
     def test_CSSMediaRule_cssRules_parentRule_parentStyleSheet_type(self):
         "CSSMediaRule.cssRules.parentRule .parentStyleSheet .type"
         rules = [
-            ('b { left: 0 }', cssutils.css.CSSRule.STYLE_RULE),
-            ('/*1*/', cssutils.css.CSSRule.COMMENT),
-            ('@x;', cssutils.css.CSSRule.UNKNOWN_RULE)
+            ('b { left: 0 }', css_parser.css.CSSRule.STYLE_RULE),
+            ('/*1*/', css_parser.css.CSSRule.COMMENT),
+            ('@x;', css_parser.css.CSSRule.UNKNOWN_RULE)
         ]
 
         def test(s):
@@ -145,15 +145,15 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
         cssText = '@media all { %s }' % ''.join(r[0] for r in rules)
         # parsing
-        s = cssutils.parseString(cssText)
+        s = css_parser.parseString(cssText)
         test(s)
         # sheet.cssText
-        s = cssutils.css.CSSStyleSheet()
+        s = css_parser.css.CSSStyleSheet()
         s.cssText = cssText
         test(s)
 
         def getMediaSheet():
-            s = cssutils.css.CSSStyleSheet()
+            s = css_parser.css.CSSStyleSheet()
             s.cssText = '@media all {}'
             return s, s.cssRules[0]
         # sheet.add CSS
@@ -167,9 +167,9 @@ class CSSRuleTestCase(basetest.BaseTestCase):
             mr.insertRule(css)
         test(s)
 
-        types = [cssutils.css.CSSStyleRule,
-                 cssutils.css.CSSComment,
-                 cssutils.css.CSSUnknownRule]
+        types = [css_parser.css.CSSStyleRule,
+                 css_parser.css.CSSComment,
+                 css_parser.css.CSSUnknownRule]
         # sheet.add CSSRule
         s, mr = getMediaSheet()
         for i, (css, type_) in enumerate(rules):
@@ -187,7 +187,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
 
     def test_readonly(self):
         "CSSRule readonly"
-        self.rRO = cssutils.css.CSSRule()
+        self.rRO = css_parser.css.CSSRule()
         self.rRO._readonly = True
         self.assertEqual(True, self.rRO._readonly)
         self.assertEqual('', self.rRO.cssText)

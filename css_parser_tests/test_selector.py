@@ -1,4 +1,4 @@
-"""Testcases for cssutils.css.selector.Selector.
+"""Testcases for css_parser.css.selector.Selector.
 
 what should happen here?
     - star 7 hack::
@@ -10,17 +10,17 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils
+import css_parser
 
 
 class SelectorTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.Selector('*')
+        self.r = css_parser.css.Selector('*')
 
     def test_init(self):
         "Selector.__init__()"
-        s = cssutils.css.Selector('*')
+        s = css_parser.css.Selector('*')
         self.assertEqual((None, '*'), s.element)
         self.assertEqual({}, s._namespaces.namespaces)
         self.assertEqual(None, s.parent)
@@ -28,7 +28,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual((0, 0, 0, 0), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        s = cssutils.css.Selector(('p|b', {'p': 'URI'}))
+        s = css_parser.css.Selector(('p|b', {'p': 'URI'}))
         self.assertEqual(('URI', 'b'), s.element)
         self.assertEqual({'p': 'URI'}, s._namespaces.namespaces)
         self.assertEqual(None, s.parent)
@@ -36,7 +36,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual((0, 0, 0, 1), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        self.assertRaisesEx(xml.dom.NamespaceErr, cssutils.css.Selector, 'p|b')
+        self.assertRaisesEx(xml.dom.NamespaceErr, css_parser.css.Selector, 'p|b')
 
     def test_element(self):
         "Selector.element (TODO: RESOLVE)"
@@ -45,7 +45,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x': (None, 'x'),
             '\\x': (None, '\\x'),
             '|x': ('', 'x'),
-            '*|x': (cssutils._ANYNS, 'x'),
+            '*|x': (css_parser._ANYNS, 'x'),
             'ex|x': ('example', 'x'),
             'a x': (None, 'x'),
             'a+x': (None, 'x'),
@@ -65,7 +65,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'x.c': (None, 'x')
         }
         for test, ele in tests.items():
-            s = cssutils.css.Selector((test, {'ex': 'example'}))
+            s = css_parser.css.Selector((test, {'ex': 'example'}))
             self.assertEqual(ele, s.element)
 
     def test_namespaces(self):
@@ -91,11 +91,11 @@ class SelectorTestCase(basetest.BaseTestCase):
         }
         for sel, exp in tests.items():
             for i, result in enumerate(exp):
-                s = cssutils.css.Selector((sel, namespaces[i]))
+                s = css_parser.css.Selector((sel, namespaces[i]))
                 self.assertEqual(result, s.selectorText)
 
         # add to CSSStyleSheet
-        sheet = cssutils.css.CSSStyleSheet()
+        sheet = css_parser.css.CSSStyleSheet()
         sheet.cssText = '@namespace p "u"; a { color: green }'
 
         r = sheet.cssRules[1]
@@ -119,7 +119,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         css = '''@namespace "default";
                 a[att] { color:green; }
         '''
-        sheet = cssutils.css.CSSStyleSheet()
+        sheet = css_parser.css.CSSStyleSheet()
         sheet.cssText = css
         self.assertEqual(sheet.cssText,
                          '@namespace "default";\na[att] {\n    color: green\n    }'.encode())
@@ -130,15 +130,15 @@ class SelectorTestCase(basetest.BaseTestCase):
 
     def test_parent(self):
         "Selector.parent"
-        sl = cssutils.css.SelectorList('a, b')
+        sl = css_parser.css.SelectorList('a, b')
         for sel in sl:
             self.assertEqual(sl, sel.parent)
 
-        newsel = cssutils.css.Selector('x')
+        newsel = css_parser.css.Selector('x')
         sl.append(newsel)
         self.assertEqual(sl, newsel.parent)
 
-        newsel = cssutils.css.Selector('y')
+        newsel = css_parser.css.Selector('y')
         sl.appendSelector(newsel)
         self.assertEqual(sl, newsel.parent)
 
@@ -408,7 +408,7 @@ class SelectorTestCase(basetest.BaseTestCase):
 
     def test_specificity(self):
         "Selector.specificity"
-        selector = cssutils.css.Selector()
+        selector = css_parser.css.Selector()
 
         # readonly
         def _set(): selector.specificity = 1
@@ -484,7 +484,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         "Selector.__repr__(), .__str__()"
         sel = 'a + b'
 
-        s = cssutils.css.Selector(selectorText=sel)
+        s = css_parser.css.Selector(selectorText=sel)
 
         self.assertTrue(sel in str(s))
 

@@ -1,18 +1,18 @@
-"""Testcases for cssutils.stylesheets.StyleSheet"""
+"""Testcases for css_parser.stylesheets.StyleSheet"""
 from __future__ import absolute_import
 from __future__ import unicode_literals
 __version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
 from . import basetest
-import cssutils
+import css_parser
 
 
 class StyleSheetTestCase(basetest.BaseTestCase):
 
     def test_init(self):
         "StyleSheet.__init__()"
-        s = cssutils.stylesheets.StyleSheet()
+        s = css_parser.stylesheets.StyleSheet()
 
         self.assertEqual(s.type, 'text/css')
         self.assertEqual(s.href, None)
@@ -23,7 +23,7 @@ class StyleSheetTestCase(basetest.BaseTestCase):
         self.assertEqual(s.alternate, False)
         self.assertEqual(s.disabled, False)
 
-        s = cssutils.stylesheets.StyleSheet(type='unknown',
+        s = css_parser.stylesheets.StyleSheet(type='unknown',
                                             href='test.css',
                                             media=None,
                                             title='title',

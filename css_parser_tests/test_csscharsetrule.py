@@ -1,20 +1,20 @@
-"""Testcases for cssutils.css.CSSCharsetRule"""
+"""Testcases for css_parser.css.CSSCharsetRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import re
 import xml.dom
 from . import test_cssrule
-import cssutils.css
+import css_parser.css
 
 
 class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSCharsetRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSCharsetRule()
-        self.rRO = cssutils.css.CSSCharsetRule(readonly=True)
-        self.r_type = cssutils.css.CSSCharsetRule.CHARSET_RULE
+        self.r = css_parser.css.CSSCharsetRule()
+        self.rRO = css_parser.css.CSSCharsetRule(readonly=True)
+        self.r_type = css_parser.css.CSSCharsetRule.CHARSET_RULE
         self.r_typeString = 'CHARSET_RULE'
 
     def test_init(self):
@@ -32,7 +32,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_init_encoding(self):
         "CSSCharsetRule.__init__(encoding)"
         for enc in (None, 'UTF-8', 'utf-8', 'iso-8859-1', 'ascii'):
-            r = cssutils.css.CSSCharsetRule(enc)
+            r = css_parser.css.CSSCharsetRule(enc)
             if enc is None:
                 self.assertEqual(None, r.encoding)
                 self.assertEqual('', r.cssText)
@@ -43,12 +43,12 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         for enc in (' ascii ', ' ascii', 'ascii '):
             self.assertRaisesEx(xml.dom.SyntaxErr,
-                                cssutils.css.CSSCharsetRule, enc,
+                                css_parser.css.CSSCharsetRule, enc,
                                 exc_pattern=re.compile("Syntax Error"))
 
         for enc in ('unknown', ):
             self.assertRaisesEx(xml.dom.SyntaxErr,
-                                cssutils.css.CSSCharsetRule, enc,
+                                css_parser.css.CSSCharsetRule, enc,
                                 exc_pattern=re.compile("Unknown \(Python\) encoding"))
 
     def test_encoding(self):
@@ -113,7 +113,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSCharsetRule.__repr__(), .__str__()"
         encoding = 'utf-8'
 
-        s = cssutils.css.CSSCharsetRule(encoding=encoding)
+        s = css_parser.css.CSSCharsetRule(encoding=encoding)
 
         self.assertTrue(encoding in str(s))
 

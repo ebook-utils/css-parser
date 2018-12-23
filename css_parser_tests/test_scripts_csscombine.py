@@ -1,10 +1,10 @@
-"""Testcases for cssutils.scripts.csscombine"""
+"""Testcases for css_parser.scripts.csscombine"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from cssutils.script import csscombine
+from css_parser.script import csscombine
 from . import basetest
-import cssutils
+import css_parser
 import os
 
 
@@ -13,10 +13,10 @@ class CSSCombine(basetest.BaseTestCase):
     C = '@namespace s2"uri";s2|sheet-1{top:1px}s2|sheet-2{top:2px}proxy{top:3px}'
 
     def setUp(self):
-        self._saved = cssutils.log.raiseExceptions
+        self._saved = css_parser.log.raiseExceptions
 
     def tearDown(self):
-        cssutils.log.raiseExceptions = self._saved
+        css_parser.log.raiseExceptions = self._saved
 
     def test_combine(self):
         "scripts.csscombine()"
@@ -29,7 +29,7 @@ class CSSCombine(basetest.BaseTestCase):
         self.assertEqual(combined, ('@charset "ascii";' + self.C).encode())
 
         # url
-        cssurl = cssutils.helper.path2url(csspath)
+        cssurl = css_parser.helper.path2url(csspath)
         combined = csscombine(url=cssurl)
         self.assertEqual(combined, self.C.encode())
         combined = csscombine(url=cssurl, targetencoding='ascii')

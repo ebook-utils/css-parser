@@ -1,11 +1,11 @@
-"""Testcases for cssutils.css.cssproperties."""
+"""Testcases for css_parser.css.cssproperties."""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils.css
-import cssutils.profiles
+import css_parser.css
+import css_parser.profiles
 
 
 class CSSPropertiesTestCase(basetest.BaseTestCase):
@@ -13,7 +13,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
     #    def test_cssvalues(self):
     #        "cssproperties cssvalues"
     #        # does actually return match object, so a very simplified test...
-    #        match = cssutils.css.cssproperties.cssvalues
+    #        match = css_parser.css.cssproperties.cssvalues
     #
     #        self.assertEqual(True, bool(match['color']('red')))
     #        self.assertEqual(False, bool(match['top']('red')))
@@ -27,7 +27,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
 
     def test_toDOMname(self):
         "cssproperties _toDOMname(CSSname)"
-        _toDOMname = cssutils.css.cssproperties._toDOMname
+        _toDOMname = css_parser.css.cssproperties._toDOMname
 
         self.assertEqual('color', _toDOMname('color'))
         self.assertEqual('fontStyle', _toDOMname('font-style'))
@@ -37,7 +37,7 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
 
     def test_toCSSname(self):
         "cssproperties _toCSSname(DOMname)"
-        _toCSSname = cssutils.css.cssproperties._toCSSname
+        _toCSSname = css_parser.css.cssproperties._toCSSname
 
         self.assertEqual('color', _toCSSname('color'))
         self.assertEqual('font-style', _toCSSname('fontStyle'))
@@ -47,9 +47,9 @@ class CSSPropertiesTestCase(basetest.BaseTestCase):
 
     def test_CSS2Properties(self):
         "CSS2Properties"
-        CSS2Properties = cssutils.css.cssproperties.CSS2Properties
+        CSS2Properties = css_parser.css.cssproperties.CSS2Properties
         self.assertEqual(type(property()), type(CSS2Properties.color))
-        self.assertEqual(sum([len(x) for x in cssutils.profiles.properties.values()]),
+        self.assertEqual(sum([len(x) for x in css_parser.profiles.properties.values()]),
                          len(CSS2Properties._properties))
 
         c2 = CSS2Properties()

@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from cssutils import codec
-"""Testcases for cssutils.codec"""
+from css_parser import codec
+"""Testcases for css_parser.codec"""
 
 import codecs
 import unittest

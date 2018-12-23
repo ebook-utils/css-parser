@@ -1,10 +1,10 @@
-"""Testcases for cssutils.css.CSSPageRule"""
+"""Testcases for css_parser.css.CSSPageRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -12,33 +12,33 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
     def setUp(self):
         super(MarginRuleTestCase, self).setUp()
 
-        cssutils.ser.prefs.useDefaults()
-        self.r = cssutils.css.MarginRule()
-        self.rRO = cssutils.css.MarginRule(readonly=True)
-        self.r_type = cssutils.css.MarginRule.MARGIN_RULE
+        css_parser.ser.prefs.useDefaults()
+        self.r = css_parser.css.MarginRule()
+        self.rRO = css_parser.css.MarginRule(readonly=True)
+        self.r_type = css_parser.css.MarginRule.MARGIN_RULE
         self.r_typeString = 'MARGIN_RULE'
 
     def tearDown(self):
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_init(self):
         "MarginRule.__init__()"
 
-        r = cssutils.css.MarginRule()
+        r = css_parser.css.MarginRule()
         self.assertEqual(r.margin, None)
         self.assertEqual(r.atkeyword, None)
         self.assertEqual(r._keyword, None)
         self.assertEqual(r.style.cssText, '')
         self.assertEqual(r.cssText, '')
 
-        r = cssutils.css.MarginRule(margin='@TOP-left')
+        r = css_parser.css.MarginRule(margin='@TOP-left')
         self.assertEqual(r.margin, '@top-left')
         self.assertEqual(r.atkeyword, '@top-left')
         self.assertEqual(r._keyword, '@TOP-left')
         self.assertEqual(r.style.cssText, '')
         self.assertEqual(r.cssText, '')
 
-        self.assertRaises(xml.dom.InvalidModificationErr, cssutils.css.MarginRule, '@x')
+        self.assertRaises(xml.dom.InvalidModificationErr, css_parser.css.MarginRule, '@x')
 
     def test_InvalidModificationErr(self):
         "MarginRule.cssText InvalidModificationErr"
@@ -86,7 +86,7 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
         "MarginRule.__repr__(), .__str__()"
         margin = '@top-left'
 
-        s = cssutils.css.MarginRule(margin=margin, style='left: 0')
+        s = css_parser.css.MarginRule(margin=margin, style='left: 0')
 
         self.assertTrue(margin in str(s))
 

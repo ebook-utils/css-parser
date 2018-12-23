@@ -6,7 +6,7 @@ import re
 import sys
 from contextlib import contextmanager
 
-from cssutils.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
+from css_parser.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
 
 from . import basetest
 
@@ -15,7 +15,7 @@ if sys.version_info.major > 2:
 else:
     from urllib2 import URLError, HTTPError
 
-"""Testcases for cssutils.util"""
+"""Testcases for css_parser.util"""
 
 
 class ListSeqTestCase(basetest.BaseTestCase):
@@ -368,7 +368,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
         @contextmanager
         def patch_urlopen(*a, **kw):
-            import cssutils._fetch as fetch
+            import css_parser._fetch as fetch
             orig = fetch.urllib_urlopen
             fetch.urllib_urlopen = urlopen(*a, **kw)
             try:
@@ -422,7 +422,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
 
 
 class TestLazyRegex(basetest.BaseTestCase):
-    """Tests for cssutils.util.LazyRegex."""
+    """Tests for css_parser.util.LazyRegex."""
 
     def setUp(self):
         self.lazyre = LazyRegex('f.o')

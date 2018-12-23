@@ -1,23 +1,23 @@
-"""testcases for cssutils.css.CSSUnkownRule"""
+"""testcases for css_parser.css.CSSUnkownRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSUnknownRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSUnknownRule()
-        self.rRO = cssutils.css.CSSUnknownRule(readonly=True)
-        self.r_type = cssutils.css.CSSUnknownRule.UNKNOWN_RULE
+        self.r = css_parser.css.CSSUnknownRule()
+        self.rRO = css_parser.css.CSSUnknownRule(readonly=True)
+        self.r_type = css_parser.css.CSSUnknownRule.UNKNOWN_RULE
         self.r_typeString = 'UNKNOWN_RULE'
 
     def tearDown(self):
-        cssutils.ser.prefs.useDefaults()
+        css_parser.ser.prefs.useDefaults()
 
     def test_init(self):
         "CSSUnknownRule.type and init"
@@ -26,36 +26,36 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertFalse(self.r.wellformed)
 
         # only name
-        r = cssutils.css.CSSUnknownRule(cssText='@init;')
+        r = css_parser.css.CSSUnknownRule(cssText='@init;')
         self.assertEqual('@init', r.atkeyword)
         self.assertEqual('@init;', r.cssText)
         self.assertTrue(r.wellformed)
 
         # @-... not allowed?
-        r = cssutils.css.CSSUnknownRule(cssText='@-init;')
+        r = css_parser.css.CSSUnknownRule(cssText='@-init;')
         self.assertEqual('@-init;', r.cssText)
         self.assertEqual('@-init', r.atkeyword)
         self.assertTrue(r.wellformed)
 
-        r = cssutils.css.CSSUnknownRule(cssText='@_w-h-a-012;')
+        r = css_parser.css.CSSUnknownRule(cssText='@_w-h-a-012;')
         self.assertEqual('@_w-h-a-012;', r.cssText)
         self.assertEqual('@_w-h-a-012', r.atkeyword)
         self.assertTrue(r.wellformed)
 
         # name and content
-        r = cssutils.css.CSSUnknownRule(cssText='@init xxx;')
+        r = css_parser.css.CSSUnknownRule(cssText='@init xxx;')
         self.assertEqual('@init', r.atkeyword)
         self.assertEqual('@init xxx;', r.cssText)
         self.assertTrue(r.wellformed)
 
         # name and block
-        r = cssutils.css.CSSUnknownRule(cssText='@init { xxx }')
+        r = css_parser.css.CSSUnknownRule(cssText='@init { xxx }')
         self.assertEqual('@init', r.atkeyword)
         self.assertEqual('@init {\n    xxx\n    }', r.cssText)
         self.assertTrue(r.wellformed)
 
         # name and content and block
-        r = cssutils.css.CSSUnknownRule(cssText='@init xxx { yyy }')
+        r = css_parser.css.CSSUnknownRule(cssText='@init xxx { yyy }')
         self.assertEqual('@init', r.atkeyword)
         self.assertEqual('@init xxx {\n    yyy\n    }', r.cssText)
         self.assertTrue(r.wellformed)
@@ -77,7 +77,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         # expects the same atkeyword for self.r so do a new one each test
         oldr = self.r
         for t, e in tests.items():
-            self.r = cssutils.css.CSSUnknownRule()
+            self.r = css_parser.css.CSSUnknownRule()
             self.do_equal_r({t: e})
         self.r = oldr
 
@@ -143,7 +143,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_reprANDstr(self):
         "CSSUnknownRule.__repr__(), .__str__()"
-        s = cssutils.css.CSSUnknownRule(cssText='@x;')
+        s = css_parser.css.CSSUnknownRule(cssText='@x;')
 
         s2 = eval(repr(s))
         self.assertTrue(isinstance(s2, s.__class__))

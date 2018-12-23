@@ -1,20 +1,20 @@
-"""Testcases for cssutils.css.CSSImportRule"""
+"""Testcases for css_parser.css.CSSImportRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSNamespaceRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSNamespaceRule(namespaceURI='x')
-        # self.rRO = cssutils.css.CSSNamespaceRule(namespaceURI='x',
+        self.r = css_parser.css.CSSNamespaceRule(namespaceURI='x')
+        # self.rRO = css_parser.css.CSSNamespaceRule(namespaceURI='x',
         #                                         readonly=True)
-        self.r_type = cssutils.css.CSSRule.NAMESPACE_RULE
+        self.r_type = css_parser.css.CSSRule.NAMESPACE_RULE
         self.r_typeString = 'NAMESPACE_RULE'
 
     def test_init(self):
@@ -29,27 +29,27 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             ('', 'no-uri'),
         ]
         for uri, p in tests:
-            r = cssutils.css.CSSNamespaceRule(namespaceURI=uri, prefix=p)
+            r = css_parser.css.CSSNamespaceRule(namespaceURI=uri, prefix=p)
             self.assertEqual(None, r.namespaceURI)
             self.assertEqual('', r.prefix)
             self.assertEqual('', r.cssText)
             self.assertEqual(None, r.parentStyleSheet)
             self.assertEqual(None, r.parentRule)
 
-        r = cssutils.css.CSSNamespaceRule(namespaceURI='example')
+        r = css_parser.css.CSSNamespaceRule(namespaceURI='example')
         self.assertEqual('example', r.namespaceURI)
         self.assertEqual('', r.prefix)
         self.assertEqual('@namespace "example";', r.cssText)
         self.sheet.add(r)
         self.assertEqual(self.sheet, r.parentStyleSheet)
 
-        r = cssutils.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
+        r = css_parser.css.CSSNamespaceRule(namespaceURI='example', prefix='p')
         self.assertEqual('example', r.namespaceURI)
         self.assertEqual('p', r.prefix)
         self.assertEqual('@namespace p "example";', r.cssText)
 
         css = '@namespace p "u";'
-        r = cssutils.css.CSSNamespaceRule(cssText=css)
+        r = css_parser.css.CSSNamespaceRule(cssText=css)
         self.assertEqual(r.cssText, css)
 
         # only possible to set @... similar name
@@ -58,7 +58,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_cssText(self):
         "CSSNamespaceRule.cssText"
         # cssText may only be set initalially
-        r = cssutils.css.CSSNamespaceRule()
+        r = css_parser.css.CSSNamespaceRule()
         css = '@namespace p "u";'
         r.cssText = css
         self.assertEqual(r.cssText, css)
@@ -113,7 +113,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.do_equal_p(tests)
         # self.do_equal_r(tests) # cannot use here as always new r is needed
         for test, expected in tests.items():
-            r = cssutils.css.CSSNamespaceRule(cssText=test)
+            r = css_parser.css.CSSNamespaceRule(cssText=test)
             if expected is None:
                 expected = test
             self.assertEqual(expected, r.cssText)
@@ -137,18 +137,18 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         })
 
         def _do(test):
-            r = cssutils.css.CSSNamespaceRule(cssText=test)
+            r = css_parser.css.CSSNamespaceRule(cssText=test)
         for test, expected in tests.items():
             self.assertRaises(expected, _do, test)
 
     def test_namespaceURI(self):
         "CSSNamespaceRule.namespaceURI"
         # set only initially
-        r = cssutils.css.CSSNamespaceRule(namespaceURI='x')
+        r = css_parser.css.CSSNamespaceRule(namespaceURI='x')
         self.assertEqual('x', r.namespaceURI)
         self.assertEqual('@namespace "x";', r.cssText)
 
-        r = cssutils.css.CSSNamespaceRule(namespaceURI='"')
+        r = css_parser.css.CSSNamespaceRule(namespaceURI='"')
         self.assertEqual('@namespace "\\"";', r.cssText)
 
         self.assertRaises(xml.dom.NoModificationAllowedErr,
@@ -162,12 +162,12 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_prefix(self):
         "CSSNamespaceRule.prefix"
-        r = cssutils.css.CSSNamespaceRule(namespaceURI='u')
+        r = css_parser.css.CSSNamespaceRule(namespaceURI='u')
         r.prefix = 'p'
         self.assertEqual('p', r.prefix)
         self.assertEqual('@namespace p "u";', r.cssText)
 
-        r = cssutils.css.CSSNamespaceRule(cssText='@namespace x "u";')
+        r = css_parser.css.CSSNamespaceRule(cssText='@namespace x "u";')
         r.prefix = 'p'
         self.assertEqual('p', r.prefix)
         self.assertEqual('@namespace p "u";', r.cssText)
@@ -220,7 +220,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         namespaceURI = 'http://example.com'
         prefix = 'prefix'
 
-        s = cssutils.css.CSSNamespaceRule(namespaceURI=namespaceURI, prefix=prefix)
+        s = css_parser.css.CSSNamespaceRule(namespaceURI=namespaceURI, prefix=prefix)
 
         self.assertTrue(namespaceURI in str(s))
         self.assertTrue(prefix in str(s))

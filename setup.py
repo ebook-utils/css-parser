@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-cssutils setup
+css_parser setup
 
 use EasyInstall or install with
     >python setup.py install
@@ -18,7 +18,7 @@ from setuptools import find_packages, setup
 from setuptools.command.test import test
 
 # extract the version without importing the module
-VERSION = re.search(r"^VERSION\s+=\s+'(.+?)'", open('src/cssutils/version.py', 'rb').read().decode('utf-8'))
+VERSION = re.search(r"^VERSION\s+=\s+'(.+?)'", open('src/css_parser/version.py', 'rb').read().decode('utf-8'))
 long_description = '\n' + open('README.md', 'rb').read().decode('utf-8') + '\n'  # + read('CHANGELOG.txt')
 
 
@@ -49,26 +49,17 @@ class Test(test):
 
 
 setup(
-    name='cssutils',
+    name='css-parser',
     version=VERSION,
     package_dir={'': 'src'},
     packages=find_packages('src'),
-    include_package_data=True,
-    entry_points={
-        'console_scripts': [
-            'csscapture = cssutils.scripts.csscapture:main',
-            'csscombine = cssutils.scripts.csscombine:main',
-            'cssparse = cssutils.scripts.cssparse:main'
-        ]
-    },
     description='A CSS Cascading Style Sheets library for Python',
     long_description=long_description,
     cmdclass={'test': Test},
-    author='Christof Hoeke',
-    author_email='c@cthedot.de',
-    url='http://cthedot.de/cssutils/',
-    download_url='https://bitbucket.org/cthedot/cssutils/downloads',
-    license='LGPL 2.1 or later, see also http://cthedot.de/cssutils/',
+    author='Kovid Goyal',
+    author_email='redacted@ananymous.net',
+    url='https://github.com/ebook-utils/css-parser',
+    license='LGPL 2.1 or later',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     classifiers=[
         'Development Status :: 5 - Production/Stable',

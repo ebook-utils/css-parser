@@ -1,27 +1,27 @@
-"""Testcases for cssutils.css.CSSFontFaceRule"""
+"""Testcases for css_parser.css.CSSFontFaceRule"""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import test_cssrule
-import cssutils
+import css_parser
 
 
 class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
         super(CSSFontFaceRuleTestCase, self).setUp()
-        self.r = cssutils.css.CSSFontFaceRule()
-        self.rRO = cssutils.css.CSSFontFaceRule(readonly=True)
-        self.r_type = cssutils.css.CSSFontFaceRule.FONT_FACE_RULE
+        self.r = css_parser.css.CSSFontFaceRule()
+        self.rRO = css_parser.css.CSSFontFaceRule(readonly=True)
+        self.r_type = css_parser.css.CSSFontFaceRule.FONT_FACE_RULE
         self.r_typeString = 'FONT_FACE_RULE'
 
     def test_init(self):
         "CSSFontFaceRule.__init__()"
         super(CSSFontFaceRuleTestCase, self).test_init()
 
-        r = cssutils.css.CSSFontFaceRule()
-        self.assertTrue(isinstance(r.style, cssutils.css.CSSStyleDeclaration))
+        r = css_parser.css.CSSFontFaceRule()
+        self.assertTrue(isinstance(r.style, css_parser.css.CSSStyleDeclaration))
         self.assertEqual(r, r.style.parentRule)
 
         # until any properties
@@ -35,22 +35,22 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
             for p in ff.style:
                 self.assertEqual(ff.style, p.parent)
 
-        checkrefs(cssutils.css.CSSFontFaceRule(
-            style=cssutils.css.CSSStyleDeclaration('font-family: x')))
+        checkrefs(css_parser.css.CSSFontFaceRule(
+            style=css_parser.css.CSSStyleDeclaration('font-family: x')))
 
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         r.cssText = '@font-face { font-family: x }'
         checkrefs(r)
 
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         r.style.setProperty('font-family', 'y')
         checkrefs(r)
 
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         r.style['font-family'] = 'z'
         checkrefs(r)
 
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         r.style.fontFamily = 'a'
         checkrefs(r)
 
@@ -94,7 +94,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_style(self):
         "CSSFontFaceRule.style (and references)"
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         s1 = r.style
         self.assertEqual(r, s1.parentRule)
         self.assertEqual('', s1.cssText)
@@ -128,7 +128,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(r.style.cssText, 'font-family: x2')
 
         # set new style object s2
-        sn = cssutils.css.CSSStyleDeclaration('font-family: y1')
+        sn = css_parser.css.CSSStyleDeclaration('font-family: y1')
         r.style = sn
         self.assertEqual(r.style, sn)
         self.assertEqual(r, sn.parentRule)
@@ -162,7 +162,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_properties(self):
         "CSSFontFaceRule.style properties"
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         r.style.cssText = '''
         src: url(x)
         '''
@@ -183,7 +183,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         }
         for n, t in tests.items():
             for (v, valid) in t:
-                r = cssutils.css.CSSFontFaceRule()
+                r = css_parser.css.CSSFontFaceRule()
                 r.style[n] = v
                 self.assertEqual(r.style.getProperty(n).parent, r.style)
                 self.assertEqual(r.style.getProperty(n).valid, valid)
@@ -210,7 +210,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_valid(self):
         "CSSFontFaceRule.valid"
-        r = cssutils.css.CSSFontFaceRule()
+        r = css_parser.css.CSSFontFaceRule()
         self.assertEqual(False, r.valid)
         N = 'font-family: x; src: local(x);'
         tests = {
@@ -230,7 +230,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_reprANDstr(self):
         "CSSFontFaceRule.__repr__(), .__str__()"
         style = 'src: url(x)'
-        s = cssutils.css.CSSFontFaceRule(style=style)
+        s = css_parser.css.CSSFontFaceRule(style=style)
 
         self.assertTrue(style in str(s))
 

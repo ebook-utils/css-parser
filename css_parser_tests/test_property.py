@@ -1,20 +1,20 @@
-"""Testcases for cssutils.css.property._Property."""
+"""Testcases for css_parser.css.property._Property."""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils
+import css_parser
 
 
 class PropertyTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        self.r = cssutils.css.property.Property('top', '1px')  # , 'important')
+        self.r = css_parser.css.property.Property('top', '1px')  # , 'important')
 
     def test_init(self):
         "Property.__init__()"
-        p = cssutils.css.property.Property('top', '1px')
+        p = css_parser.css.property.Property('top', '1px')
         self.assertEqual('top: 1px', p.cssText)
         self.assertEqual('top', p.literalname)
         self.assertEqual('top', p.name)
@@ -26,13 +26,13 @@ class PropertyTestCase(basetest.BaseTestCase):
         self.assertEqual(True, p.wellformed)
 
         self.assertEqual(['top'], p.seqs[0])
-        self.assertEqual(type(cssutils.css.PropertyValue(cssText="2px")), type(p.seqs[1]))
+        self.assertEqual(type(css_parser.css.PropertyValue(cssText="2px")), type(p.seqs[1]))
         self.assertEqual([], p.seqs[2])
 
         self.assertEqual(True, p.valid)
 
         # Prop of MediaQuery
-        p = cssutils.css.property.Property('top', _mediaQuery=True)
+        p = css_parser.css.property.Property('top', _mediaQuery=True)
         self.assertEqual('top', p.cssText)
         self.assertEqual('top', p.literalname)
         self.assertEqual('top', p.name)
@@ -48,9 +48,9 @@ class PropertyTestCase(basetest.BaseTestCase):
         p.propertyValue = ''
         self.assertEqual('top', p.cssText)
 
-        self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top', '')
-        self.assertRaises(xml.dom.SyntaxErr, cssutils.css.property.Property, 'top')
-        p = cssutils.css.property.Property('top', '0')
+        self.assertRaises(xml.dom.SyntaxErr, css_parser.css.property.Property, 'top', '')
+        self.assertRaises(xml.dom.SyntaxErr, css_parser.css.property.Property, 'top')
+        p = css_parser.css.property.Property('top', '0')
         self.assertEqual('0', p.value)
         self.assertEqual(True, p.wellformed)
         self.assertRaises(xml.dom.SyntaxErr, p._setValue, '')
@@ -72,12 +72,12 @@ class PropertyTestCase(basetest.BaseTestCase):
 #            ('background', 'url(x.gif) 1 0', False)
 #            ]
 #        for n, v, exp in tests:
-#            v = cssutils.css.CSSValue(cssText=v)
+#            v = css_parser.css.CSSValue(cssText=v)
 #            self.assertTrue(v.wellformed, True)
 
     def test_cssText(self):
         "Property.cssText"
-        p = cssutils.css.property.Property()
+        p = css_parser.css.property.Property()
 
         tests = {
             'a: 1': None,
@@ -123,7 +123,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def test_name(self):
         "Property.name"
-        p = cssutils.css.property.Property('top', '1px')
+        p = css_parser.css.property.Property('top', '1px')
         p.name = 'left'
         self.assertEqual('left', p.name)
 
@@ -154,20 +154,20 @@ class PropertyTestCase(basetest.BaseTestCase):
         }
         self.do_raise_r(tests, att='_setName')
 
-        p = cssutils.css.property.Property(r'c\olor', 'red')
+        p = css_parser.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
         self.assertEqual('color', p.name)
 
     def test_literalname(self):
         "Property.literalname"
-        p = cssutils.css.property.Property(r'c\olor', 'red')
+        p = css_parser.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
         self.assertRaisesMsg(AttributeError, "can't set attribute", p.__setattr__,
                              'literalname', 'color')
 
     def test_validate(self):
         "Property.valid"
-        p = cssutils.css.property.Property('left', '1px', '')
+        p = css_parser.css.property.Property('left', '1px', '')
 
         self.assertEqual(p.valid, True)
 
@@ -187,7 +187,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def test_priority(self):
         "Property.priority"
-        p = cssutils.css.property.Property('top', '1px', 'important')
+        p = css_parser.css.property.Property('top', '1px', 'important')
 
         for prio in (None, ''):
             p.priority = prio
@@ -223,7 +223,7 @@ class PropertyTestCase(basetest.BaseTestCase):
 
     def test_value(self):
         "Property.value"
-        p = cssutils.css.property.Property('top', '1px')
+        p = css_parser.css.property.Property('top', '1px')
         self.assertEqual('1px', p.value)
         p.value = '2px'
         self.assertEqual('2px', p.value)
@@ -257,7 +257,7 @@ class PropertyTestCase(basetest.BaseTestCase):
         value = "red"
         priority = "important"
 
-        s = cssutils.css.property.Property(name=name, value=value, priority=priority)
+        s = css_parser.css.property.Property(name=name, value=value, priority=priority)
 
         self.assertTrue(name in str(s))
         self.assertTrue(value in str(s))

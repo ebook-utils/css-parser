@@ -1,11 +1,11 @@
-"""Testcases for cssutils.css.selectorlist.SelectorList."""
+"""Testcases for css_parser.css.selectorlist.SelectorList."""
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
 from . import basetest
-import cssutils
-from cssutils.css.selectorlist import SelectorList
+import css_parser
+from css_parser.css.selectorlist import SelectorList
 
 
 class SelectorListTestCase(basetest.BaseTestCase):
@@ -41,15 +41,15 @@ class SelectorListTestCase(basetest.BaseTestCase):
             for sel in style.selectorList:
                 self.assertEqual(style.selectorList, sel.parent)
 
-        style = cssutils.css.CSSStyleRule('a, b')
+        style = css_parser.css.CSSStyleRule('a, b')
         check(style)
 
         # add new selector
-        style.selectorList.append(cssutils.css.Selector('x'))
+        style.selectorList.append(css_parser.css.Selector('x'))
         check(style)
 
         # replace selectorList
-        style.selectorList = cssutils.css.SelectorList('x')
+        style.selectorList = css_parser.css.SelectorList('x')
         check(style)
 
         # replace selectorText
@@ -136,7 +136,7 @@ class SelectorListTestCase(basetest.BaseTestCase):
         "SelectorList.__repr__(), .__str__()"
         sel = ('a, p|b', {'p': 'uri'})
 
-        s = cssutils.css.SelectorList(selectorText=sel)
+        s = css_parser.css.SelectorList(selectorText=sel)
 
         self.assertTrue(sel[0] in str(s))
 
