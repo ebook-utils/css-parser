@@ -392,7 +392,7 @@ class CSSStyleDeclaration(CSS2Properties, cssutils.util.Base2):
                 return []
         elif not all:
             # effective Properties in name order
-            return [self.getProperty(name) for name in self.__nnames()]
+            return [self.getProperty(name_) for name_ in self.__nnames()]
         else:
             # all properties or all with this name
             nname = self._normalize(name)
