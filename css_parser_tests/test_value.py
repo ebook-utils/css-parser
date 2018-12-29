@@ -441,11 +441,13 @@ class ColorValueTestCase(basetest.BaseTestCase):
             'rgb(1%,2%,3%)': ('rgb(1%, 2%, 3%)',),
             'rgb(-1,-1,-1)': ('rgb(-1, -1, -1)',),
             'rgb(-1%,-2%,-3%)': ('rgb(-1%, -2%, -3%)',),
+            'RGB(100, 255, 3)': ('rgb(100, 255, 3)',),
             # rgba
             'rgba(1,2,3, 0)': ('rgba(1, 2, 3, 0)',),
             # hsl
             'hsl(1,2%,3%)': ('hsl(1, 2%, 3%)',),
             'hsla(1,2%,3%, 1.0)': ('hsla(1, 2%, 3%, 1)',),
+            'HsLa(1,2%,3%, 1.0)': ('hsla(1, 2%, 3%, 1)',),
 
         }
         for (p, (r, )) in tests.items():

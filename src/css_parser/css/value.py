@@ -346,7 +346,7 @@ class ColorValue(Value):
                            )
         noalp = Sequence(Prod(name='FUNCTION',
                               match=lambda t, v: t == types.FUNCTION and
-                              v in ('rgb(', 'hsl('),
+                              v.lower() in ('rgb(', 'hsl('),
                               toSeq=lambda t, tokens: (t[0], normalize(t[1]))),
                          component,
                          Sequence(PreDef.comma(optional=True),
@@ -357,7 +357,7 @@ class ColorValue(Value):
                          )
         witha = Sequence(Prod(name='FUNCTION',
                               match=lambda t, v: t == types.FUNCTION and
-                              v in ('rgba(', 'hsla('),
+                              v.lower() in ('rgba(', 'hsla('),
                               toSeq=lambda t, tokens: (t[0],
                                                        normalize(t[1]))
                               ),
