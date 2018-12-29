@@ -85,6 +85,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(css_parser.ser.prefs.keepUsedNamespaceRulesOnly, False)
         self.assertEqual(css_parser.ser.prefs.lineNumbers, False)
         self.assertEqual(css_parser.ser.prefs.lineSeparator, '\n')
+        self.assertEqual(css_parser.ser.prefs.linesAfterRules, 0 * css_parser.ser.prefs.lineSeparator)
         self.assertEqual(css_parser.ser.prefs.listItemSpacer, ' ')
         self.assertEqual(css_parser.ser.prefs.minimizeColorHash, True)
         self.assertEqual(css_parser.ser.prefs.omitLastSemicolon, True)
@@ -297,7 +298,8 @@ prefix|x, a + b > c ~ d, b {
     def test_indentClosingBrace(self):
         "Preferences.indentClosingBrace"
         s = css_parser.parseString('@media all {a {left: 0}} b { top: 0 }')
-        expT = '''@media all {
+        expT = '''\
+@media all {
     a {
         left: 0
         }
@@ -305,7 +307,8 @@ prefix|x, a + b > c ~ d, b {
 b {
     top: 0
     }'''
-        expF = '''@media all {
+        expF = '''\
+@media all {
     a {
         left: 0
     }
@@ -385,7 +388,7 @@ a {
         s = css_parser.parseString(css)
         css_parser.ser.prefs.useDefaults()
         css_parser.ser.prefs.keepEmptyRules = True
-   #     self.assertEqual(css, s.cssText)
+        self.assertEqual(css.encode(), s.cssText)
         css_parser.ser.prefs.keepEmptyRules = False
         self.assertEqual('''@media all {
     /*1*/
@@ -502,6 +505,35 @@ h1 {
         # no valid css but should work
         css_parser.ser.prefs.lineSeparator = 'XXX'
         self.assertEqual('a {XXX    x: 1;XXX    y: 2XXX    }'.encode(), s.cssText)
+
+    def test_linesAfterRule(self):
+        "Preferences.linesAfterRule"
+        s = css_parser.parseString('div {color:red;} @media screen {.aclass {width: 200px}}')
+        expected_default = '''\
+div {
+    color: red
+    }
+@media screen {
+    .aclass {
+        width: 200px
+        }
+    }'''
+        self.assertEqual(expected_default.encode(), s.cssText)
+        css_parser.ser.prefs.linesAfterRules = 2 * '\n'
+        expected_changed = '''\
+div {
+    color: red
+    }
+
+
+@media screen {
+    .aclass {
+        width: 200px
+        }
+    }
+
+'''
+        self.assertEqual(expected_changed.encode(), s.cssText)
 
     def test_listItemSpacer(self):
         "Preferences.listItemSpacer"

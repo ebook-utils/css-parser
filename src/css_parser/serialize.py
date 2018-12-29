@@ -153,6 +153,7 @@ class Preferences(object):
         self.keepUsedNamespaceRulesOnly = False
         self.lineNumbers = False
         self.lineSeparator = '\n'
+        self.linesAfterRules = 0 * self.lineSeparator
         self.listItemSpacer = ' '
         self.minimizeColorHash = True
         self.normalizedVarNames = True
@@ -395,7 +396,7 @@ class CSSSerializer(object):
 
             cssText = rule.cssText
             if cssText:
-                out.append(cssText)
+                out.append(cssText + self.prefs.linesAfterRules)
         text = self._linenumbers(self.prefs.lineSeparator.join(out))
 
         # get encoding of sheet, defaults to UTF-8
