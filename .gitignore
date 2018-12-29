@@ -41,6 +41,9 @@ Release
 Debug
 BuildLog.htm
 
+# PyCharm project folder
+.idea/
+
 # Various files and folders created by CMake
 CMakeFiles
 CMakeScripts
