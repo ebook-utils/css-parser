@@ -356,7 +356,7 @@ class CSSSerializer(object):
         else:
             return actual
 
-    def _linenumnbers(self, text):
+    def _linenumbers(self, text):
         if self.prefs.lineNumbers:
             pad = len(str(text.count(self.prefs.lineSeparator)+1))
             out = []
@@ -396,7 +396,7 @@ class CSSSerializer(object):
             cssText = rule.cssText
             if cssText:
                 out.append(cssText)
-        text = self._linenumnbers(self.prefs.lineSeparator.join(out))
+        text = self._linenumbers(self.prefs.lineSeparator.join(out))
 
         # get encoding of sheet, defaults to UTF-8
         try:
