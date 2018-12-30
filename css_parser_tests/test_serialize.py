@@ -297,7 +297,10 @@ prefix|x, a + b > c ~ d, b {
 
     def test_indentClosingBrace(self):
         "Preferences.indentClosingBrace"
-        s = css_parser.parseString('@media all {a {left: 0}} b { top: 0 }')
+        s = css_parser.parseString('@media all {a {left: 0}}'
+                                   'b { top: 0 }'
+                                   '@page { @top-left { content: "some content" } margin: .5em }'
+                                   '@font-face { font-family: examplefont; }')
         expT = '''\
 @media all {
     a {
@@ -306,6 +309,15 @@ prefix|x, a + b > c ~ d, b {
     }
 b {
     top: 0
+    }
+@page {
+    margin: 0.5em;
+    @top-left {
+        content: "some content"
+        }
+    }
+@font-face {
+    font-family: examplefont
     }'''
         expF = '''\
 @media all {
@@ -315,6 +327,15 @@ b {
 }
 b {
     top: 0
+}
+@page {
+    margin: 0.5em;
+    @top-left {
+        content: "some content"
+    }
+}
+@font-face {
+    font-family: examplefont
 }'''
         css_parser.ser.prefs.useDefaults()
         self.assertEqual(expT.encode(), s.cssText)

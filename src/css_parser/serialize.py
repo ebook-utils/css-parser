@@ -254,7 +254,7 @@ class Out(object):
                 val = val.cssText
             elif hasattr(val, 'mediaText'):
                 val = val.mediaText
-            elif val in '+>~,:{;)]/=}' and not alwaysS:
+            elif val in '+>~,:{;)]/=}%s' % self.ser.prefs.lineSeparator and not alwaysS:
                 self._remove_last_if_S()
 #            elif type_ in ('Property', css_parser.css.CSSRule.UNKNOWN_RULE):
 #                val = val.cssText
@@ -343,7 +343,7 @@ class CSSSerializer(object):
             return text
         return self.prefs.lineSeparator.join(
             ['%s%s' % (level * self.prefs.indent, line)
-                for line in text.split(self.prefs.lineSeparator)]
+                for line in text.split(self.prefs.lineSeparator) if line]
         )
 
     def _propertyname(self, property, actual):
@@ -450,8 +450,9 @@ class CSSSerializer(object):
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s}' % (variablesText, self.prefs.lineSeparator),
-                       indent=1)
+            out.append('%s%s' % (variablesText, self.prefs.lineSeparator), indent=1)
+            out.append('%s' % self.prefs.lineSeparator)
+            out.append('}')
             return out.value()
         else:
             return ''
@@ -474,8 +475,9 @@ class CSSSerializer(object):
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s}' % (styleText, self.prefs.lineSeparator),
-                       indent=1)
+            out.append('%s%s' % (styleText, self.prefs.lineSeparator), indent=1)
+            out.append('%s' % self.prefs.lineSeparator)
+            out.append('}')
             return out.value()
         else:
             return ''
@@ -638,15 +640,15 @@ class CSSSerializer(object):
                     out.append('%s%s' % (styleText,
                                          self.prefs.lineSeparator
                                          ), indent=1)
+                    out.append('%s' % self.prefs.lineSeparator)
                 else:
                     out.append(styleText, type_='styletext', indent=1, space=False)
 
             if rulesText:
                 out.append(rulesText, indent=1)
-            # ?
-            self._level -= 1
-            out.append('}')
-            self._level += 1
+                out.append('%s' % self.prefs.lineSeparator)
+
+            out.append('}', indent=False)
 
             return out.value()
         else:
