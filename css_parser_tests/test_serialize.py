@@ -75,6 +75,7 @@ class PreferencesTestCase(basetest.BaseTestCase):
         self.assertEqual(css_parser.ser.prefs.defaultAtKeyword, True)
         self.assertEqual(css_parser.ser.prefs.defaultPropertyName, True)
         self.assertEqual(css_parser.ser.prefs.defaultPropertyPriority, True)
+        self.assertEqual(css_parser.ser.prefs.formatUnknownAtRules, True)
         self.assertEqual(css_parser.ser.prefs.importHrefFormat, None)
         self.assertEqual(css_parser.ser.prefs.indent, 4 * ' ')
         self.assertEqual(css_parser.ser.prefs.indentClosingBrace, True)
@@ -258,6 +259,20 @@ prefix|x, a + b > c ~ d, b {
         s = css_parser.parseString(css)
         self.assertEqual(s.cssText, 'a {\n    color: green !important\n    }'.encode())
         css_parser.ser.prefs.defaultPropertyPriority = False
+        self.assertEqual(s.cssText, css.encode())
+
+    def test_formatUnknownAtRules(self):
+        "Preferences.formatUnknownAtRules"
+        css = '@meda screen and (max-width: 100px) { .someclass { color: blue } }'
+        formatted = '''\
+@meda screen and (max-width: 100px) {
+    . someclass {
+        color: blue
+        }
+    }'''
+        s = css_parser.parseString(css)
+        self.assertEqual(s.cssText, formatted.encode())
+        css_parser.ser.prefs.formatUnknownAtRules = False
         self.assertEqual(s.cssText, css.encode())
 
     def test_importHrefFormat(self):

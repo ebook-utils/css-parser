@@ -142,6 +142,7 @@ class Preferences(object):
         self.defaultAtKeyword = True
         self.defaultPropertyName = True
         self.defaultPropertyPriority = True
+        self.formatUnknownAtRules = True
         self.importHrefFormat = None
         self.indent = 4 * ' '
         self.indentClosingBrace = True
@@ -709,6 +710,8 @@ class CSSSerializer(object):
         + CSSComments
         """
         if rule.wellformed and self.prefs.keepUnknownAtRules:
+            if not self.prefs.formatUnknownAtRules:
+                return rule.atkeyword + ''.join(x.value for x in rule.seq)
             out = Out(self)
             out.append(rule.atkeyword)
 
