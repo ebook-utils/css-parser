@@ -20,6 +20,10 @@ else:
     string_type = basestring
 
 
+class UnknownMediaType(xml.dom.SyntaxErr):
+    pass
+
+
 class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
     """
     A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
@@ -147,6 +151,25 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
                                          expression(),
                                          minmax=lambda: (0, None)
                                          )
+                                ),
+                       Sequence(Prod(name='ONLY|NOT',  # media_query
+                                     match=lambda t, v: t == PreDef.types.IDENT and
+                                                        normalize(v) in ('only', 'not'),
+                                     optional=True,
+                                     toStore='not simple'
+                                     ),
+                                Prod(name='media_type',
+                                     match=lambda t, v: t == PreDef.types.IDENT,
+                                     toStore='media_type'
+                                     ),
+                                Sequence(Prod(name='AND',
+                                              match=lambda t, v: t == PreDef.types.IDENT and
+                                                                 normalize(v) == 'and',
+                                              toStore='not simple'
+                                              ),
+                                         expression(),
+                                         minmax=lambda: (0, None)
+                                         )
                                 )
                        )
 
@@ -173,7 +196,7 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
     def _setMediaType(self, mediaType):
         """
         :param mediaType:
-            one of :attr:`MEDIA_TYPES`
+            usually one of :attr:`MEDIA_TYPES`
 
         :exceptions:
             - :exc:`~xml.dom.SyntaxErr`:
@@ -188,27 +211,27 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
         nmediaType = normalize(mediaType)
 
         if nmediaType not in self.MEDIA_TYPES:
-            self._log.error(
-                'MediaQuery: Syntax Error in media type "%s".' % mediaType,
-                error=xml.dom.SyntaxErr)
-        else:
-            # set
-            self._mediaType = mediaType
+            self._log.warn(
+                'MediaQuery: Unknown media type: "%s".' % mediaType,
+                error=UnknownMediaType, neverraise=True)
 
-            # update seq
-            for i, x in enumerate(self._seq):
-                if isinstance(x.value, string_type):
-                    if normalize(x.value) in ('only', 'not'):
-                        continue
-                    else:
-                        # TODO: simplify!
-                        self._seq[i] = (mediaType, 'IDENT', None, None)
-                        break
-            else:
-                self._seq.insert(0, mediaType, 'IDENT')
+        # set
+        self._mediaType = mediaType
+
+        # update seq
+        for i, x in enumerate(self._seq):
+            if isinstance(x.value, string_type):
+                if normalize(x.value) in ('only', 'not'):
+                    continue
+                else:
+                    # TODO: simplify!
+                    self._seq[i] = (mediaType, 'IDENT', None, None)
+                    break
+        else:
+            self._seq.insert(0, mediaType, 'IDENT')
 
     mediaType = property(lambda self: self._mediaType, _setMediaType,
-                         doc="The media type of this MediaQuery (one of "
-                         ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!")
+                         doc="The media type of this MediaQuery (usually one of "
+                             ":attr:`MEDIA_TYPES`) but only if it is a simple MediaType!")
 
     wellformed = property(lambda self: self._wellformed)

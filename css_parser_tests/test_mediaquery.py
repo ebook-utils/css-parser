@@ -4,6 +4,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
+import logging
 from . import basetest
 import css_parser.stylesheets
 
@@ -39,7 +40,8 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             'tv and (color)': None,
             'not tv and (color)': None,
             'only tv and (color)': None,
-            'print and(color)': 'print and (color)'
+            'print and(color)': 'print and (color)',
+            'aural': None  # xml.dom.SyntaxErr in cssutils
         }
         self.do_equal_r(tests, att='mediaText')
 
@@ -47,7 +49,6 @@ class MediaQueryTestCase(basetest.BaseTestCase):
             '': xml.dom.SyntaxErr,
             'two values': xml.dom.SyntaxErr,
             'or even three': xml.dom.SyntaxErr,
-            'aural': xml.dom.SyntaxErr,  # a dimension
             '3d': xml.dom.SyntaxErr,  # a dimension
         }
         self.do_raise_r(tests, att='_setMediaText')
@@ -66,7 +67,9 @@ class MediaQueryTestCase(basetest.BaseTestCase):
 
         mt = '3D-UNKOwn-MEDIAtype0123'
         #mq.mediaType = mt
-        self.assertRaises(xml.dom.SyntaxErr, mq._setMediaType, mt)
+        capturelog = self._captureLog(logging.WARNING)
+        self.assertEqual(capturelog(mq._setMediaType, mt),
+                         'WARNING    MediaQuery: Unknown media type: "3D-UNKOwn-MEDIAtype0123".\n')
         #self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
 
     def test_comments(self):

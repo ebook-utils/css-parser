@@ -6,6 +6,7 @@ import re
 import sys
 import unittest
 from contextlib import contextmanager
+from io import StringIO
 
 import css_parser
 
@@ -47,6 +48,32 @@ class BaseTestCase(unittest.TestCase):
     def _restoreSer(self):
         "Restore the default ser."
         css_parser.ser = self._ser
+
+    @staticmethod
+    def _setHandler():
+        "sets new handler and returns StringIO instance to getvalue"
+        s = StringIO()
+        h = logging.StreamHandler(s)
+        h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
+        # remove if present already
+        css_parser.log.removeHandler(h)
+        css_parser.log.addHandler(h)
+        return s
+
+    @staticmethod
+    def _captureLog(log_level):
+        def rep(f, *args, **kwargs):
+            old_log = css_parser.log._log
+            old_level = css_parser.log.getEffectiveLevel()
+            css_parser.log.setLog(logging.getLogger('CSS_PARSER-IGNORE'))
+            css_parser.log.setLevel(log_level)
+            s = BaseTestCase._setHandler()
+            f(*args, **kwargs)
+            result = s.getvalue()
+            css_parser.log.setLog(old_log)
+            css_parser.log.setLevel(old_level)
+            return result
+        return rep
 
     def setUp(self):
         # a raising parser!!!

@@ -28,16 +28,6 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
         css_parser.log.setLevel(logging.FATAL)
         css_parser.log.raiseExceptions = self._saved
 
-    def _setHandler(self):
-        "sets new handler and returns StringIO instance to getvalue"
-        s = StringIO()
-        h = logging.StreamHandler(s)
-        h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
-        # remove if present already
-        css_parser.log.removeHandler(h)
-        css_parser.log.addHandler(h)
-        return s
-
     def test_calls(self):
         "css_parser.log.*"
         s = self._setHandler()

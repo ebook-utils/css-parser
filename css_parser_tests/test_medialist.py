@@ -4,8 +4,10 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import xml.dom
+import logging
 from . import basetest
 import css_parser.stylesheets
+
 
 
 class MediaListTestCase(basetest.BaseTestCase):
@@ -32,8 +34,9 @@ class MediaListTestCase(basetest.BaseTestCase):
         #self.assertEqual(u'all', ml.mediaText)
         #self.assertEqual(1, ml.length)
 
-        self.assertRaises(xml.dom.SyntaxErr,
-                          ml.appendMedium, 'test')
+        capturelog = self._captureLog(logging.WARNING)
+        self.assertEqual(capturelog(ml.appendMedium, 'test'),
+                         'WARNING    MediaQuery: Unknown media type: "test".\n')
 
     def test_appendMedium(self):
         "MediaList.appendMedium() 1"
@@ -94,7 +97,8 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, ml.length)
         self.assertEqual('all', ml.mediaText)
 
-        self.assertRaises(xml.dom.SyntaxErr, ml.appendMedium, 'test')
+        self.assertRaises(xml.dom.InvalidModificationErr,
+                          ml.appendMedium, 'test')
 
     def test_append2All(self):
         "MediaList all"
@@ -155,14 +159,13 @@ class MediaListTestCase(basetest.BaseTestCase):
             'tv': None,
             'tv, handheld, print': None,
             'tv and (color), handheld and (width: 1px) and (color)': None,
+            'print, amzn-mobi': None
         }
         self.do_equal_r(tests, att='mediaText')
 
         tests = {
             '': xml.dom.SyntaxErr,
-            'UNKNOWN': xml.dom.SyntaxErr,
             'a,b': xml.dom.SyntaxErr,
-            'a and (color)': xml.dom.SyntaxErr,
             'not': xml.dom.SyntaxErr,  # known but need media
             'only': xml.dom.SyntaxErr,  # known but need media
             'not tv,': xml.dom.SyntaxErr,  # known but need media
