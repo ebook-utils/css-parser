@@ -47,7 +47,9 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
 
     """
     MEDIA_TYPES = ['all', 'braille', 'handheld', 'print', 'projection',
-                   'speech', 'screen', 'tty', 'tv', 'embossed']
+                   'speech', 'screen', 'tty', 'tv', 'embossed',
+                   'amzn-mobi', 'amzn-kf8'  # ebooks (not in w3 spec)
+                   ]
 
     def __init__(self, mediaText=None, readonly=False, _partof=False):
         """
