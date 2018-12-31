@@ -34,8 +34,7 @@ class MediaListTestCase(basetest.BaseTestCase):
         #self.assertEqual(u'all', ml.mediaText)
         #self.assertEqual(1, ml.length)
 
-        capturelog = self._captureLog(logging.WARNING)
-        self.assertEqual(capturelog(ml.appendMedium, 'test'),
+        self.assertEqual(self.captureLog(logging.WARNING, ml.appendMedium, 'test'),
                          'WARNING    MediaQuery: Unknown media type: "test".\n')
 
     def test_appendMedium(self):

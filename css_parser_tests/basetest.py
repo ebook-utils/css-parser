@@ -51,7 +51,7 @@ class BaseTestCase(unittest.TestCase):
 
     @staticmethod
     def _setHandler():
-        "sets new handler and returns StringIO instance to getvalue"
+        "sets log's new handler and returns StringIO instance to getvalue"
         s = StringIO()
         h = logging.StreamHandler(s)
         h.setFormatter(logging.Formatter('%(levelname)s    %(message)s'))
@@ -61,19 +61,25 @@ class BaseTestCase(unittest.TestCase):
         return s
 
     @staticmethod
-    def _captureLog(log_level):
-        def rep(f, *args, **kwargs):
-            old_log = css_parser.log._log
-            old_level = css_parser.log.getEffectiveLevel()
-            css_parser.log.setLog(logging.getLogger('CSS_PARSER-IGNORE'))
-            css_parser.log.setLevel(log_level)
-            s = BaseTestCase._setHandler()
-            f(*args, **kwargs)
-            result = s.getvalue()
-            css_parser.log.setLog(old_log)
-            css_parser.log.setLevel(old_level)
-            return result
-        return rep
+    def captureLog(log_level, callable, *args, **kwargs):
+        """returns the output of an ad hoc created log
+        (which doesn't affect the standard one).
+        Example usage:
+        warning = self.captureLog(logging.WARNING,
+                                   css_parser.stylesheets.MediaQuery,
+                                   'unknown-media')
+        self.assertEqual(warning, 'WARNING [...]')
+        """
+        old_log = css_parser.log._log
+        old_level = css_parser.log.getEffectiveLevel()
+        css_parser.log.setLog(logging.getLogger('CSS_PARSER-IGNORE'))
+        css_parser.log.setLevel(log_level)
+        s = BaseTestCase._setHandler()
+        callable(*args, **kwargs)
+        result = s.getvalue()
+        css_parser.log.setLog(old_log)
+        css_parser.log.setLevel(old_level)
+        return result
 
     def setUp(self):
         # a raising parser!!!

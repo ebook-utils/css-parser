@@ -67,8 +67,7 @@ class MediaQueryTestCase(basetest.BaseTestCase):
 
         mt = '3D-UNKOwn-MEDIAtype0123'
         #mq.mediaType = mt
-        capturelog = self._captureLog(logging.WARNING)
-        self.assertEqual(capturelog(mq._setMediaType, mt),
+        self.assertEqual(self.captureLog(logging.WARNING, mq._setMediaType, mt),
                          'WARNING    MediaQuery: Unknown media type: "3D-UNKOwn-MEDIAtype0123".\n')
         #self.assertRaises(xml.dom.InvalidCharacterErr, mq._setMediaType, mt)
 
