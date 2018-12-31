@@ -555,19 +555,17 @@ div {
         }
     }'''
         self.assertEqual(expected_default.encode(), s.cssText)
-        css_parser.ser.prefs.linesAfterRules = 2 * '\n'
+        css_parser.ser.prefs.linesAfterRules = 1 * '\n'
         expected_changed = '''\
 div {
     color: red
     }
-
 
 @media screen {
     .aclass {
         width: 200px
         }
     }
-
 '''
         self.assertEqual(expected_changed.encode(), s.cssText)
 

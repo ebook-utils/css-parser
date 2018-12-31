@@ -199,10 +199,10 @@ class Out(object):
         self.ser = ser
         self.out = []
 
-    def _remove_last_if_S(self):
-        if self.out and not self.out[-1].strip():
-            # remove trailing S
-            del self.out[-1]
+    def _remove_last_if_S(self, space=None):
+            if self.out and not self.out[-1].strip(space):
+                # remove trailing S
+                del self.out[-1]
 
     def append(self, val, type_=None, space=True, keepS=False, indent=False, alwaysS=False):
         """Appends val. Adds a single S after each token except as follows:
@@ -255,8 +255,10 @@ class Out(object):
                 val = val.cssText
             elif hasattr(val, 'mediaText'):
                 val = val.mediaText
-            elif val in '+>~,:{;)]/=}%s' % self.ser.prefs.lineSeparator and not alwaysS:
+            elif val in '+>~,:{;)]/=}' and not alwaysS:
                 self._remove_last_if_S()
+            elif val == self.ser.prefs.lineSeparator and not alwaysS:
+                self._remove_last_if_S(' \t')
 #            elif type_ in ('Property', css_parser.css.CSSRule.UNKNOWN_RULE):
 #                val = val.cssText
 #            elif type_ in ('NUMBER', 'DIMENSION', 'PERCENTAGE') and val == u'0':
