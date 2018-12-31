@@ -200,9 +200,9 @@ class Out(object):
         self.out = []
 
     def _remove_last_if_S(self, space=None):
-            if self.out and not self.out[-1].strip(space):
-                # remove trailing S
-                del self.out[-1]
+        if self.out and not self.out[-1].strip(space):
+            # remove trailing S
+            del self.out[-1]
 
     def append(self, val, type_=None, space=True, keepS=False, indent=False, alwaysS=False):
         """Appends val. Adds a single S after each token except as follows:
@@ -453,7 +453,7 @@ class CSSSerializer(object):
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s' % (variablesText, self.prefs.lineSeparator), indent=1)
+            out.append('%s' % variablesText, indent=1)
             out.append('%s' % self.prefs.lineSeparator)
             out.append('}')
             return out.value()
@@ -478,7 +478,7 @@ class CSSSerializer(object):
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s%s' % (styleText, self.prefs.lineSeparator), indent=1)
+            out.append('%s' % styleText, indent=1)
             out.append('%s' % self.prefs.lineSeparator)
             out.append('}')
             return out.value()
@@ -640,9 +640,7 @@ class CSSSerializer(object):
 
             if styleText:
                 if not rulesText:
-                    out.append('%s%s' % (styleText,
-                                         self.prefs.lineSeparator
-                                         ), indent=1)
+                    out.append('%s' % styleText, indent=1)
                     out.append('%s' % self.prefs.lineSeparator)
                 else:
                     out.append(styleText, type_='styletext', indent=1, space=False)
