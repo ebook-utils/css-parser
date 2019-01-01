@@ -926,7 +926,11 @@ class CSSSerializer(object):
                 if isinstance(val, css_parser.css.CSSComment):
                     # CSSComment
                     if self.prefs.keepComments:
-                        out.append(val.cssText)
+                        if self.prefs.lineSeparator:
+                            lines = [x.lstrip() for x in val.cssText.split(self.prefs.lineSeparator)]
+                            out.append(self.prefs.lineSeparator.join(lines))
+                        else:
+                            out.append(val.cssText)
                         out.append(separator)
                 elif isinstance(val, css_parser.css.Property):
                     # PropertySimilarNameList
