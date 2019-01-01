@@ -55,6 +55,10 @@ class Preferences(object):
         Should the normalized or literal priority be used, e.g. ``!important``
         or ``!Im\portant``
 
+    formatUnknownAtRules = True
+        If False, tokens of unknown atrules will just be concatenated as
+        they were saved by the parser.
+
     importHrefFormat = None
         Uses hreftype if ``None`` or format ``"URI"`` if ``'string'`` or
         format ``url(URI)`` if ``'uri'``
@@ -86,9 +90,12 @@ class Preferences(object):
     lineSeparator = u'\\n'
         How to end a line. This may be set to e.g. u'' for serializing of
         CSSStyleDeclarations usable in HTML style attribute.
+    linesAfterRules = 0 * lineSeparator
+        Adds blank lines after every rule.
     listItemSpacer = u' '
         string which is used in ``css.SelectorList``, ``css.CSSValue`` and
-        ``stylesheets.MediaList`` after the comma
+        ``stylesheets.MediaList`` after the comma.
+
     minimizeColorHash = True
         defines if colorhash should be minimized from full size to shorthand
         e.g minimize #FFFFFF to #FFF
