@@ -2,7 +2,7 @@ css-parser
 ================
 
 [![Build Status](https://api.travis-ci.org/ebook-utils/css-parser.svg)](https://travis-ci.org/ebook-utils/css-parser)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/kovidgoyal/css-parser?svg=true)](https://ci.appveyor.com/project/kovidgoyal/css-parser)
+[![Build Status](https://ci.appveyor.com/api/projects/status/fqs1n6c2lidphx1t?svg=true)](https://ci.appveyor.com/project/kovidgoyal/css-parser)
 
 A fork of the cssutils project based on version 1.0.2.
 This fork includes general bug fixes and extensions 
