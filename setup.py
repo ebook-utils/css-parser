@@ -57,6 +57,7 @@ setup(
     packages=find_packages('src'),
     description='A CSS Cascading Style Sheets library for Python',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     cmdclass={'test': Test},
     author='Various People',
     author_email='redacted@anonymous.net',
