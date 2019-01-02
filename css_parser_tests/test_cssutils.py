@@ -24,9 +24,6 @@ class CSSutilsTestCase(basetest.BaseTestCase):
     background-image: url(images/example.gif)
     }'''
 
-    def test_VERSION(self):
-        self.assertEqual('1.0.3', css_parser.VERSION)
-
     def test_parseString(self):
         "css_parser.parseString()"
         s = css_parser.parseString(
