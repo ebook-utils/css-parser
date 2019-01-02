@@ -155,7 +155,8 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
                                          )
                                 ),
                        Sequence(Prod(name='ONLY|NOT',  # media_query
-                                     match=lambda t, v: t == PreDef.types.IDENT and normalize(v) in ('only', 'not'),
+                                     match=lambda t, v: t == PreDef.types.IDENT and
+                                     normalize(v) in ('only', 'not'),
                                      optional=True,
                                      toStore='not simple'
                                      ),
@@ -164,7 +165,8 @@ class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
                                      toStore='media_type'
                                      ),
                                 Sequence(Prod(name='AND',
-                                              match=lambda t, v: t == PreDef.types.IDENT and normalize(v) == 'and',
+                                              match=lambda t, v: t == PreDef.types.IDENT and
+                                              normalize(v) == 'and',
                                               toStore='not simple'
                                               ),
                                          expression(),
