@@ -81,4 +81,5 @@ qrc_*
 OpenCandy
 tags
 build
-
+dist
+src/css_parser.egg-info

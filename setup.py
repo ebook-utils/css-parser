@@ -10,6 +10,7 @@ __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke with contributions by Walter Doerwald and lots of other people'
 __date__ = '$LastChangedDate::                            $:'
 
+import ast
 import re
 import sys
 import os
@@ -18,7 +19,8 @@ from setuptools import find_packages, setup
 from setuptools.command.test import test
 
 # extract the version without importing the module
-VERSION = re.search(r"^VERSION\s+=\s+'(.+?)'", open('src/css_parser/version.py', 'rb').read().decode('utf-8'))
+VERSION = open('src/css_parser/version.py', 'rb').read().decode('utf-8')
+VERSION = '.'.join(map(str, ast.literal_eval(re.search(r'^version\s+=\s+(.+)', VERSION, flags=re.M).group(1))))
 long_description = '\n' + open('README.md', 'rb').read().decode('utf-8') + '\n'  # + read('CHANGELOG.txt')
 
 
