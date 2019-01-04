@@ -62,7 +62,7 @@ setup(
     author='Various People',
     author_email='redacted@anonymous.net',
     url='https://github.com/ebook-utils/css-parser',
-    license='LGPL 2.1 or later',
+    license='LGPL 3.0 or later',
     keywords='CSS, Cascading Style Sheets, CSSParser, DOM Level 2 Stylesheets, DOM Level 2 CSS',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
