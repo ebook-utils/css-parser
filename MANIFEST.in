@@ -1,0 +1,2 @@
+recursive-include css_parser_tests *.py *.css
+include run_tests.py
