@@ -1,14 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-css_parser setup
-
-use EasyInstall or install with
-    >python setup.py install
-"""
-__docformat__ = 'restructuredtext'
-__author__ = 'Christof Hoeke with contributions by Walter Doerwald and lots of other people'
-__date__ = '$LastChangedDate::                            $:'
+# License: LGPLv3 Copyright: 2019, Kovid Goyal <kovid at kovidgoyal.net>
 
 import ast
 import re

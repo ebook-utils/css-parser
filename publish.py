@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
-# License: GPLv3 Copyright: 2019, Kovid Goyal <kovid at kovidgoyal.net>
+# License: LGPLv3 Copyright: 2019, Kovid Goyal <kovid at kovidgoyal.net>
 
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
