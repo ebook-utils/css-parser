@@ -97,7 +97,7 @@ class MediaList(css_parser.util._NewListBase):
                                       match=lambda t, v: t == 'IDENT' or v == '(',
                                       toSeq=lambda t, tokens: ('MediaQuery',
                                                                MediaQuery(pushtoken(t, tokens),
-                                                                          _partof = True))
+                                                                          _partof=True))
                                       )
         prods = Sequence(Sequence(PreDef.comment(parent=self),
                                   minmax=lambda: (0, None)
