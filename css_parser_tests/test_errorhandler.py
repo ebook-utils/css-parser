@@ -8,7 +8,6 @@ import sys
 import xml.dom
 from . import basetest
 import css_parser
-from io import StringIO
 
 
 class ErrorHandlerTestCase(basetest.BaseTestCase):
@@ -101,10 +100,13 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
         s = self._setHandler()
 
-        css_parser.log.setLevel(logging.ERROR)
+        css_parser.log.setLevel(logging.WARNING)
         css_parser.parseUrl('http://example.com')
-        self.assertEqual(s.getvalue()[:38],
-                         'ERROR    Expected "text/css" mime type')
+        q = s.getvalue()[:38]
+        if q.startswith('WARNING    URLError'):
+            pass
+        else:
+            self.assertEqual(q, 'ERROR    Expected "text/css" mime type')
 
     def test_parsevalidation(self):
         style = 'color: 1'
