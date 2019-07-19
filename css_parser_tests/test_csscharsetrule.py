@@ -49,7 +49,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
         for enc in ('unknown', ):
             self.assertRaisesEx(xml.dom.SyntaxErr,
                                 css_parser.css.CSSCharsetRule, enc,
-                                exc_pattern=re.compile("Unknown \(Python\) encoding"))
+                                exc_pattern=re.compile(r"Unknown \(Python\) encoding"))
 
     def test_encoding(self):
         "CSSCharsetRule.encoding"

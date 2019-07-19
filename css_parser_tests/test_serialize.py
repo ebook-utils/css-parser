@@ -246,7 +246,7 @@ prefix|x, a + b > c ~ d, b {
         css_parser.ser.prefs.defaultPropertyName = False
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
 
-        s = css_parser.parseString('a { color: red; c\olor: green; }')
+        s = css_parser.parseString(r'a { color: red; c\olor: green; }')
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
         css_parser.ser.prefs.defaultPropertyName = False
         self.assertEqual('a {\n    c\\olor: green\n    }'.encode(), s.cssText)
@@ -359,7 +359,7 @@ b {
 
     def test_keepAllProperties(self):
         "Preferences.keepAllProperties"
-        css = '''a {
+        css = r'''a {
             color: pink;
             color: red;
             c\olor: blue;
@@ -372,7 +372,7 @@ b {
         # keep all
         css_parser.ser.prefs.keepAllProperties = True
         self.assertEqual(
-            'a {\n    color: pink;\n    color: red;\n    c\olor: blue;\n    c\olor: green\n    }'.encode(), s.cssText)
+            'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    c\olor: green\n    }'.encode(), s.cssText)
 
     def test_keepComments(self):
         "Preferences.keepComments"
