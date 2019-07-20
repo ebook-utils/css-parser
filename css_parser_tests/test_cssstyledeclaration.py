@@ -534,18 +534,18 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
 
         self.assertEqual('1px', s.getPropertyValue('top'))
         self.assertEqual('1px', s.getPropertyValue('TOP'))
-        self.assertEqual('1px', s.getPropertyValue('T\op'))
+        self.assertEqual('1px', s.getPropertyValue(r'T\op'))
 
         self.assertEqual('important', s.getPropertyPriority('top'))
         self.assertEqual('important', s.getPropertyPriority('TOP'))
-        self.assertEqual('important', s.getPropertyPriority('T\op'))
+        self.assertEqual('important', s.getPropertyPriority(r'T\op'))
 
         s.setProperty('top', '2px', '!important')
         self.assertEqual('2px', s.removeProperty('top'))
         s.setProperty('top', '2px', '!important')
         self.assertEqual('2px', s.removeProperty('TOP'))
         s.setProperty('top', '2px', '!important')
-        self.assertEqual('2px', s.removeProperty('T\op'))
+        self.assertEqual('2px', s.removeProperty(r'T\op'))
 
     def test_css2properties(self):
         "CSSStyleDeclaration.$css2property get set del"

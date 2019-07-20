@@ -41,7 +41,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
         # TODO:
         # Note that this means that a "real" space after the escape sequence
         # must itself either be escaped or doubled:
-        '\\44\ x': [('IDENT', 'D\\ x', 1, 1)],
+        '\\44\\ x': [('IDENT', 'D\\ x', 1, 1)],
         '\\44  ': [('IDENT', 'D', 1, 1),
                     ('S', ' ', 1, 5)],
 

@@ -234,7 +234,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "css_parser.getUrls()"
         css_parser.ser.prefs.keepAllProperties = True
 
-        css = '''
+        css = r'''
         @import "im1";
         @import url(im2);
         @import url( im3 );
@@ -263,7 +263,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "css_parser.replaceUrls()"
         css_parser.ser.prefs.keepAllProperties = True
 
-        css = '''
+        css = r'''
         @import "im1";
         @import url(im2);
         a {
