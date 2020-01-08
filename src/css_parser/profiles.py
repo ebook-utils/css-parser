@@ -721,6 +721,11 @@ macros[Profiles.CSS3_PAGED_MEDIA] = {
     'page-size-orientation': '{page-1}|{page-2}',
     'pagebreak': 'auto|always|avoid|left|right'
 }
+
+break_properties = (
+    'auto|avoid|always|all|avoid-page|page|left|right|recto|verso|avoid-column|column|avoid-region|region')
+global_properties = 'inherit|initial|unset'
+
 properties[Profiles.CSS3_PAGED_MEDIA] = {
     'fit': 'fill|hidden|meet|slice',
     'fit-position': r'auto|(({percentage}|{length})(\s*({percentage}|{length}))?|((top|center|bottom)\s*(left|center|right)?)|((left|center|right)\s*(top|center|bottom)?))',  # noqa
@@ -730,6 +735,9 @@ properties[Profiles.CSS3_PAGED_MEDIA] = {
     'page-break-before': '{pagebreak}|inherit',
     'page-break-after': '{pagebreak}|inherit',
     'page-break-inside': 'auto|avoid|inherit',
+    'break-before': break_properties + '|' + global_properties,
+    'break-after': break_properties + '|' + global_properties,
+    'break-inside': 'auto|avoid|avoid-page|avoid-column|avoid-region|' + global_properties,
     'size': '({length}{w}){1,2}|auto|{page-size-orientation}',
     'widows': r'{integer}|inherit'
 }

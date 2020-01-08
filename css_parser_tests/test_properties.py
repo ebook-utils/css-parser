@@ -171,6 +171,7 @@ class PropertiesTestCase(basetest.BaseTestCase):
             'orphans': ('0', ['1', '99999', 'inherit']),
             'page': ('IDENT',),
             'page-break-inside': (['auto', 'inherit', 'avoid'],),
+            'break-inside': (['auto', 'inherit', 'avoid', 'avoid-page', 'avoid-column', 'avoid-region'],),
             'size': ('LENGTHS', ['auto',
                                  '1em 1em',
                                  'a4 portrait',
@@ -214,5 +215,5 @@ if __name__ == '__main__':
     import logging
     import unittest
     css_parser.log.setLevel(logging.FATAL)
-    #debug = True
+    # debug = True
     unittest.main()
