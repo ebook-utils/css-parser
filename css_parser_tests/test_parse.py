@@ -11,7 +11,9 @@ from . import basetest
 
 if sys.version_info.major > 2:
     from urllib.error import HTTPError, URLError
+    FetchError = OSError
 else:
+    from socket import error as FetchError
     from urllib2 import HTTPError, URLError
 
 
@@ -143,8 +145,9 @@ class CSSParserTestCase(basetest.BaseTestCase):
         self.assertRaises(ValueError, parser.parseUrl,
                           '../not-valid-in-urllib')
         # we'll get an URLError if no network connection
-        self.assertRaises((HTTPError, URLError), parser.parseUrl,
-                          'http://cthedot.de/not-present.css')
+        self.assertRaises(
+                (HTTPError, URLError, FetchError), parser.parseUrl,
+                'https://github.com/ebook-utils/css-parser/not-found.css')
 
     def test_parseString(self):
         "CSSParser.parseString()"
