@@ -24,6 +24,29 @@ class CSSutilsTestCase(basetest.BaseTestCase):
     background-image: url(images/example.gif)
     }'''
 
+    def test_import_from_above(self):
+        def fetch(url):
+            self.assertEqual(url, '../test2.css')
+            return None, ''
+
+        p = css_parser.CSSParser(fetcher=fetch)
+        s = p.parseString("@import url('../test2.css'); a { background-image: url(../test.jpg); }", href='test.css')
+        self.assertEqual(
+            s.cssRules[1].style.getPropertyCSSValue('background-image')[0].absoluteUri,
+            '../test.jpg'
+        )
+
+        def fetch2(url):
+            self.assertEqual(url, 'a/test2.css')
+            return None, ''
+
+        p = css_parser.CSSParser(fetcher=fetch2)
+        s = p.parseString("@import url('../test2.css'); a { background-image: url(../test.jpg); }", href='a/b/test.css')
+        self.assertEqual(
+            s.cssRules[1].style.getPropertyCSSValue('background-image')[0].absoluteUri,
+            'a/test.jpg'
+        )
+
     def test_parseString(self):
         "css_parser.parseString()"
         s = css_parser.parseString(

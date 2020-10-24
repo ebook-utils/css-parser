@@ -23,13 +23,7 @@ __all__ = ['PropertyValue',
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    text_type = str
-    from urllib.parse import urljoin as urllib_urljoin
-else:
-    text_type = unicode
-    from urlparse import urljoin as urllib_urljoin
+from ..util import text_type, urljoin
 
 
 def as_list(p):
@@ -603,7 +597,7 @@ class URIValue(Value):
         except AttributeError:
             return self.uri
         else:
-            return urllib_urljoin(styleSheet.href, self.uri)
+            return urljoin(styleSheet.href, self.uri)
 
     absoluteUri = property(absoluteUri, doc=absoluteUri.__doc__)
 

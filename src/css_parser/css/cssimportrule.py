@@ -9,16 +9,9 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 from . import cssrule
+from ..util import urljoin, string_type
 import css_parser
 import os
-
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-    from urllib.parse import urljoin as urllib_urljoin
-else:
-    string_type = basestring
-    from urlparse import urljoin as urllib_urljoin
 
 
 class CSSImportRule(cssrule.CSSRule):
@@ -288,7 +281,7 @@ class CSSImportRule(cssrule.CSSRule):
                 # use cwd instead
                 parentHref = css_parser.helper.path2url(os.getcwd()) + '/'
 
-            fullhref = urllib_urljoin(parentHref, self.href)
+            fullhref = urljoin(parentHref, self.href)
 
             # all possible exceptions are ignored
             try:

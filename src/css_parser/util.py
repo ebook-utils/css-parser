@@ -19,10 +19,12 @@ __version__ = '$Id$'
 if sys.version_info[0] >= 3:
     text_type = str
     string_type = str
+    from urllib.parse import urlparse, uses_netloc, uses_relative, urlunparse
 else:
     text_type = unicode
     string_type = basestring
     from itertools import ifilter as filter
+    from urlparse import urlparse, uses_netloc, uses_relative, urlunparse
 
 
 try:
@@ -1071,7 +1073,7 @@ class LazyRegex(object):
         return self.matcher.finditer(string, pos, endpos)
 
     def sub(self, repl, string, count=0):
-        """Replace all occurences of the pattern with the given replacement.
+        """Replace all occurrences of the pattern with the given replacement.
 
         This is similar to the `.sub` method of `re` objects.
         """
@@ -1079,9 +1081,62 @@ class LazyRegex(object):
         return self.matcher.sub(repl, string, count)
 
     def subn(self, repl, string, count=0):
-        """Replace all occurences of the pattern with the given replacement.
+        """Replace all occurrences of the pattern with the given replacement.
 
         This is similar to the `.subn` method of `re` objects.
         """
         self.ensure()
         return self.matcher.subn(repl, string, count)
+
+
+def urljoin(a, b):
+    # this differs from urljoin from the stdlib to handle joining
+    # 'test.css' and '../test2.css' which should result in '../test2.css'
+    # whereas the stdlib version in python 3 gives us 'test2.css'
+    pa = urlparse(a, allow_fragments=False)
+    pb = urlparse(b, scheme=pa.scheme, allow_fragments=False)
+    if pa.scheme != pb.scheme or pa.scheme not in uses_relative:
+        return b
+    if pb.scheme in uses_netloc:
+        if pb.netloc:
+            return urlunparse((pb.scheme, pb.netloc, pb.path, pb.params, pb.query, pb.fragment))
+        pb = pb._replace(netloc=pa.netloc)
+
+    if not pb.path and not pb.params:
+        return urlunparse((pb.scheme, pb.netloc, pa.path, pa.params, pb.query or pa.query, pb.fragment))
+
+    base_parts = pa.path.split('/')
+    if base_parts[-1]:
+        # the last item is not a directory, so will not be taken into account
+        # in resolving the relative path
+        del base_parts[-1]
+
+    # for rfc3986, ignore all base path should the first character be root.
+    if pb.path.startswith('/'):
+        segments = pb.path.split('/')
+    else:
+        segments = base_parts + pb.path.split('/')
+        # filter out elements that would cause redundant slashes on re-joining
+        # the resolved_path
+        segments[1:-1] = filter(None, segments[1:-1])
+
+    resolved_path = []
+
+    for seg in segments:
+        if seg == '..':
+            if resolved_path:
+                resolved_path.pop()
+            else:
+                resolved_path.append('..')
+        elif seg == '.':
+            continue
+        else:
+            resolved_path.append(seg)
+
+    if segments[-1] in ('.', '..'):
+        # do some post-processing here. if the last segment was a relative dir,
+        # then we need to append the trailing '/'
+        resolved_path.append('')
+
+    return urlunparse((pb.scheme, pb.netloc, '/'.join(
+        resolved_path) or '/', pb.params, pb.query, pb.fragment))
