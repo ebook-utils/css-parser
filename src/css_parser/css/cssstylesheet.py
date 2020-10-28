@@ -173,7 +173,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             rule = css_parser.css.CSSCharsetRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
 
-            if expected > 0:
+            if (expected or 0) > 0:
                 self._log.error('CSSStylesheet: CSSCharsetRule only allowed '
                                 'at beginning of stylesheet.',
                                 token, xml.dom.HierarchyRequestErr)
@@ -188,7 +188,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             rule = css_parser.css.CSSImportRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
 
-            if expected > 1:
+            if (expected or 0) > 1:
                 self._log.error('CSSStylesheet: CSSImportRule not allowed '
                                 'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
@@ -202,7 +202,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             rule = css_parser.css.CSSNamespaceRule(
                     cssText=self._tokensupto2(tokenizer, token), parentStyleSheet=self)
 
-            if expected > 2:
+            if (expected or 0) > 2:
                 self._log.error('CSSStylesheet: CSSNamespaceRule not allowed '
                                 'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
@@ -225,7 +225,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             rule = css_parser.css.CSSVariablesRule(parentStyleSheet=self)
             rule.cssText = self._tokensupto2(tokenizer, token)
 
-            if expected > 2:
+            if (expected or 0) > 2:
                 self._log.error('CSSStylesheet: CSSVariablesRule not allowed '
                                 'here.', token, xml.dom.HierarchyRequestErr)
                 return expected
