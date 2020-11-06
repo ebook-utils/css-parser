@@ -2,9 +2,11 @@
 # vim:fileencoding=utf-8
 # License: LGPLv3 Copyright: 2017, Kovid Goyal <kovid at kovidgoyal.net>
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
 import importlib
+import logging
 import os
 import sys
 import unittest
@@ -71,6 +73,7 @@ def find_tests():
 
 
 def run_tests(test_names=()):
+    import css_parser
     sys.path = [base, os.path.join(base, 'src')] + sys.path
     tests = find_tests()
     suites = []
@@ -85,6 +88,7 @@ def run_tests(test_names=()):
     tests = unittest.TestSuite(suites) if suites else tests
 
     r = unittest.TextTestRunner
+    css_parser.log.setLevel(logging.CRITICAL)
     result = r().run(tests)
 
     if not result.wasSuccessful():
