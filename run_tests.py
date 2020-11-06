@@ -73,8 +73,8 @@ def find_tests():
 
 
 def run_tests(test_names=()):
-    import css_parser
     sys.path = [base, os.path.join(base, 'src')] + sys.path
+    import css_parser
     tests = find_tests()
     suites = []
     for name in test_names:
