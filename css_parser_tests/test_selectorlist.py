@@ -11,6 +11,7 @@ from css_parser.css.selectorlist import SelectorList
 class SelectorListTestCase(basetest.BaseTestCase):
 
     def setUp(self):
+        basetest.BaseTestCase.setUp(self)
         self.r = SelectorList()
 
     def test_init(self):
