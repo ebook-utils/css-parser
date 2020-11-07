@@ -1,7 +1,7 @@
 css-parser
 ================
 
-[![Build Status](https://github.com/kovidgoyal/kitty/workflows/CI/badge.svg)](https://github.com/kovidgoyal/kitty/actions?query=workflow%3ACI)
+[![Build Status](https://github.com/ebook-utils/css-parser/workflows/CI/badge.svg)](https://github.com/ebook-utils/css-parser/actions?query=workflow%3ACI)
 
 A fork of the cssutils project based on version 1.0.2.
 This fork includes general bug fixes and extensions 
