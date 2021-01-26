@@ -412,7 +412,7 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         # readonly
         def _set(): selector.specificity = 1
-        self.assertRaisesMsg(AttributeError, "can't set attribute", _set)
+        self.assertRaisesMsgSubstring(AttributeError, "can't set attribute", _set)
 
         tests = {
             '*': (0, 0, 0, 0),
