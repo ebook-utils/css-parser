@@ -47,6 +47,18 @@ class CSSutilsTestCase(basetest.BaseTestCase):
             'a/test.jpg'
         )
 
+        results = [('a/test.css', '@import url(../test.css);'), ('test.css', 'p { background-image: url(a/test.jpg) }')]
+
+        def fetch3(url):
+            e, text = results.pop(0)
+            self.assertEqual(e, url)
+            return None, text
+
+        p = css_parser.CSSParser(fetcher=fetch3)
+        s = p.parseString("@import url('../test.css'); a { background-image: url(../test.jpg); }", href='a/b/test.css')
+        style = s.cssRules[0].styleSheet.cssRules[0].styleSheet.cssRules[0].style
+        self.assertEqual(style.getPropertyCSSValue('background-image')[0].absoluteUri, 'a/test.jpg')
+
     def test_parseString(self):
         "css_parser.parseString()"
         s = css_parser.parseString(
