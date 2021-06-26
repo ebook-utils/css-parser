@@ -13,5 +13,5 @@ Python >= 2.7 and Python 3.X without any further
 modules required.  All required modifications
 are handled local to each file
 
-For more information on usage, please see the cssutils 
-documentation
+For more information on usage, please see the 
+[cssutils documentation](https://cssutils.readthedocs.io).
