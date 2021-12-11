@@ -16,6 +16,7 @@ jobs:
                     - { pyver: 3.6, os: ubuntu-latest }
                     - { pyver: 3.8, os: ubuntu-latest }
                     - { pyver: 3.9, os: ubuntu-latest }
+                    - { pyver: 3.10, os: ubuntu-latest }
 
                     - { pyver: 3.8, os: macos-latest }
                     - { pyver: 3.8, os: windows-latest }
