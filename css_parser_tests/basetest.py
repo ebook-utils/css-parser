@@ -131,10 +131,11 @@ class BaseTestCase(unittest.TestCase):
             callable(*args, **kwargs)
         except exception as exc:
             if exc_args is not None:
-                self.failIf(exc.args != exc_args,
-                            "%s raised %s with unexpected args: "
-                            "expected=%r, actual=%r"
-                            % (callsig, exc.__class__, exc_args, exc.args))
+                self.assertEqual(
+                    exc.args,
+                    exc_args,
+                    '%s raised %s with unexpected args: expected=%r, actual=%r' % (callsig, exc.__class__, exc_args, exc.args)
+                )
             if exc_pattern is not None:
                 self.assertTrue(exc_pattern.search(str(exc)),
                                 "%s raised %s, but the exception "

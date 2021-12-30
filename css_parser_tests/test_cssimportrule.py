@@ -428,14 +428,14 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         s = css_parser.css.CSSImportRule(href=href, mediaText=mediaText, name=name)
 
         # str(): mediaText nor name are present here
-        self.assertTrue(href in str(s))
+        self.assertIn(href, str(s))
 
         # repr()
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(href == s2.href)
-        self.assertTrue(mediaText == s2.media.mediaText)
-        self.assertTrue(name == s2.name)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(href, s2.href)
+        self.assertEqual(mediaText, s2.media.mediaText)
+        self.assertEqual(name, s2.name)
 
 
 if __name__ == '__main__':

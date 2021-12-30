@@ -63,7 +63,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         "css_parser.parseString()"
         s = css_parser.parseString(
             self.exp, media='handheld, screen', title='from string')
-        self.assertTrue(isinstance(s, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(s, css_parser.css.CSSStyleSheet)
         self.assertEqual(None, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
         self.assertEqual('utf-8', s.encoding)
@@ -84,7 +84,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertTrue(isinstance(irs, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(irs, css_parser.css.CSSStyleSheet)
         self.assertEqual(
             irs.cssText,
             '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'  # noqa
@@ -103,7 +103,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         href = css_parser.helper.path2url(name)
         s = css_parser.parseFile(
             name, href=href, media='screen', title='from file')
-        self.assertTrue(isinstance(s, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(s, css_parser.css.CSSStyleSheet)
         if sys.platform.startswith('java'):
             # on Jython only file:
             self.assertTrue(s.href.startswith('file:'))
@@ -119,7 +119,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertTrue(isinstance(irs, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(irs, css_parser.css.CSSStyleSheet)
         self.assertEqual(
             irs.cssText,
             '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'  # noqa
@@ -131,7 +131,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         name = basetest.get_sheet_filename('import.css')
 
         s = css_parser.parseFile(name, media='screen', title='from file')
-        self.assertTrue(isinstance(s, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(s, css_parser.css.CSSStyleSheet)
         if sys.platform.startswith('java'):
             # on Jython only file:
             self.assertTrue(s.href.startswith('file:'))
@@ -147,7 +147,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         ir = s.cssRules[0]
         self.assertEqual('import/import2.css', ir.href)
         irs = ir.styleSheet
-        self.assertTrue(isinstance(irs, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(irs, css_parser.css.CSSStyleSheet)
         self.assertEqual(
             irs.cssText,
             '@import "../import3.css";\n@import "import-impossible.css" print;\n.import2 {\n    /* sheets/import2.css */\n    background: url(http://example.com/images/example.gif);\n    background: url(//example.com/images/example.gif);\n    background: url(/images/example.gif);\n    background: url(images2/example.gif);\n    background: url(./images2/example.gif);\n    background: url(../images/example.gif);\n    background: url(./../images/example.gif)\n    }'  # noqa
@@ -201,7 +201,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         href = css_parser.helper.path2url(href)
         # href = 'http://seewhatever.de/sheets/import.css'
         s = css_parser.parseUrl(href, media='tv, print', title='from url')
-        self.assertTrue(isinstance(s, css_parser.css.CSSStyleSheet))
+        self.assertIsInstance(s, css_parser.css.CSSStyleSheet)
         self.assertEqual(href, s.href)
         self.assertEqual(self.exp.encode(), s.cssText)
         self.assertEqual('utf-8', s.encoding)

@@ -24,12 +24,12 @@ class DOMImplementationTestCase(unittest.TestCase):
     def test_createDocument(self):
         "DOMImplementationCSS.createDocument()"
         doc = self.domimpl.createDocument(None, None, None)
-        self.assertTrue(isinstance(doc, xml.dom.minidom.Document))
+        self.assertIsInstance(doc, xml.dom.minidom.Document)
 
     def test_createDocumentType(self):
         "DOMImplementationCSS.createDocumentType()"
         doctype = self.domimpl.createDocumentType('foo', 'bar', 'raboof')
-        self.assertTrue(isinstance(doctype, xml.dom.minidom.DocumentType))
+        self.assertIsInstance(doctype, xml.dom.minidom.DocumentType)
 
     def test_hasFeature(self):
         "DOMImplementationCSS.hasFeature()"

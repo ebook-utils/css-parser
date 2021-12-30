@@ -145,11 +145,11 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         "CSSVariablesRule.__repr__(), .__str__()"
         r = css_parser.css.CSSVariablesRule()
         r.cssText = '@variables { xxx: 1 }'
-        self.assertTrue('xxx' in str(r))
+        self.assertIn('xxx', str(r))
 
         r2 = eval(repr(r))
-        self.assertTrue(isinstance(r2, r.__class__))
-        self.assertTrue(r.cssText == r2.cssText)
+        self.assertIsInstance(r2, r.__class__)
+        self.assertEqual(r.cssText, r2.cssText)
 
 
 if __name__ == '__main__':

@@ -107,7 +107,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
     def test_repr(self):
         "CSSCharsetRule.__repr__()"
         self.r.encoding = 'utf-8'
-        self.assertTrue('utf-8' in repr(self.r))
+        self.assertIn('utf-8', repr(self.r))
 
     def test_reprANDstr(self):
         "CSSCharsetRule.__repr__(), .__str__()"
@@ -115,11 +115,11 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = css_parser.css.CSSCharsetRule(encoding=encoding)
 
-        self.assertTrue(encoding in str(s))
+        self.assertIn(encoding, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(encoding == s2.encoding)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(encoding, s2.encoding)
 
 
 if __name__ == '__main__':
