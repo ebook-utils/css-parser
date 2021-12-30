@@ -261,7 +261,7 @@ class GenerateTests(type):
     Example::
 
         def gen_test_length(self, string, expected):
-            self.assertEquals(len(string), expected)
+            self.assertEqual(len(string), expected)
         gen_test_length.cases = [
             ("a", 1),
             ("aa", 2),
