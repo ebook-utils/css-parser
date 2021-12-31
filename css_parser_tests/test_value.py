@@ -358,10 +358,10 @@ class PropertyValueTestCase(basetest.BaseTestCase):
     def test_readonly(self):
         "PropertyValue._readonly"
         v = css_parser.css.PropertyValue(cssText='inherit')
-        self.assertTrue(False is v._readonly)
+        self.assertIs(False, v._readonly)
 
         v = css_parser.css.PropertyValue(cssText='inherit', readonly=True)
-        self.assertTrue(True is v._readonly)
+        self.assertIs(True, v._readonly)
         self.assertTrue('inherit', v.cssText)
         self.assertRaises(xml.dom.NoModificationAllowedErr, v._setCssText, 'x')
         self.assertTrue('inherit', v.cssText)
@@ -372,11 +372,11 @@ class PropertyValueTestCase(basetest.BaseTestCase):
 
         s = css_parser.css.PropertyValue(cssText=cssText)
 
-        self.assertTrue(cssText in str(s))
+        self.assertIn(cssText, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(cssText == s2.cssText)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(cssText, s2.cssText)
 
 
 class ValueTestCase(basetest.BaseTestCase):
@@ -384,9 +384,9 @@ class ValueTestCase(basetest.BaseTestCase):
     def test_init(self):
         "Value.__init__()"
         v = css_parser.css.Value()
-        self.assertTrue('' == v.cssText)
-        self.assertTrue('' == v.value)
-        self.assertTrue(None is v.type)
+        self.assertEqual('', v.cssText)
+        self.assertEqual('', v.value)
+        self.assertIs(None, v.type)
 
     def test_cssText(self):
         "Value.cssText"
@@ -425,8 +425,8 @@ class ColorValueTestCase(basetest.BaseTestCase):
         "ColorValue.__init__()"
         v = css_parser.css.ColorValue()
         self.assertEqual(v.COLOR_VALUE, v.type)
-        self.assertTrue('' == v.cssText)
-        self.assertTrue('' == v.value)
+        self.assertEqual('', v.cssText)
+        self.assertEqual('', v.value)
         self.assertEqual('transparent', v.name)
         self.assertEqual(None, v.colorType)
 
@@ -532,19 +532,19 @@ class URIValueTestCase(basetest.BaseTestCase):
     def test_init(self):
         "URIValue.__init__()"
         v = css_parser.css.URIValue()
-        self.assertTrue('url()' == v.cssText)
-        self.assertTrue('' == v.value)
-        self.assertTrue('' == v.uri)
-        self.assertTrue(v.URI is v.type)
+        self.assertEqual('url()', v.cssText)
+        self.assertEqual('', v.value)
+        self.assertEqual('', v.uri)
+        self.assertIs(v.URI, v.type)
 
         v.uri = '1'
-        self.assertTrue('1' == v.value)
-        self.assertTrue('1' == v.uri)
+        self.assertEqual('1', v.value)
+        self.assertEqual('1', v.uri)
         self.assertEqual('url(1)', v.cssText)
 
         v.value = '2'
-        self.assertTrue('2' == v.value)
-        self.assertTrue('2' == v.uri)
+        self.assertEqual('2', v.value)
+        self.assertEqual('2', v.uri)
         self.assertEqual('url(2)', v.cssText)
 
     def test_absoluteUri(self):
@@ -601,10 +601,10 @@ class DimensionValueTestCase(basetest.BaseTestCase):
     def test_init(self):
         "DimensionValue.__init__()"
         v = css_parser.css.DimensionValue()
-        self.assertTrue('' == v.cssText)
-        self.assertTrue('' == v.value)
-        self.assertTrue(None is v.type)
-        self.assertTrue(None is v.dimension)
+        self.assertEqual('', v.cssText)
+        self.assertEqual('', v.value)
+        self.assertIs(None, v.type)
+        self.assertIs(None, v.dimension)
 
     def test_cssText(self):
         "DimensionValue.cssText"
@@ -696,8 +696,8 @@ class CSSVariableTestCase(basetest.BaseTestCase):
         v = css_parser.css.CSSVariable()
         self.assertEqual('', v.cssText)
         self.assertEqual('VARIABLE', v.type)
-        self.assertTrue(None is v.name)
-        self.assertTrue(None is v.value)
+        self.assertIs(None, v.name)
+        self.assertIs(None, v.value)
 
     def test_cssText(self):
         "CSSVariable.cssText"

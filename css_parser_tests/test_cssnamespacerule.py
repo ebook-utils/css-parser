@@ -222,13 +222,13 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = css_parser.css.CSSNamespaceRule(namespaceURI=namespaceURI, prefix=prefix)
 
-        self.assertTrue(namespaceURI in str(s))
-        self.assertTrue(prefix in str(s))
+        self.assertIn(namespaceURI, str(s))
+        self.assertIn(prefix, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(namespaceURI == s2.namespaceURI)
-        self.assertTrue(prefix == s2.prefix)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(namespaceURI, s2.namespaceURI)
+        self.assertEqual(prefix, s2.prefix)
 
 
 if __name__ == '__main__':

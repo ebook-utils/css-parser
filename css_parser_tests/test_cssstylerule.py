@@ -241,11 +241,11 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = css_parser.css.CSSStyleRule(selectorText=sel)
 
-        self.assertTrue(sel in str(s))
+        self.assertIn(sel, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(sel == s2.selectorText)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(sel, s2.selectorText)
 
     def test_valid(self):
         "CSSStyleRule.valid"

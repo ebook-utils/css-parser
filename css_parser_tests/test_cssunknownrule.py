@@ -146,7 +146,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
         s = css_parser.css.CSSUnknownRule(cssText='@x;')
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertIsInstance(s2, s.__class__)
 
 
 if __name__ == '__main__':

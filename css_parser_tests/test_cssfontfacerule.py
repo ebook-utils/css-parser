@@ -21,7 +21,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         super(CSSFontFaceRuleTestCase, self).test_init()
 
         r = css_parser.css.CSSFontFaceRule()
-        self.assertTrue(isinstance(r.style, css_parser.css.CSSStyleDeclaration))
+        self.assertIsInstance(r.style, css_parser.css.CSSStyleDeclaration)
         self.assertEqual(r, r.style.parentRule)
 
         # until any properties
@@ -232,11 +232,11 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         style = 'src: url(x)'
         s = css_parser.css.CSSFontFaceRule(style=style)
 
-        self.assertTrue(style in str(s))
+        self.assertIn(style, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(style == s2.style.cssText)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(style, s2.style.cssText)
 
 
 if __name__ == '__main__':

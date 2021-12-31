@@ -439,11 +439,11 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = css_parser.css.CSSMediaRule(mediaText=mediaText)
 
-        self.assertTrue(mediaText in str(s))
+        self.assertIn(mediaText, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(mediaText == s2.media.mediaText)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(mediaText, s2.media.mediaText)
 
 
 if __name__ == '__main__':

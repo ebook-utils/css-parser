@@ -259,15 +259,15 @@ class PropertyTestCase(basetest.BaseTestCase):
 
         s = css_parser.css.property.Property(name=name, value=value, priority=priority)
 
-        self.assertTrue(name in str(s))
-        self.assertTrue(value in str(s))
-        self.assertTrue(priority in str(s))
+        self.assertIn(name, str(s))
+        self.assertIn(value, str(s))
+        self.assertIn(priority, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(name == s2.name)
-        self.assertTrue(value == s2.value)
-        self.assertTrue(priority == s2.priority)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(name, s2.name)
+        self.assertEqual(value, s2.value)
+        self.assertEqual(priority, s2.priority)
 
 
 if __name__ == '__main__':

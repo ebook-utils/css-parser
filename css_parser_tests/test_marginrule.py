@@ -88,11 +88,11 @@ class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         s = css_parser.css.MarginRule(margin=margin, style='left: 0')
 
-        self.assertTrue(margin in str(s))
+        self.assertIn(margin, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(margin == s2.margin)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(margin, s2.margin)
 
 
 if __name__ == '__main__':

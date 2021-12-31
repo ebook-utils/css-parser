@@ -64,11 +64,11 @@ class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
         "CSSStyleDeclaration.__contains__(nameOrProperty)"
         s = css_parser.css.CSSStyleDeclaration(cssText=r'x: 1;\y: 2')
         for test in ('x', r'x', 'y', r'y'):
-            self.assertTrue(test in s)
-            self.assertTrue(test.upper() in s)
-            self.assertTrue(css_parser.css.Property(test, '1') in s)
-        self.assertTrue('z' not in s)
-        self.assertTrue(css_parser.css.Property('z', '1') not in s)
+            self.assertIn(test, s)
+            self.assertIn(test.upper(), s)
+            self.assertIn(css_parser.css.Property(test, '1'), s)
+        self.assertNotIn('z', s)
+        self.assertNotIn(css_parser.css.Property('z', '1'), s)
 
     def test__iter__item(self):
         "CSSStyleDeclaration.__iter__ and .item"
@@ -584,10 +584,10 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         "CSSStyleDeclaration.__repr__(), .__str__()"
         s = css_parser.css.CSSStyleDeclaration(cssText='a:1;b:2')
 
-        self.assertTrue("2" in str(s))  # length
+        self.assertIn('2', str(s)) # length
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertIsInstance(s2, s.__class__)
 
     def test_valid(self):
         "CSSStyleDeclaration.valid"

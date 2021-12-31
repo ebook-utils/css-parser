@@ -442,12 +442,12 @@ class TestLazyRegex(basetest.BaseTestCase):
     def test_calling(self):
         self.assertIsNone(self.lazyre('bar'))
         match = self.lazyre('foobar')
-        self.assertEquals(match.group(), 'foo')
+        self.assertEqual(match.group(), 'foo')
 
     def test_matching(self):
         self.assertIsNone(self.lazyre.match('bar'))
         match = self.lazyre.match('foobar')
-        self.assertEquals(match.group(), 'foo')
+        self.assertEqual(match.group(), 'foo')
 
     def test_matching_with_position_parameters(self):
         self.assertIsNone(self.lazyre.match('foo', 1))
@@ -456,56 +456,56 @@ class TestLazyRegex(basetest.BaseTestCase):
     def test_searching(self):
         self.assertIsNone(self.lazyre.search('rafuubar'))
         match = self.lazyre.search('rafoobar')
-        self.assertEquals(match.group(), 'foo')
+        self.assertEqual(match.group(), 'foo')
 
     def test_searching_with_position_parameters(self):
         self.assertIsNone(self.lazyre.search('rafoobar', 3))
         self.assertIsNone(self.lazyre.search('rafoobar', 0, 4))
         match = self.lazyre.search('rafoofuobar', 4)
-        self.assertEquals(match.group(), 'fuo')
+        self.assertEqual(match.group(), 'fuo')
 
     def test_split(self):
-        self.assertEquals(self.lazyre.split('rafoobarfoobaz'),
+        self.assertEqual(self.lazyre.split('rafoobarfoobaz'),
                           ['ra', 'bar', 'baz'])
-        self.assertEquals(self.lazyre.split('rafoobarfoobaz', 1),
+        self.assertEqual(self.lazyre.split('rafoobarfoobaz', 1),
                           ['ra', 'barfoobaz'])
 
     def test_findall(self):
-        self.assertEquals(self.lazyre.findall('rafoobarfuobaz'),
+        self.assertEqual(self.lazyre.findall('rafoobarfuobaz'),
                           ['foo', 'fuo'])
 
     def test_finditer(self):
         result = self.lazyre.finditer('rafoobarfuobaz')
-        self.assertEquals([m.group() for m in result], ['foo', 'fuo'])
+        self.assertEqual([m.group() for m in result], ['foo', 'fuo'])
 
     def test_sub(self):
-        self.assertEquals(self.lazyre.sub('bar', 'foofoo'), 'barbar')
-        self.assertEquals(self.lazyre.sub(lambda x: 'baz', 'foofoo'), 'bazbaz')
+        self.assertEqual(self.lazyre.sub('bar', 'foofoo'), 'barbar')
+        self.assertEqual(self.lazyre.sub(lambda x: 'baz', 'foofoo'), 'bazbaz')
 
     def test_subn(self):
         subbed = self.lazyre.subn('bar', 'foofoo')
-        self.assertEquals(subbed, ('barbar', 2))
+        self.assertEqual(subbed, ('barbar', 2))
         subbed = self.lazyre.subn(lambda x: 'baz', 'foofoo')
-        self.assertEquals(subbed, ('bazbaz', 2))
+        self.assertEqual(subbed, ('bazbaz', 2))
 
     def test_groups(self):
         lazyre = LazyRegex('(.)(.)')
         self.assertIsNone(lazyre.groups)
         lazyre.ensure()
-        self.assertEquals(lazyre.groups, 2)
+        self.assertEqual(lazyre.groups, 2)
 
     def test_groupindex(self):
         lazyre = LazyRegex('(?P<foo>.)')
         self.assertIsNone(lazyre.groupindex)
         lazyre.ensure()
-        self.assertEquals(lazyre.groupindex, {'foo': 1})
+        self.assertEqual(lazyre.groupindex, {'foo': 1})
 
     def test_flags(self):
         self.lazyre.ensure()
-        self.assertEquals(self.lazyre.flags, re.compile('.').flags)
+        self.assertEqual(self.lazyre.flags, re.compile('.').flags)
 
     def test_pattern(self):
-        self.assertEquals(self.lazyre.pattern, 'f.o')
+        self.assertEqual(self.lazyre.pattern, 'f.o')
 
 
 if __name__ == '__main__':

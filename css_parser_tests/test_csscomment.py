@@ -66,8 +66,8 @@ class CSSCommentTestCase(test_cssrule.CSSRuleTestCase):
         s = css_parser.css.CSSComment(cssText=text)
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(text == s2.cssText)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(text, s2.cssText)
 
 
 if __name__ == '__main__':

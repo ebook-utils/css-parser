@@ -37,10 +37,10 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         "CSSVariablesDeclaration.__contains__(name)"
         v = css_parser.css.CSSVariablesDeclaration(cssText='x: 0; y: 2')
         for test in ('x', 'y'):
-            self.assertTrue(test in v)
-            self.assertTrue(test.upper() in v)
+            self.assertIn(test, v)
+            self.assertIn(test.upper(), v)
 
-        self.assertTrue('z' not in v)
+        self.assertNotIn('z', v)
 
     def test_items(self):
         "CSSVariablesDeclaration[variableName]"
@@ -339,10 +339,10 @@ a {
         "CSSVariablesDeclaration.__repr__(), .__str__()"
         s = css_parser.css.CSSVariablesDeclaration(cssText='a:1;b:2')
 
-        self.assertTrue("2" in str(s))  # length
+        self.assertIn('2', str(s)) # length
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
+        self.assertIsInstance(s2, s.__class__)
 
 
 if __name__ == '__main__':

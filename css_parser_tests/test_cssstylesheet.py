@@ -322,9 +322,9 @@ ex2|x {
                          {'': 'default', 'ex2': 'example'})
 
         # __contains__
-        self.assertTrue('' in s.namespaces)
-        self.assertTrue('ex2' in s.namespaces)
-        self.assertFalse('NOTSET' in s.namespaces)
+        self.assertIn('', s.namespaces)
+        self.assertIn('ex2', s.namespaces)
+        self.assertNotIn('NOTSET', s.namespaces)
         # __delitem__
         self.assertRaises(xml.dom.NoModificationAllowedErr,
                           s.namespaces.__delitem__, 'ex2')
@@ -450,7 +450,7 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertRaises(xml.dom.NamespaceErr, s.add, css)
 
         s.add('@namespace x "html";')
-        self.assertTrue(s.namespaces['x'] == 'html')
+        self.assertEqual(s.namespaces['x'], 'html')
 
         r = css_parser.css.CSSStyleRule()
         r.cssText = ((css, {'h': 'html'}))
@@ -871,13 +871,13 @@ body {
 
         s = css_parser.css.CSSStyleSheet(href=href, title=title)
 
-        self.assertTrue(href in str(s))
-        self.assertTrue(title in str(s))
+        self.assertIn(href, str(s))
+        self.assertIn(title, str(s))
 
         s2 = eval(repr(s))
-        self.assertTrue(isinstance(s2, s.__class__))
-        self.assertTrue(href == s2.href)
-        self.assertTrue(title == s2.title)
+        self.assertIsInstance(s2, s.__class__)
+        self.assertEqual(href, s2.href)
+        self.assertEqual(title, s2.title)
 
     def test_valid(self):
         cases = [
