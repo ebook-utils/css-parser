@@ -568,11 +568,11 @@
 #                if type(exp) == types.TypeType or\
 #                   type(exp) == types.ClassType: # 2.4 compatibility
 #                    if cssText:
-#                        self.assertRaisesMsg(
-#                            exp, cssText, pv.setFloatValue, setType, setValue)
+#                        with self.assertRaisesRegex(exp, cssText):
+#                            pv.setFloatValue(setType, setValue)
 #                    else:
-#                        self.assertRaises(
-#                            exp, pv.setFloatValue, setType, setValue)
+#                        with self.assertRaises(exp):
+#                            pv.setFloatValue(setType, setValue)
 #                else:
 #                    pv.setFloatValue(setType, setValue)
 #                    self.assertEqual(pv._value[0], cssText)

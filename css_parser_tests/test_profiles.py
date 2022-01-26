@@ -121,19 +121,17 @@ class ProfilesTestCase(basetest.BaseTestCase):
         css_parser.log.raiseExceptions = True
 
         # raises:
-        expmsg = "invalid literal for int() with base 10: 'x'"
-        # Python upto 2.4 and Jython have different msg format...
-        if sys.version_info[0:2] == (2, 4):
-            expmsg = "invalid literal for int(): x"
-        elif sys.platform.startswith('java'):
-            expmsg = "invalid literal for int() with base 10: x"
+        expmsg = r"invalid literal for int\(\) with base 10: 'x'"
+        # Jython have different msg format...
+        if sys.platform.startswith('java'):
+            expmsg = r"invalid literal for int\(\) with base 10: x"
         # PyPy adds the u prefix, but only in versions lower than Python 3
         elif (platform.python_implementation() == "PyPy" and
               sys.version_info < (3, 0)):
-            expmsg = "invalid literal for int() with base 10: u'x'"
+            expmsg = r"invalid literal for int\(\) with base 10: 'x'"
 
-        self.assertRaisesMsg(Exception, expmsg,
-                             css_parser.profile.validate, '-test-funcval', 'x')
+        with self.assertRaisesRegex(Exception, expmsg):
+            css_parser.profile.validate('-test-funcval', 'x')
 
     def test_removeProfile(self):
         "Profiles.removeProfile()"

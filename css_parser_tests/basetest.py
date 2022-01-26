@@ -17,14 +17,6 @@ TEST_HOME = os.path.dirname(os.path.abspath(__file__))
 PY2x = sys.version_info < (3, 0)
 
 
-def msg3x(msg):
-    """msg might contain unicode repr `u'...'` which in py3 is `u'...`
-    needed by tests using ``assertRaisesMsg``"""
-    if not PY2x and msg.find("u'"):
-        msg = msg.replace("u'", "'")
-    return msg
-
-
 def get_resource_filename(resource_name):
     """Get the resource filename.
     """
@@ -106,49 +98,6 @@ class BaseTestCase(unittest.TestCase):
     def tearDown(self):
         if hasattr(self, '_ser'):
             self._restoreSer()
-
-    def _assertRaisesMsgSubstring(self, excClass, msg, substring_match, callableObj, *args, **kwargs):
-        try:
-            callableObj(*args, **kwargs)
-        except excClass as exc:
-            excMsg = str(exc)
-            if not msg:
-                # No message provided: any message is fine.
-                return
-            elif (msg in excMsg if substring_match else msg == excMsg):
-                # Message provided, and we got the right message: passes.
-                return
-            else:
-                # Message provided, and it didn't match: fail!
-                raise self.failureException(
-                    "Right exception, wrong message: got '%s' instead of '%s'" %
-                    (excMsg, msg))
-        else:
-            if hasattr(excClass, '__name__'):
-                excName = excClass.__name__
-            else:
-                excName = str(excClass)
-            raise self.failureException(
-                "Expected to raise %s, didn't get an exception at all" %
-                excName
-            )
-
-    def assertRaisesMsg(self, excClass, msg, callableObj, *args, **kwargs):
-        """
-        Just like unittest.TestCase.assertRaises,
-        but checks that the message is right too.
-
-        Usage::
-
-            self.assertRaisesMsg(
-                MyException, "Exception message",
-                my_function, arg1, arg2,
-                kwarg1=val, kwarg2=val)
-
-        from
-        http://www.nedbatchelder.com/blog/200609.html#e20060905T064418
-        """
-        return self._assertRaisesMsgSubstring(excClass, msg, False, callableObj, *args, **kwargs)
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """

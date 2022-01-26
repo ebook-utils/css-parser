@@ -93,25 +93,25 @@ class PropertyTestCase(basetest.BaseTestCase):
 
         tests = {
             '': (xml.dom.SyntaxErr,
-                  'Property: No property name found: '),
+                 'Property: No property name found: '),
             ':': (xml.dom.SyntaxErr,
-                   'Property: No property name found: : [1:1: :]'),
+                  r'Property: No property name found: : \[1:1: :\]'),
             'a': (xml.dom.SyntaxErr,
-                   'Property: No ":" after name found: a [1:1: a]'),
+                  r'Property: No ":" after name found: a \[1:1: a\]'),
             'b !': (xml.dom.SyntaxErr,
-                     'Property: No ":" after name found: b ! [1:3: !]'),
+                    r'Property: No ":" after name found: b ! \[1:3: !\]'),
             '/**/x': (xml.dom.SyntaxErr,
-                       'Property: No ":" after name found: /**/x [1:5: x]'),
+                      r'Property: No ":" after name found: /\*\*/x \[1:5: x\]'),
             'c:': (xml.dom.SyntaxErr,
-                    "Property: No property value found: c: [1:2: :]"),
+                   r"Property: No property value found: c: \[1:2: :\]"),
             'd: ': (xml.dom.SyntaxErr,
-                     "No content to parse."),
+                    r"No content to parse."),
             'e:!important': (xml.dom.SyntaxErr,
-                              "No content to parse."),
+                             r"No content to parse."),
             'f: 1!': (xml.dom.SyntaxErr,
-                       'Property: Invalid priority: !'),
+                      r'Property: Invalid priority: !'),
             'g: 1!importantX': (xml.dom.SyntaxErr,
-                                 "Property: No CSS priority value: importantx"),
+                                r"Property: No CSS priority value: importantx"),
 
             # TODO?
             # u'a: 1;': (xml.dom.SyntaxErr,
@@ -119,7 +119,8 @@ class PropertyTestCase(basetest.BaseTestCase):
         }
         for test in tests:
             ecp, msg = tests[test]
-            self.assertRaisesMsg(ecp, msg, p._setCssText, test)
+            with self.assertRaisesRegex(ecp, msg):
+                p._setCssText(test)
 
     def test_name(self):
         "Property.name"

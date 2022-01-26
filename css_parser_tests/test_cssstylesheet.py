@@ -506,8 +506,9 @@ ex2|SEL4, a, ex2|SELSR {
         del s.namespaces.namespaces['p']
         self.assertEqual({'p': 'uri'}, s.namespaces.namespaces)
 
-        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix undefined not found.",
-                             s.namespaces.__delitem__, 'undefined')
+        with self.assertRaisesRegex(xml.dom.NamespaceErr,
+                                    "Prefix undefined not found."):
+            s.namespaces.__delitem__('undefined')
 
     def test_namespaces5(self):
         "CSSStyleSheet.namespaces 5"
@@ -516,8 +517,9 @@ ex2|SEL4, a, ex2|SELSR {
         self.assertEqual(s.cssText, ''.encode())
 
         s = css_parser.css.CSSStyleSheet()
-        self.assertRaisesMsg(xml.dom.NamespaceErr, "Prefix a not found.",
-                             s._setCssText, 'a|a { color: red }')
+        with self.assertRaisesRegex(xml.dom.NamespaceErr,
+                                    "Prefix a not found."):
+            s._setCssText('a|a { color: red }')
 
     def test_deleteRuleIndex(self):
         "CSSStyleSheet.deleteRule(index)"

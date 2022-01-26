@@ -15,6 +15,7 @@ class MediaListTestCase(basetest.BaseTestCase):
     def setUp(self):
         super(MediaListTestCase, self).setUp()
         self.r = css_parser.stylesheets.MediaList()
+        self.exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText='tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
 
     def test_set(self):
         "MediaList.mediaText 1"
@@ -27,9 +28,8 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(2, ml.length)
         self.assertEqual('print, screen', ml.mediaText)
 
-        # self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-        #                     basetest.msg3x('''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-        #                     ml._setMediaText, u' print , all  , tv ')
+        # with self.assertRaisesRegex(xml.dom.InvalidModificationErr, self.exc_msg):
+        #                     ml._setMediaText(u' print , all  , tv ')
         #
         #self.assertEqual(u'all', ml.mediaText)
         #self.assertEqual(1, ml.length)
@@ -89,24 +89,20 @@ class MediaListTestCase(basetest.BaseTestCase):
         self.assertEqual(1, ml.length)
         self.assertEqual('all', ml.mediaText)
 
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-                             ml.appendMedium, 'tv')
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, self.exc_msg):
+            ml.appendMedium('tv')
         self.assertEqual(1, ml.length)
         self.assertEqual('all', ml.mediaText)
 
-        self.assertRaises(xml.dom.InvalidModificationErr,
-                          ml.appendMedium, 'test')
+        with self.assertRaises(xml.dom.InvalidModificationErr):
+            ml.appendMedium('test')
 
     def test_append2All(self):
         "MediaList all"
         ml = css_parser.stylesheets.MediaList()
         ml.appendMedium('all')
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'print') as already specified "all" (set ``mediaText`` instead).'''),
-                             ml.appendMedium, 'print')
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, self.exc_msg.replace('tv', 'print')):
+            ml.appendMedium('print')
 
         sheet = css_parser.parseString('@media all, print { /**/ }')
         self.assertEqual('@media all {\n    /**/\n    }'.encode(), sheet.cssText)
@@ -144,9 +140,8 @@ class MediaListTestCase(basetest.BaseTestCase):
     #    self.assertEqual(2, ml.length)
     #    self.assertEqual(u'handheld, all', ml.mediaText)
 
-    #    self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-    #                         basetest.msg3x('''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'handheld') as already specified "all" (set ``mediaText`` instead).'''),
-    #                         ml._setMediaText, u' handheld , all  , tv ')
+    #    with self.assertRaisesRegex(xml.dom.InvalidModificationErr, self.exc_msg):
+    #        ml._setMediaText(u' handheld , all  , tv ')
 
     def test_mediaText(self):
         "MediaList.mediaText 2"

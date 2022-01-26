@@ -272,17 +272,17 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.r.media.appendMedium('tv')
         self.assertEqual('@import url(x) print, tv;', self.r.cssText)
 
+        # for later exception handling
+        exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText='tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
+
         # for generated rule
         r = css_parser.css.CSSImportRule(href='x')
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-                             r.media.appendMedium, 'tv')
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, exc_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-                             r.media.appendMedium, 'tv')
+
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, exc_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
         self.assertEqual('@import url(x) tv;', r.cssText)
@@ -293,15 +293,11 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         s = css_parser.parseString('@import url(x);')
         r = s.cssRules[0]
 
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-                             r.media.appendMedium, 'tv')
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, exc_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
-        self.assertRaisesMsg(xml.dom.InvalidModificationErr,
-                             basetest.msg3x(
-                                 '''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery(mediaText=u'tv') as already specified "all" (set ``mediaText`` instead).'''),
-                             r.media.appendMedium, 'tv')
+        with self.assertRaisesRegex(xml.dom.InvalidModificationErr, exc_msg):
+            r.media.appendMedium('tv')
         self.assertEqual('@import url(x);', r.cssText)
         r.media.mediaText = 'tv'
         self.assertEqual('@import url(x) tv;', r.cssText)

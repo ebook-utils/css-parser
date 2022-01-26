@@ -193,7 +193,8 @@ class SequenceTestCase(basetest.BaseTestCase):
                 seq = Sequence(*seqitems)
                 for t, p in result:
                     if isinstance(p, basestring):
-                        self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
+                        with self.assertRaisesRegex(ParseError, p):
+                            seq.nextProd(t)
                     else:
                         self.assertEqual(p, seq.nextProd(t))
 
@@ -218,7 +219,7 @@ class SequenceTestCase(basetest.BaseTestCase):
             (p2, ): ([(t2, p2)],
                      [(t1, 'Missing token for production p2')],
                      [(t2, p2), (t2, p2)],
-                     [(t2, p2), (t1, 'No match for (1, 0, 0, 0) in Sequence(p2)')],
+                     [(t2, p2), (t1, r'No match for \(1, 0, 0, 0\) in Sequence\(p2\)')],
                      [(t2, p2), (t2, p2), (t2, 'Extra token')],
                      [(t2, p2), (t2, p2), (t1, 'Extra token')]
                      ),
@@ -241,7 +242,8 @@ class SequenceTestCase(basetest.BaseTestCase):
                 seq = Sequence(minmax=lambda: (1, 2), *seqitems)
                 for t, p in result:
                     if isinstance(p, basestring):
-                        self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
+                        with self.assertRaisesRegex(ParseError, p):
+                            seq.nextProd(t)
                     else:
                         self.assertEqual(p, seq.nextProd(t))
 
@@ -257,22 +259,30 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2, 0, 0, 0)
 
         ch = Choice(p1, p2)
-        self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(p1, p2)', ch.nextProd, t0)
+        with self.assertRaisesRegex(ParseError,
+                                    'No match for \(0, 0, 0, 0\) in Choice\(p1, p2\)'):
+            ch.nextProd(t0)
         self.assertEqual(p1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(p1, p2)
         self.assertEqual(p2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t2)
 
         ch = Choice(p2, p1)
-        self.assertRaisesMsg(ParseError, 'No match for (0, 0, 0, 0) in Choice(p2, p1)', ch.nextProd, t0)
+        with self.assertRaisesRegex(ParseError,
+                                    'No match for \(0, 0, 0, 0\) in Choice\(p2, p1\)'):
+            ch.nextProd(t0)
         self.assertEqual(p1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(p2, p1)
         self.assertEqual(p2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t2)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t2)
 
     def test_matches(self):
         "Choice.matches()"
@@ -304,14 +314,16 @@ class ChoiceTestCase(basetest.BaseTestCase):
         t2 = (2, 0, 0, 0)
 
         ch = Choice(s1, s2)
-        self.assertRaisesMsg(
-            ParseError, 'No match for (0, 0, 0, 0) in Choice(Sequence(p1, p1), Sequence(p2, p2))', ch.nextProd, t0)
+        with self.assertRaisesRegex(ParseError, r'No match for \(0, 0, 0, 0\) in Choice\(Sequence\(p1, p1\), Sequence\(p2, p2\)\)'):
+            ch.nextProd(t0)
         self.assertEqual(s1, ch.nextProd(t1))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t1)
 
         ch = Choice(s1, s2)
         self.assertEqual(s2, ch.nextProd(t2))
-        self.assertRaisesMsg(Exhausted, 'Extra token', ch.nextProd, t1)
+        with self.assertRaisesRegex(Exhausted, 'Extra token'):
+            ch.nextProd(t1)
 
     def test_reset(self):
         "Choice.reset()"
@@ -363,10 +375,10 @@ class ProdParserTestCase(basetest.BaseTestCase):
                  # '': 'No match in Choice(Sequence(p1, p2), p3)',
                  '1': 'Missing token for production p2',
                  '1 2 1': 'Missing token for production p2',
-                 '1 2 1 2 x': "No match: ('IDENT', 'x', 1, 9)",
-                 '1 2 1 2 1': "No match: ('NUMBER', '1', 1, 9)",
-                 '3 x': "No match: ('IDENT', 'x', 1, 3)",
-                 '3 3': "No match: ('NUMBER', '3', 1, 3)",
+                 '1 2 1 2 x': r"No match: \('IDENT', 'x', 1, 9\)",
+                 '1 2 1 2 1': r"No match: \('NUMBER', '1', 1, 9\)",
+                 '3 x': r"No match: \('IDENT', 'x', 1, 3\)",
+                 '3 3': r"No match: \('NUMBER', '3', 1, 3\)",
                  }
         for text, exp in tests.items():
             if sys.version_info.major == 2 and hasattr(exp, 'replace'):
@@ -377,19 +389,19 @@ class ProdParserTestCase(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
-                                     ProdParser().parse, text, 'T', prods)
+                with self.assertRaisesRegex(xml.dom.SyntaxErr, 'T: %s' % exp):
+                    ProdParser().parse(text, 'T', prods)
 
         tests = {'1 3': True,
                  '1 1 3': True,
                  '2 3': True,
                  '1': 'Missing token for production p3',
                  '1 1': 'Missing token for production p3',
-                 '1 3 3': "No match: ('NUMBER', '3', 1, 5)",
-                 '1 1 3 3': "No match: ('NUMBER', '3', 1, 7)",
-                 '2 3 3': "No match: ('NUMBER', '3', 1, 5)",
+                 '1 3 3': r"No match: \('NUMBER', '3', 1, 5\)",
+                 '1 1 3 3': r"No match: \('NUMBER', '3', 1, 7\)",
+                 '2 3 3': r"No match: \('NUMBER', '3', 1, 5\)",
                  '2': 'Missing token for production p3',
-                 '3': "Missing token for production Choice(Sequence(p1), p2): ('NUMBER', '3', 1, 1)",
+                 '3': r"Missing token for production Choice\(Sequence\(p1\), p2\): \('NUMBER', '3', 1, 1\)",
                  }
         for text, exp in tests.items():
             if sys.version_info.major == 2 and hasattr(exp, 'replace'):
@@ -401,8 +413,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
-                                     ProdParser().parse, text, 'T', prods)
+                with self.assertRaisesRegex(xml.dom.SyntaxErr, 'T: %s' % exp):
+                    ProdParser().parse(text, 'T', prods)
 
 
 if __name__ == '__main__':
