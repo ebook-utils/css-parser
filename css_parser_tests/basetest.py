@@ -32,6 +32,11 @@ def get_sheet_filename(sheet_name):
 
 class BaseTestCase(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        if not hasattr(cls, "assertRaisesRegex"):
+            setattr(cls, "assertRaisesRegex", cls.assertRaisesRegexp)
+
     def _tempSer(self):
         "Replace default ser with temp ser."
         self._ser = css_parser.ser

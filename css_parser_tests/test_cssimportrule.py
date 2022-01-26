@@ -273,7 +273,8 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual('@import url(x) print, tv;', self.r.cssText)
 
         # for later exception handling
-        exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText='tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
+        # u? is a superfluous attempt to be py2k compatible
+        exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText=u?'tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
 
         # for generated rule
         r = css_parser.css.CSSImportRule(href='x')

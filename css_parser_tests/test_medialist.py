@@ -15,7 +15,9 @@ class MediaListTestCase(basetest.BaseTestCase):
     def setUp(self):
         super(MediaListTestCase, self).setUp()
         self.r = css_parser.stylesheets.MediaList()
-        self.exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText='tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
+
+        # u? is a superfluous attempt to be py2k compatible
+        self.exc_msg = r'''MediaList: Ignoring new medium css_parser.stylesheets.MediaQuery\(mediaText=u?'tv'\) as already specified "all" \(set ``mediaText`` instead\).'''
 
     def test_set(self):
         "MediaList.mediaText 1"
