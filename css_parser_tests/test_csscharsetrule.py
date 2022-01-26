@@ -42,14 +42,13 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                     '@charset "%s";' % enc.lower(), r.cssText)
 
         for enc in (' ascii ', ' ascii', 'ascii '):
-            self.assertRaisesEx(xml.dom.SyntaxErr,
-                                css_parser.css.CSSCharsetRule, enc,
-                                exc_pattern=re.compile("Syntax Error"))
+            with self.assertRaisesRegex(xml.dom.SyntaxErr, r"Syntax Error"):
+                css_parser.css.CSSCharsetRule(enc)
 
         for enc in ('unknown', ):
-            self.assertRaisesEx(xml.dom.SyntaxErr,
-                                css_parser.css.CSSCharsetRule, enc,
-                                exc_pattern=re.compile(r"Unknown \(Python\) encoding"))
+            with self.assertRaisesRegex(xml.dom.SyntaxErr,
+                    r"Unknown \(Python\) encoding"):
+                css_parser.css.CSSCharsetRule(enc)
 
     def test_encoding(self):
         "CSSCharsetRule.encoding"
@@ -60,14 +59,13 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
                 '@charset "%s";' % enc.lower(), self.r.cssText)
 
         for enc in (None, ' ascii ', ' ascii', 'ascii '):
-            self.assertRaisesEx(xml.dom.SyntaxErr,
-                                self.r.__setattr__, 'encoding', enc,
-                                exc_pattern=re.compile("Syntax Error"))
+            with self.assertRaisesRegex(xml.dom.SyntaxErr, r"Syntax Error"):
+                self.r.__setattr__('encoding', enc)
 
         for enc in ('unknown', ):
-            self.assertRaisesEx(xml.dom.SyntaxErr,
-                                self.r.__setattr__, 'encoding', enc,
-                                exc_pattern=re.compile("Unknown \(Python\) encoding"))
+            with self.assertRaisesRegex(xml.dom.SyntaxErr,
+                    r"Unknown \(Python\) encoding"):
+                self.r.__setattr__('encoding', enc)
 
     def test_cssText(self):
         """CSSCharsetRule.cssText

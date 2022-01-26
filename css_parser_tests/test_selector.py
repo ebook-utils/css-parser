@@ -36,7 +36,8 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertEqual((0, 0, 0, 1), s.specificity)
         self.assertEqual(True, s.wellformed)
 
-        self.assertRaisesEx(xml.dom.NamespaceErr, css_parser.css.Selector, 'p|b')
+        with self.assertRaises(xml.dom.NamespaceErr):
+            css_parser.css.Selector('p|b')
 
     def test_element(self):
         "Selector.element (TODO: RESOLVE)"
@@ -411,8 +412,8 @@ class SelectorTestCase(basetest.BaseTestCase):
         selector = css_parser.css.Selector()
 
         # readonly
-        def _set(): selector.specificity = 1
-        self.assertRaisesMsgSubstring(AttributeError, "can't set attribute", _set)
+        with self.assertRaisesRegex(AttributeError, r"can't set attribute"):
+            selector.specificity = 1
 
         tests = {
             '*': (0, 0, 0, 0),

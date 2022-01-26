@@ -107,49 +107,6 @@ class BaseTestCase(unittest.TestCase):
         if hasattr(self, '_ser'):
             self._restoreSer()
 
-    def assertRaisesEx(self, exception, callable, *args, **kwargs):
-        """
-        from
-        http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/307970
-        """
-        if "exc_args" in kwargs:
-            exc_args = kwargs["exc_args"]
-            del kwargs["exc_args"]
-        else:
-            exc_args = None
-        if "exc_pattern" in kwargs:
-            exc_pattern = kwargs["exc_pattern"]
-            del kwargs["exc_pattern"]
-        else:
-            exc_pattern = None
-
-        argv = [repr(a) for a in args]\
-            + ["%s=%r" % (k, v) for k, v in kwargs.items()]
-        callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
-
-        try:
-            callable(*args, **kwargs)
-        except exception as exc:
-            if exc_args is not None:
-                self.assertEqual(
-                    exc.args,
-                    exc_args,
-                    '%s raised %s with unexpected args: expected=%r, actual=%r' % (callsig, exc.__class__, exc_args, exc.args)
-                )
-            if exc_pattern is not None:
-                self.assertTrue(exc_pattern.search(str(exc)),
-                                "%s raised %s, but the exception "
-                                "does not match '%s': %r"
-                                % (callsig, exc.__class__, exc_pattern.pattern,
-                                   str(exc)))
-        except Exception:
-            exc_info = sys.exc_info()
-            self.fail("%s raised an unexpected exception type: "
-                      "expected=%s, actual=%s"
-                      % (callsig, exception, exc_info[0]))
-        else:
-            self.fail("%s did not raise %s" % (callsig, exception))
-
     def _assertRaisesMsgSubstring(self, excClass, msg, substring_match, callableObj, *args, **kwargs):
         try:
             callableObj(*args, **kwargs)
@@ -192,12 +149,6 @@ class BaseTestCase(unittest.TestCase):
         http://www.nedbatchelder.com/blog/200609.html#e20060905T064418
         """
         return self._assertRaisesMsgSubstring(excClass, msg, False, callableObj, *args, **kwargs)
-
-    def assertRaisesMsgSubstring(self, excClass, msg, callableObj, *args, **kwargs):
-        """
-        Just like assertRaisesMsg, but looks for substring in the message.
-        """
-        return self._assertRaisesMsgSubstring(excClass, msg, True, callableObj, *args, **kwargs)
 
     def do_equal_p(self, tests, att='cssText', debug=False, raising=True):
         """

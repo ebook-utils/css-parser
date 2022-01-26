@@ -162,8 +162,8 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.literalname"
         p = css_parser.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
-        self.assertRaisesMsgSubstring(AttributeError, "can't set attribute", p.__setattr__,
-                                      'literalname', 'color')
+        with self.assertRaisesRegex(AttributeError, r"can't set attribute"):
+            p.__setattr__('literalname', 'color')
 
     def test_validate(self):
         "Property.valid"
