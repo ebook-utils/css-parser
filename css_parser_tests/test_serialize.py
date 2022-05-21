@@ -372,7 +372,7 @@ b {
         # keep all
         css_parser.ser.prefs.keepAllProperties = True
         self.assertEqual(
-            'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    c\olor: green\n    }'.encode(), s.cssText)
+            'a {\n    color: pink;\n    color: red;\n    c\\olor: blue;\n    c\\olor: green\n    }'.encode(), s.cssText)
 
     def test_keepComments(self):
         "Preferences.keepComments"
