@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 import xml.dom
 from . import basetest
 import css_parser
+import sys
 
 
 class PropertyTestCase(basetest.BaseTestCase):
@@ -162,8 +163,9 @@ class PropertyTestCase(basetest.BaseTestCase):
         "Property.literalname"
         p = css_parser.css.property.Property(r'c\olor', 'red')
         self.assertEqual(r'c\olor', p.literalname)
-        self.assertRaisesMsgSubstring(AttributeError, "can't set attribute", p.__setattr__,
-                                      'literalname', 'color')
+        pattern = "object has no setter" if sys.version_info >= (3,11) else "can't set attribute"
+        self.assertRaisesMsgSubstring(AttributeError, pattern,
+                                      p.__setattr__, 'literalname', 'color')
 
     def test_validate(self):
         "Property.valid"

@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import xml.dom
 from . import basetest
 import css_parser
+import sys
 
 
 class SelectorTestCase(basetest.BaseTestCase):
@@ -412,7 +413,9 @@ class SelectorTestCase(basetest.BaseTestCase):
 
         # readonly
         def _set(): selector.specificity = 1
-        self.assertRaisesMsgSubstring(AttributeError, "can't set attribute", _set)
+
+        pattern = "object has no setter" if sys.version_info >= (3,11) else "can't set attribute"
+        self.assertRaisesMsgSubstring(AttributeError, pattern, _set)
 
         tests = {
             '*': (0, 0, 0, 0),
