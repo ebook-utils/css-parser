@@ -274,6 +274,9 @@ prefix|x, a + b > c ~ d, b {
         self.assertEqual(s.cssText, formatted.encode())
         css_parser.ser.prefs.formatUnknownAtRules = False
         self.assertEqual(s.cssText, css.encode())
+        css = '@meda screen and (max-width: 100px) { /*comm*/ .someclass { color: blue /* comm */ } }'
+        s = css_parser.parseString(css)
+        self.assertEqual(s.cssText, css.encode())
 
     def test_importHrefFormat(self):
         "Preferences.importHrefFormat"

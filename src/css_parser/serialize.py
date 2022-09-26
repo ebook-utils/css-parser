@@ -718,7 +718,14 @@ class CSSSerializer(object):
         """
         if rule.wellformed and self.prefs.keepUnknownAtRules:
             if not self.prefs.formatUnknownAtRules:
-                return rule.atkeyword + ''.join(x.value for x in rule.seq)
+
+                def getstr(x):
+                    ans = x.value
+                    if hasattr(ans, 'cssText'):  # happens for comments
+                        ans = ans.cssText
+                    return ans
+
+                return rule.atkeyword + ''.join(getstr(x) for x in rule.seq)
             out = Out(self)
             out.append(rule.atkeyword)
 
