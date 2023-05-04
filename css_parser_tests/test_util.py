@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals, with_statement
 
-import cgi
 import re
 import sys
 from contextlib import contextmanager
+from email.message import Message
 
 from css_parser.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
 
@@ -305,9 +305,10 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             def __init__(self, url, contenttype, content, exception=None, args=None):
                 self.url = url
 
-                mt, params = cgi.parse_header(contenttype)
-                self.mimetype = mt
-                self.charset = params.get('charset', None)
+                m = Message()
+                m['content-type'] = contenttype
+                self.mimetype = m.get_params()[0][0]
+                self.charset = m.get_param('charset')
 
                 self.text = content
 

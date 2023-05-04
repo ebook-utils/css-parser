@@ -1,11 +1,11 @@
 from __future__ import unicode_literals, division, absolute_import, print_function
 from . import errorhandler
-import cgi
+from email.message import Message
 from google.appengine.api import urlfetch
+import sys
 """GAE specific URL reading functions"""
 
 
-import sys
 PY3 = sys.version_info[0] >= 3
 
 __all__ = ['_defaultFetcher']
@@ -60,8 +60,9 @@ def _defaultFetcher(url):
             # find mimetype and encoding
             mimetype = 'application/octet-stream'
             try:
-                mimetype, params = cgi.parse_header(r.headers['content-type'])
-                encoding = params['charset']
+                m = Message()
+                m['content-type'] = r.headers['content-type']
+                encoding = m.get_param('charset')
             except KeyError:
                 encoding = None
             if mimetype != 'text/css':

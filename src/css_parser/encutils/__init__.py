@@ -77,9 +77,9 @@ __author__ = 'Christof Hoeke, Robert Siemer, Fredrik Hedman'
 __version__ = '$Id$'
 
 import sys
-import cgi
 import re
 import types
+from email.message import Message
 
 PY2x = sys.version_info < (3, 0)
 
@@ -340,12 +340,17 @@ def getMetaInfo(text, log=None):
         pass
 
     if p.content_type:
-        media_type, params = cgi.parse_header(p.content_type)
-        encoding = params.get('charset')  # defaults to None
+        m = Message()
+        m['content-type'] = p.content_type
+        encoding = m.get_param('charset')  # defaults to None
         if encoding:
             encoding = encoding.lower()
         if log:
-            log.info('HTML META media_type: %s', media_type)
+            try:
+                media_type = m.get_params()[0][0]
+                log.info('HTML META media_type: %s', media_type)
+            except Exception:
+                pass
             log.info('HTML META encoding: %s', encoding)
     else:
         media_type = encoding = None
