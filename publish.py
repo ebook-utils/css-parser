@@ -42,12 +42,6 @@ def build_release():
     run('python3', 'setup.py', '-q', 'sdist', 'bdist_wheel')
 
 
-def sign_release():
-    for installer in glob.glob('dist/*'):
-        run(os.environ['PENV'] + '/gpg-as-kovid', '--armor', '--detach-sig',
-            installer)
-
-
 def tag_release():
     run('git tag -s "v{0}" -m "version-{0}"'.format(VERSION))
     run('git push origin "v{0}"'.format(VERSION))
@@ -78,7 +72,6 @@ def main():
     if myinput('Publish version {} [y/n]? '.format(red(VERSION))) != 'y':
         raise SystemExit(1)
     build_release()
-    sign_release()
     if myinput(red('Upload') + ' release [y/n]? ') != 'y':
         raise SystemExit(1)
     tag_release()
