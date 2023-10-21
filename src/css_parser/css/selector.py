@@ -368,10 +368,10 @@ class Selector(css_parser.util.Base2):
                 if not context or context == 'negation':
                     if 'id' == typ:
                         new['specificity'][1] += 1
-                    elif 'class' == typ or '[' == val:
-                        new['specificity'][2] += 1
-                    elif typ in ('type-selector', 'negation-type-selector',
-                                 'pseudo-element'):
+                    elif '[' == val or typ in ('class', 'pseudo-class'):
+                        if typ != 'pseudo-class' or val != ':where(':
+                            new['specificity'][2] += 1
+                    elif typ in ('type-selector', 'negation-type-selector', 'pseudo-element'):
                         new['specificity'][3] += 1
                 if not context and typ in ('type-selector', 'universal'):
                     # define element

@@ -442,7 +442,7 @@ class SelectorTestCase(basetest.BaseTestCase):
             'a *': (0, 0, 0, 1),
             'a * b': (0, 0, 0, 2),
 
-            'a:hover': (0, 0, 0, 1),
+            'a:hover': (0, 0, 1, 1),
 
             'a:first-line': (0, 0, 0, 2),
             'a:first-letter': (0, 0, 0, 2),
@@ -478,10 +478,15 @@ class SelectorTestCase(basetest.BaseTestCase):
             '#a#a': (0, 2, 0, 0),  # e.g. html:id + xml:id
             '#a#b': (0, 2, 0, 0),
             '#a #b': (0, 2, 0, 0),
+
+            # pseudo classes
+            'p:only-of-type': (0, 0, 1, 1),
+            ':where(p)': (0, 0, 0, 0),
+            ':where(p) span': (0, 0, 0, 1),
         }
         for text in tests:
             selector.selectorText = text
-            self.assertEqual(tests[text], selector.specificity)
+            self.assertEqual(tests[text], selector.specificity, text)
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"
