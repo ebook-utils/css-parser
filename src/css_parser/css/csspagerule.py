@@ -173,8 +173,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
                     self._log.error(
                         'CSSPageRule selectorText: No IDENT found.', token)
                 else:
-                    ival, ityp = self._tokenvalue(identtoken),\
-                        self._type(identtoken)
+                    ival, ityp = self._tokenvalue(identtoken), self._type(identtoken)
                     if self._prods.IDENT != ityp:
                         self._log.error('CSSPageRule selectorText: Expected '
                                         'IDENT but found: %r' % ival, token)
@@ -327,8 +326,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             selok, newselseq, specificity = self.__parseSelectorText(selectortokens)
             ok = ok and selok
 
-            val, type_ = self._tokenvalue(braceorEOFtoken),\
-                self._type(braceorEOFtoken)
+            val, type_ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
 
             if val != '}' and type_ != 'EOF':
                 ok = False

@@ -124,8 +124,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
                                                              blockendonly=True,
                                                              separateEnd=True)
 
-            val, type_ = self._tokenvalue(braceorEOFtoken),\
-                self._type(braceorEOFtoken)
+            val, type_ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
             if val != '}' and type_ != 'EOF':
                 ok = False
                 self._log.error('CSSFontFaceRule: No "}" after style '

@@ -144,8 +144,7 @@ class CSSStyleRule(cssrule.CSSRule):
                     self._valuestr(cssText))
             else:
                 braceorEOFtoken = styletokens.pop()
-                val, typ = self._tokenvalue(braceorEOFtoken),\
-                    self._type(braceorEOFtoken)
+                val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
                 if val != '}' and typ != 'EOF':
                     ok = False
                     self._log.error('CSSStyleRule: No "}" after style '

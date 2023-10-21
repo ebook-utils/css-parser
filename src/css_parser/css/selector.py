@@ -470,8 +470,7 @@ class Selector(css_parser.util.Base2):
                 /* occur only in the last simple_selector_sequence. */
                 """
                 context = new['context'][-1]
-                val, typ = self._tokenvalue(token, normalize=True),\
-                    self._type(token)
+                val, typ = self._tokenvalue(token, normalize=True), self._type(token)
                 if 'pseudo' in expected:
                     if val in (':first-line',
                                ':first-letter',
