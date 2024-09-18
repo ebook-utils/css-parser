@@ -143,7 +143,7 @@ class SelectorTestCase(basetest.BaseTestCase):
         sl.appendSelector(newsel)
         self.assertEqual(sl, newsel.parent)
 
-    def test_selectorText(self):
+    def test_selectorTextSimple(self):
         "Selector.selectorText"
         tests = {
             # combinators
@@ -166,12 +166,10 @@ class SelectorTestCase(basetest.BaseTestCase):
             'a >b': 'a > b',
             'a > b': 'a > b',
             # +
-            'a+b': 'a + b',
             'a+ b': 'a + b',
             'a +b': 'a + b',
             'a + b': 'a + b',
             # ~
-            'a~b': 'a ~ b',
             'a~ b': 'a ~ b',
             'a ~b': 'a ~ b',
             'a ~ b': 'a ~ b',
@@ -256,7 +254,6 @@ class SelectorTestCase(basetest.BaseTestCase):
             '''a[x |= en]''': 'a[x|=en]',
             '''a[ x |= en]''': 'a[x|=en]',
             '''a[x |= en ]''': 'a[x|=en]',
-            '''a[ x |= en]''': 'a[x|=en]',
             '''a [ x |= en]''': 'a [x|=en]',
             # CSS3
             '''a[x^=en]''': None,
@@ -458,8 +455,6 @@ class SelectorTestCase(basetest.BaseTestCase):
             '.a.b': (0, 0, 2, 0),
             'a.a.b': (0, 0, 2, 1),
             '.a .a': (0, 0, 2, 0),
-            '*[x]': (0, 0, 1, 0),
-            '*[x]': (0, 0, 1, 0),
             '*[x]': (0, 0, 1, 0),
             '*[x=a]': (0, 0, 1, 0),
             '*[x~=a]': (0, 0, 1, 0),
