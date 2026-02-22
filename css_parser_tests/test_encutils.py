@@ -200,7 +200,7 @@ class AutoEncodingTestCase(unittest.TestCase):
             # ('utf-8', u'\u1111'.encode('utf-8'))
         ]
         import chardet.version as v
-        if int(v.VERSION) > 5:
+        if int(v.VERSION[0]) > 5:
             self.skipTest('chardet is version 6 or higher which is utterly broken')
         for exp, test in tests:
             self.assertEqual(exp.lower(), encutils.tryEncodings(test).lower())
