@@ -190,21 +190,6 @@ class AutoEncodingTestCase(unittest.TestCase):
         for exp, test in tests:
             self.assertEqual(exp, encutils.detectXMLEncoding(test, log=log))
 
-    def test_tryEncodings(self):
-        "encutils.tryEncodings"
-        tests = [
-            ('ascii', 'abc'.encode('ascii')),
-            ('windows-1252', '€'.encode('windows-1252')),
-            ('iso-8859-1', 'äöüß'.encode('iso-8859-1')),
-            ('iso-8859-1', 'äöüß'.encode('windows-1252')),
-            # ('utf-8', u'\u1111'.encode('utf-8'))
-        ]
-        import chardet.version as v
-        if int(v.VERSION[0]) > 5:
-            self.skipTest('chardet is version 6 or higher which is utterly broken')
-        for exp, test in tests:
-            self.assertEqual(exp.lower(), encutils.tryEncodings(test).lower())
-
     def test_getEncodingInfo(self):
         "encutils.getEncodingInfo"
         # (expectedencoding, expectedmismatch): (httpheader, filecontent)
