@@ -4,7 +4,6 @@ from __future__ import unicode_literals, division, absolute_import, print_functi
 from . import helper
 import css_parser
 import codecs
-import re
 from css_parser.helper import normalize
 """css_parser serializer"""
 
@@ -859,7 +858,8 @@ class CSSSerializer(object):
                         for sel in val.selector_list.seq:
                             if isinstance(sel, css_parser.css.Selector):
                                 text = sel.selectorText
-                                text = re.sub(r'^\*\s+', '', text)
+                                if text.startswith('* '):
+                                    text = text[2:]
                                 parts.append(text)
                         sep = ',%s' % self.prefs.listItemSpacer
                         inner = sep.join(parts)

@@ -29,6 +29,9 @@ SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset([
     '::slotted(',
 ])
 
+# CSS combinators used in relative selectors
+_COMBINATORS = frozenset('>+~')
+
 
 def _collect_tokens_to_closing_paren(tokenizer):
     """Collect tokens from tokenizer up to (but not including) the matching
@@ -83,12 +86,11 @@ def _make_relative_selectors_absolute(tokens):
         return tokens
     result = []
     # Check if the first non-whitespace token is a combinator
-    combinators = frozenset('>+~')
     i = 0
     # Skip leading whitespace
     while i < len(tokens) and tokens[i][0] == 'S':
         i += 1
-    if i < len(tokens) and tokens[i][0] == 'CHAR' and tokens[i][1] in combinators:
+    if i < len(tokens) and tokens[i][0] == 'CHAR' and tokens[i][1] in _COMBINATORS:
         # Prepend implicit universal selector
         lin, col = tokens[i][2], tokens[i][3]
         result.append(('universal', '*', lin, col))
@@ -104,7 +106,7 @@ def _make_relative_selectors_absolute(tokens):
         elif started:
             if token[0] == 'S':
                 continue  # skip whitespace after comma
-            if token[0] == 'CHAR' and token[1] in combinators:
+            if token[0] == 'CHAR' and token[1] in _COMBINATORS:
                 # Insert * before this combinator
                 lin, col = token[2], token[3]
                 result.insert(-1, ('universal', '*', lin, col))
