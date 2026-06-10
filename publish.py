@@ -12,7 +12,7 @@ import subprocess
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 VERSION = open('src/css_parser/__init__.py', 'rb').read().decode('utf-8')
-m = re.search(r"^__version__ = '.+?'", VERSION, flags=re.M)
+m = re.search(r"^__version__ = '(.+?)'", VERSION, flags=re.M)
 assert m is not None
 VERSION = m.group(1)
 
@@ -37,7 +37,7 @@ def run(*cmd):
 def build_release():
     for rem in 'dist build'.split():
         os.path.exists(rem) and shutil.rmtree(rem)
-    run('python', 'setup.py', '-m', 'build')
+    run('python', '-m', 'build')
 
 
 def tag_release():
