@@ -145,6 +145,7 @@ prefix|x, a + b > c ~ d, b {
     def test_level4_selector_serialization(self):
         for test, expected in {
             'p:has(+ p)': 'p:has(+ p)',
+            '.p:has(+ .p)': '.p:has(+ .p)',
         }.items():
             css_parser.ser.prefs.useDefaults()
             s = css_parser.parseString(f'{test} {{ color: red }}')
@@ -153,7 +154,7 @@ prefix|x, a + b > c ~ d, b {
             css_parser.ser.prefs.useMinified()
             s = css_parser.parseString(f'{test} {{ color: red }}')
             actual = s.cssText.decode()
-            self.assertEqual(expected.replace(' ', ''), actual[:actual.index('{')].strip().replace(' ', ''), f'minified: for selector: {test}')
+            self.assertEqual(expected.replace(' ', ''), actual[:actual.index('{')].strip(), f'minified: for selector: {test}')
 
     def test_useMinified(self):
         "Preferences.useMinified()"
