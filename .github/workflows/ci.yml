@@ -32,7 +32,7 @@ jobs:
                 python-version: ${{ matrix.pyver }}
 
             - name: Install dependencies
-              run: python -m pip install chardet ruff
+              run: python -m pip install chardet ruff build
 
             - name: Check code quality
               run: ruff check
