@@ -142,6 +142,19 @@ prefix|x, a + b > c ~ d, b {
             s = css_parser.parseString('a{x:%s}' % test)
             self.assertEqual(('a {\n    x: %s\n    }' % exp).encode(), s.cssText)
 
+    def test_level4_selector_serialization(self):
+        for test, expected in {
+            'p:has(+ p)': 'p:has(+ p)',
+        }.items():
+            css_parser.ser.prefs.useDefaults()
+            s = css_parser.parseString(f'{test} {{ color: red }}')
+            actual = s.cssText.decode()
+            self.assertEqual(expected, actual[:actual.index('{')].strip(), f'for selector: {test}')
+            css_parser.ser.prefs.useMinified()
+            s = css_parser.parseString(f'{test} {{ color: red }}')
+            actual = s.cssText.decode()
+            self.assertEqual(expected, actual[:actual.index('{')].strip().replace(' ', ''), f'minified: for selector: {test}')
+
     def test_useMinified(self):
         "Preferences.useMinified()"
         css_parser.ser.prefs.useDefaults()
