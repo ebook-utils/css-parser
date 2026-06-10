@@ -11,7 +11,7 @@ from .parse import CSSParser
 from .profiles import Profiles
 from .serialize import CSSSerializer
 
-__version__ = '1.0.10'
+__version__ = '1.1.0'
 VERSION = __version__
 
 """css_parser - CSS Cascading Style Sheets library for Python
