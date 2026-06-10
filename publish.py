@@ -37,7 +37,7 @@ def run(*cmd):
 def build_release():
     for rem in 'dist build'.split():
         os.path.exists(rem) and shutil.rmtree(rem)
-    run('python3', 'setup.py', '-q', 'sdist', 'bdist_wheel')
+    run('python', 'setup.py', '-m', 'build')
 
 
 def tag_release():
