@@ -20,14 +20,12 @@ import xml.dom
 
 # Pseudo-class functions that accept a forgiving selector list argument
 # (CSS Selectors Level 4)
-SELECTOR_LIST_PSEUDO_CLASSES = frozenset([
+SELECTOR_LIST_PSEUDO_CLASSES = frozenset({
     ':is(', ':where(', ':not(', ':has(',
-])
+})
 
 # Pseudo-element functions that accept a compound selector argument
-SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset([
-    '::slotted(',
-])
+SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset({'::slotted(',})
 
 # CSS combinators used in relative selectors
 _COMBINATORS = frozenset('>+~')
@@ -516,7 +514,6 @@ class Selector(css_parser.util.Base2):
 
             def _universal(expected, seq, token, tokenizer=None):
                 # *|* or prefix|*
-                context = new['context'][-1]
                 val = self._tokenvalue(token)
                 if 'universal' in expected:
                     append(seq, val, 'universal', token=token)
@@ -557,7 +554,6 @@ class Selector(css_parser.util.Base2):
                 and */
                 /* occur only in the last simple_selector_sequence. */
                 """
-                context = new['context'][-1]
                 val, typ = self._tokenvalue(token, normalize=True), self._type(token)
                 if 'pseudo' in expected:
                     if val in (':first-line',
@@ -729,7 +725,6 @@ class Selector(css_parser.util.Base2):
 
             def _class(expected, seq, token, tokenizer=None):
                 # .IDENT
-                context = new['context'][-1]
                 val = self._tokenvalue(token)
                 if 'class' in expected:
                     append(seq, val, 'class', token=token)
@@ -742,7 +737,6 @@ class Selector(css_parser.util.Base2):
 
             def _hash(expected, seq, token, tokenizer=None):
                 # #IDENT
-                context = new['context'][-1]
                 val = self._tokenvalue(token)
                 if 'HASH' in expected:
                     append(seq, val, 'id', token=token)
