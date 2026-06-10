@@ -1,7 +1,11 @@
 #!/usr/bin/env python
-from __future__ import unicode_literals, division, absolute_import, print_function
-import xml.dom
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import logging
+import xml.dom
+from urllib.error import HTTPError as urllib_HTTPError
+from urllib.error import URLError as urllib_URLError
+
 """css_parser ErrorHandler
 
 ErrorHandler
@@ -22,14 +26,6 @@ __all__ = ['ErrorHandler']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-
-if sys.version_info[0] >= 3:
-    from urllib.error import HTTPError as urllib_HTTPError
-    from urllib.error import URLError as urllib_URLError
-else:
-    from urllib2 import HTTPError as urllib_HTTPError
-    from urllib2 import URLError as urllib_URLError
 
 
 class _ErrorHandler(object):

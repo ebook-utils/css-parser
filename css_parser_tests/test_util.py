@@ -225,15 +225,6 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             ('latin1', None, ('utf-16', '@charset "utf-8";ä'.encode('utf-8'))):
                 ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
 
-            # override ü @charset
-            ('latin1', None, (None, '@charset "ascii";'.encode())):
-                ('latin1', 0, '@charset "latin1";'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('latin1'))):
-                ('latin1', 0, '@charset "latin1";ä'),
-            ('latin1', None, (None, '@charset "utf-8";ä'.encode('utf-8'))):
-                ('latin1', 0, '@charset "latin1";\xc3\xa4'),  # read as latin1!
-
-
             # ===== 1. HTTP WINS =====
             (None, 'ascii', ('latin1', ''.encode())): ('latin1', 1, ''),
             (None, 'ascii', ('latin1', '123'.encode())): ('latin1', 1, '123'),

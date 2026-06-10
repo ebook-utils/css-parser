@@ -202,7 +202,6 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             ':UNKNOWNIDENT': None,
             'name:left': None,
             ' :left': ':left',
-            ':left': ':left',
             '/*1*/:left/*a*/': '/*1*/ :left /*a*/',
             '/*1*/ :left /*a*/ /*b*/': None,
             ':left/*a*/': ':left /*a*/',

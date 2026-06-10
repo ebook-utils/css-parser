@@ -1,20 +1,20 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
+
 import css_parser
+from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+
 from . import cssrule
 from .cssstyledeclaration import CSSStyleDeclaration
-from css_parser.prodparser import Prod, PreDef, Sequence, Choice, ProdParser
+
 """MarginRule implements DOM Level 2 CSS MarginRule."""
 
 __all__ = ['MarginRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class MarginRule(cssrule.CSSRule):

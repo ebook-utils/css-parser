@@ -2,20 +2,21 @@
 # -*- coding: utf-8 -*-
 """New CSS Tokenizer (a generator)
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import itertools
+import re
+import sys
+
+from .cssproductions import MACROS, PRODUCTIONS, CSSProductions
+from .helper import normalize
 
 __all__ = ['Tokenizer', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .cssproductions import CSSProductions, MACROS, PRODUCTIONS
-from .helper import normalize
-import itertools
-import re
-import sys
 
-if sys.version_info[0] >= 3:
-    unichr = chr
+unichr = chr
 
 _TOKENIZER_CACHE = {}
 

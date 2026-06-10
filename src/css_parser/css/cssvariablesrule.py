@@ -1,8 +1,12 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
+
 import css_parser
+
 from . import cssrule
 from .cssvariablesdeclaration import CSSVariablesDeclaration
+
 """CSSVariables implements (and only partly) experimental
 `CSS Variables <http://disruptive-innovations.com/zoo/cssvariables/>`_
 """
@@ -11,11 +15,7 @@ __all__ = ['CSSVariablesRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssfontfacerule.py 1818 2009-07-30 21:39:00Z cthedot $'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class CSSVariablesRule(cssrule.CSSRule):

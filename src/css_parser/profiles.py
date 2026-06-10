@@ -1,7 +1,9 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-from css_parser import util
-import sys
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import re
+
+from css_parser import util
+
 """CSS profiles.
 
 Profiles is based on code by Kevin D. Smith, orginally used as cssvalues,
@@ -13,10 +15,7 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssproperties.py 1116 2008-03-05 13:52:23Z cthedot $'
 
 
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 def as_list(p):

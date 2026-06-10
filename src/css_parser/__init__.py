@@ -1,14 +1,17 @@
 #!/usr/bin/env python
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import os.path
+import xml.dom
+from urllib.parse import urlsplit as urllib_urlsplit
+from urllib.request import pathname2url as urllib_pathname2url
+
+from . import css, errorhandler
+from .parse import CSSParser
 from .profiles import Profiles
 from .serialize import CSSSerializer
-from .parse import CSSParser
-from . import css
-from . import errorhandler
 from .version import VERSION
-import xml.dom
-import os.path
-import sys
+
 """css_parser - CSS Cascading Style Sheets library for Python
 
     Copyright (C) 2004-2013 Christof Hoeke
@@ -105,17 +108,7 @@ __author__ = 'Christof Hoeke with contributions by Walter Doerwald'
 __date__ = '$LastChangedDate::                            $:'
 
 
-if sys.version_info[0] >= 3:
-    text_type = str
-    from urllib.parse import urlsplit as urllib_urlsplit
-    from urllib.request import pathname2url as urllib_pathname2url
-else:
-    text_type = unicode
-    from urlparse import urlsplit as urllib_urlsplit
-    from urllib import pathname2url as urllib_pathname2url
-
-if sys.version_info < (2, 6):
-    bytes = str
+text_type = str
 
 
 # order of imports is important (partly circular)

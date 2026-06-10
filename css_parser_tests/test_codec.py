@@ -1,19 +1,12 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from css_parser import codec
 """Testcases for css_parser.codec"""
 
 import codecs
+import io
 import unittest
-import sys
 
-PY2x = sys.version_info < (3, 0)
-if PY2x:
-    import StringIO
-    iostream = StringIO.StringIO
-else:
-    import io
-    iostream = io.BytesIO
+from css_parser import codec
+
+iostream = io.BytesIO
 
 
 try:
@@ -34,11 +27,10 @@ class Queue(object):
 
     def write(self, chars):
         # TODO ???
-        if not PY2x:
-            if isinstance(chars, str):
-                chars = chars.encode()
-            elif isinstance(chars, int):
-                chars = bytes([chars])
+        if isinstance(chars, str):
+            chars = chars.encode()
+        elif isinstance(chars, int):
+            chars = bytes([chars])
 
         self._buffer += chars
 

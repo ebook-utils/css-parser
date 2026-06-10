@@ -1,10 +1,14 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
+
 import css_parser.stylesheets
-from .cssvariablesdeclaration import CSSVariablesDeclaration
-from .cssrule import CSSRule
-from css_parser.util import _Namespaces, _readUrl
 from css_parser.helper import Deprecated
+from css_parser.util import _Namespaces, _readUrl
+
+from .cssrule import CSSRule
+from .cssvariablesdeclaration import CSSVariablesDeclaration
+
 """CSSStyleSheet implements DOM Level 2 CSS CSSStyleSheet.
 
 Partly also:
@@ -19,11 +23,7 @@ __all__ = ['CSSStyleSheet']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 def as_list(p):

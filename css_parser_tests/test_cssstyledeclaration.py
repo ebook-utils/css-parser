@@ -1,10 +1,10 @@
 """Testcases for css_parser.css.cssstyledelaration.CSSStyleDeclaration."""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import basetest
+
 import css_parser
+
+from . import basetest
 
 
 class CSSStyleDeclarationTestCase(basetest.BaseTestCase):
@@ -309,7 +309,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
     def test_getProperty(self):
         "CSSStyleDeclaration.getProperty"
         s = css_parser.css.CSSStyleDeclaration()
-        P = css_parser.css.Property
         s.cssText = r'''
             color: red; c\olor: blue; CO\lor: green;
             left: 1px !important; left: 0;
@@ -473,7 +472,6 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ('left', '0', ''): 'left: 0',
             ('left', '0', 'important'): 'left: 0 !important',
             ('LEFT', '0', 'important'): 'left: 0 !important',
-            ('left', '0', 'important'): 'left: 0 !important',
         }
         for test, exp in tests.items():
             s = css_parser.css.CSSStyleDeclaration()
@@ -493,7 +491,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         s.top = None
         self.assertEqual('', s.top)
 
-    def test_setProperty(self):
+    def test_setPropertyReplace(self):
         "CSSStyleDeclaration.setProperty(replace=)"
         s = css_parser.css.CSSStyleDeclaration()
         s.setProperty('top', '1px')

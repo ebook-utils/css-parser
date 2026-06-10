@@ -35,3 +35,4 @@ where = ["src"]
 
 [tool.ruff]
 line-length = 120
+exclude = ["=template.py"]

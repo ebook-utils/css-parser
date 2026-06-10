@@ -1,17 +1,16 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
+
 import css_parser
+
 """CSSRule implements DOM Level 2 CSS CSSRule."""
 
 __all__ = ['CSSRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class CSSRule(css_parser.util.Base2):

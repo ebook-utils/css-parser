@@ -58,7 +58,6 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         v['z'] = '1'
         self.assertEqual(2, v.length)
 
-        items = []
         # unsorted!
         self.assertEqual(sorted(v), ['x', 'z'])
 

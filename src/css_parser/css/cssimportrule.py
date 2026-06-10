@@ -1,17 +1,18 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-import xml.dom
 """CSSImportRule implements DOM Level 2 CSS CSSImportRule plus the
 ``name`` property from http://www.w3.org/TR/css3-cascade/#cascading."""
 
 
+import os
+import xml.dom
+
+import css_parser
+
+from ..util import string_type, urljoin
+from . import cssrule
+
 __all__ = ['CSSImportRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
-
-from . import cssrule
-from ..util import urljoin, string_type
-import css_parser
-import os
 
 
 class CSSImportRule(cssrule.CSSRule):

@@ -718,7 +718,6 @@ class CSSSerializerTestCase(basetest.BaseTestCase):
             '''00.0s''': '''0s''',
             '''00.0khz''': '''0khz''',
             '''00.0hz''': '''0hz''',
-            '''00.0khz''': '''0khz''',
             '''00.0deg''': '''0deg''',
             '''00.0rad''': '''0rad''',
             '''00.0grad''': '''0grad''',

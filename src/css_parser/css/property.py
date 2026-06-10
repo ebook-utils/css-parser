@@ -8,11 +8,7 @@ __all__ = ['Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class Property(css_parser.util.Base):

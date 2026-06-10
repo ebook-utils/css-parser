@@ -1,8 +1,12 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
+
 import css_parser
+from css_parser.util import _NewBase
 from css_parser.helper import normalize
-from css_parser.prodparser import Sequence, PreDef, Prod, Choice, ProdParser
+from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+
 """Implements a DOM for MediaQuery, see
 http://www.w3.org/TR/css3-mediaqueries/.
 
@@ -13,18 +17,14 @@ __all__ = ['MediaQuery']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class UnknownMediaType(xml.dom.SyntaxErr):
     pass
 
 
-class MediaQuery(css_parser.util._NewBase):  # css_parser.util.Base):
+class MediaQuery(_NewBase):  # css_parser.util.Base):
     """
     A Media Query consists of one of :const:`MediaQuery.MEDIA_TYPES`
     and one or more expressions involving media features.

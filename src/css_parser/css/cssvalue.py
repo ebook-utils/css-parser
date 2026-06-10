@@ -1,10 +1,13 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-import xml.dom
-import re
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import math
-import css_parser.helper
+import re
+import xml.dom
+
 import css_parser
-from css_parser.prodparser import Choice, Sequence, PreDef, Prod, ProdParser
+import css_parser.helper
+from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+
 """CSSValue related classes
 
 - CSSValue implements DOM Level 2 CSS CSSValue
@@ -18,13 +21,8 @@ __all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor',
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    text_type = str
-    string_type = str
-else:
-    text_type = unicode
-    string_type = basestring
+text_type = str
+string_type = str
 
 
 class CSSValue(css_parser.util._NewBase):

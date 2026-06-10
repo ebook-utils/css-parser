@@ -12,13 +12,13 @@ jobs:
         strategy:
             matrix:
                 include:
-                    - { pyver: 3.8, os: ubuntu-latest }
-                    - { pyver: 3.9, os: ubuntu-latest }
+                    - { pyver: 3.11, os: ubuntu-latest }
+                    - { pyver: 3.12, os: ubuntu-latest }
                     - { pyver: "3.13", os: ubuntu-latest }
                     - { pyver: "3.14", os: ubuntu-latest }
 
-                    - { pyver: 3.12, os: macos-latest }
-                    - { pyver: 3.11, os: windows-latest }
+                    - { pyver: 3.14, os: macos-latest }
+                    - { pyver: 3.14, os: windows-latest }
 
         steps:
             - name: Checkout source code

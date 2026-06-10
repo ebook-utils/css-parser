@@ -1,21 +1,21 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import xml.dom
-import css_parser
-from . import cssrule
-from .marginrule import MarginRule
-from .cssstyledeclaration import CSSStyleDeclaration
 from itertools import chain
+
+import css_parser
+
+from . import cssrule
+from .cssstyledeclaration import CSSStyleDeclaration
+from .marginrule import MarginRule
+
 """CSSPageRule implements DOM Level 2 CSS CSSPageRule."""
 
 __all__ = ['CSSPageRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 def as_list(p):

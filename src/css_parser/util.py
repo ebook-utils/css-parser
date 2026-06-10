@@ -1,14 +1,16 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+
+import codecs
 import re
 import xml.dom
-import sys
-from . import tokenize2
-from . import errorhandler
-import codecs
-from . import codec
-import css_parser
 from itertools import chain
+from urllib.parse import urlparse, urlunparse, uses_netloc, uses_relative
+
+import css_parser
+
+from . import codec, errorhandler, tokenize2
 from .helper import normalize
+
 """base classes and helper functions for css and stylesheets packages
 """
 
@@ -16,15 +18,8 @@ __all__ = []
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-if sys.version_info[0] >= 3:
-    text_type = str
-    string_type = str
-    from urllib.parse import urlparse, uses_netloc, uses_relative, urlunparse
-else:
-    text_type = unicode
-    string_type = basestring
-    from itertools import ifilter as filter
-    from urlparse import urlparse, uses_netloc, uses_relative, urlunparse
+text_type = str
+string_type = str
 
 
 try:
@@ -166,7 +161,7 @@ class Base(_BaseClass):
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
-    _SHORTHANDPROPERTIES = {
+    _SHORTHANDPROPERTIES: dict[str, list] = {
         'background': [],
         # u'background-position': [], # list of 2 values!
         'border': [],

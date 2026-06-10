@@ -108,8 +108,6 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('http://cthedot.de/test.css', 'a'): (True, 'utf-8', ''),
             ('http://cthedot.de/test.css', 'a {color: red}'):
             (True, 'utf-8', 'a {\n    color: red\n    }'),
-            ('http://cthedot.de/test.css', 'a {color: red}'):
-            (True, 'utf-8', 'a {\n    color: red\n    }'),
             ('http://cthedot.de/test.css', '@charset "ascii";a {color: red}'):
             (True, 'ascii', '@charset "ascii";\na {\n    color: red\n    }'),
         }

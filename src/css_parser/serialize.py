@@ -10,12 +10,7 @@ from css_parser.helper import normalize
 __all__ = ['CSSSerializer', 'Preferences']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
-import sys
-
-if sys.version_info[0] >= 3:
-    text_type = str
-else:
-    text_type = unicode
+text_type = str
 
 
 def as_list(p):

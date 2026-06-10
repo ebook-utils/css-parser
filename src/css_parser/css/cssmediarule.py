@@ -1,19 +1,17 @@
 """CSSMediaRule implements DOM Level 2 CSS CSSMediaRule."""
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from . import cssrule
-import css_parser
 import xml.dom
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+import css_parser
+
+from . import cssrule
+
+string_type = str
 
 
 class CSSMediaRule(cssrule.CSSRuleRules):

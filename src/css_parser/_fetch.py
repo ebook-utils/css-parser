@@ -1,7 +1,3 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-from . import errorhandler
-import css_parser.encutils as encutils
-from css_parser.version import VERSION
 """Default URL reading functions"""
 
 
@@ -9,19 +5,16 @@ __all__ = ['_defaultFetcher']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: tokenize2.py 1547 2008-12-10 20:42:26Z cthedot $'
 
-import sys
 
-if sys.version_info[0] >= 3:
-    from urllib.request import urlopen as urllib_urlopen
-    from urllib.request import Request as urllib_Request
-    from urllib.error import HTTPError as urllib_HTTPError
-    from urllib.error import URLError as urllib_URLError
-else:
-    from urllib2 import urlopen as urllib_urlopen
-    from urllib2 import Request as urllib_Request
-    from urllib2 import HTTPError as urllib_HTTPError
-    from urllib2 import URLError as urllib_URLError
+from urllib.error import HTTPError as urllib_HTTPError
+from urllib.error import URLError as urllib_URLError
+from urllib.request import Request as urllib_Request
+from urllib.request import urlopen as urllib_urlopen
 
+import css_parser.encutils as encutils
+from css_parser.version import VERSION
+
+from . import errorhandler
 
 log = errorhandler.ErrorHandler()
 

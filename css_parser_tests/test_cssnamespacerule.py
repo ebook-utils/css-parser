@@ -1,10 +1,10 @@
 """Testcases for css_parser.css.CSSImportRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
@@ -79,7 +79,6 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             '@namespace  p  "u"  ;': '@namespace p "u";',
             '@namespace p"u";': '@namespace p "u";',
-            '@namespace p "u";': '@namespace p "u";',
 
             '@namespace/*1*/"u"/*2*/;': '@namespace /*1*/ "u" /*2*/;',
             '@namespace/*1*/p/*2*/"u"/*3*/;': '@namespace /*1*/ p /*2*/ "u" /*3*/;',
@@ -137,7 +136,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         })
 
         def _do(test):
-            r = css_parser.css.CSSNamespaceRule(cssText=test)
+            css_parser.css.CSSNamespaceRule(cssText=test)
         for test, expected in tests.items():
             self.assertRaises(expected, _do, test)
 

@@ -167,10 +167,6 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
             '@media only tv and (width) "name" {}': '',
             '@media only tv and (width:10px) "name" {}': '',
-            '@media only tv and (width), (color){}': '',
-            '@media only tv and (width)  ,  (color),(height){}': '',
-            '@media only tv and (width)  ,  (color) and (height){}': '',
-            '@media only tv and (width) and (color){}': '',
 
 
 
@@ -374,7 +370,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         charsetrule = css_parser.css.CSSCharsetRule('ascii')
         importrule = css_parser.css.CSSImportRule('x')
         namespacerule = css_parser.css.CSSNamespaceRule()
-        pagerule = css_parser.css.CSSPageRule()
+        css_parser.css.CSSPageRule()
         unknownrule = css_parser.css.CSSUnknownRule('@x;')
         stylerule = css_parser.css.CSSStyleRule('a')
         stylerule.cssText = 'a { x: 1}'

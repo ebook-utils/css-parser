@@ -1,16 +1,17 @@
 #!/usr/bin/env python
-from __future__ import unicode_literals, division, absolute_import, print_function
-from . import tokenize2
-from . import errorhandler
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import codecs
-from . import helper
+import sys
+
+from . import errorhandler, helper, tokenize2
+
 """A validating CSSParser"""
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1754 2009-05-30 14:50:13Z cthedot $'
 
-import sys
-PY2 = sys.version_info[0] == 2
+PY2 = False
 
 
 class ErrorHandler(object):

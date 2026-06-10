@@ -1,8 +1,10 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
 import xml.dom
+
 import css_parser
+
 from . import cssrule
 from .cssstyledeclaration import CSSStyleDeclaration
+
 """CSSFontFaceRule implements DOM Level 2 CSS CSSFontFaceRule.
 
 From css_parser 0.9.6 additions from CSS Fonts Module Level 3 are
@@ -13,11 +15,7 @@ __all__ = ['CSSFontFaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import sys
-if sys.version_info[0] >= 3:
-    string_type = str
-else:
-    string_type = basestring
+string_type = str
 
 
 class CSSFontFaceRule(cssrule.CSSRule):

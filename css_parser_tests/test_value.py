@@ -92,7 +92,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                 'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)', 1,
                 'matrix(0.000092, 0.250001, -0.25, 0.000092, 0, 0)')
         }
-        for (cssText, (c, l, v)) in tests.items():
+        for (cssText, (c, lx, v)) in tests.items():
             if c is None:
                 c = cssText
             if v is None:
@@ -100,7 +100,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
 
             pv = css_parser.css.PropertyValue(cssText)
             self.assertEqual(c, pv.cssText)
-            self.assertEqual(l, pv.length)
+            self.assertEqual(lx, pv.length)
             self.assertEqual(v, pv.value)
 
         tests = {
@@ -124,12 +124,12 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'url(x.gif)0 0': ('url(x.gif) 0 0', 3),
             'url(x.gif)no-repeat': ('url(x.gif) no-repeat', 2)
         }
-        for (cssText, (c, l)) in tests.items():
+        for (cssText, (c, lx)) in tests.items():
             if c is None:
                 c = cssText
             pv = css_parser.css.PropertyValue(cssText)
             self.assertEqual(c, pv.cssText)
-            self.assertEqual(l, pv.length)
+            self.assertEqual(lx, pv.length)
 
         tests = {
             # hash and rgb/a
@@ -178,13 +178,11 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'u\\rl(a)': 'url(a)',
             'url("a")': 'url(a)',
             'url(  "a"  )': 'url(a)',
-            'url(a)': 'url(a)',
             'url(";")': 'url(";")',
             'url(",")': 'url(",")',
             'url(")")': 'url(")")',
             '''url("'")''': '''url("'")''',
             '''url('"')''': '''url("\\"")''',
-            '''url("'")''': '''url("'")''',
 
             # operator
             '1': '1',
@@ -677,7 +675,6 @@ class CSSFunctionTestCase(basetest.BaseTestCase):
             'x(/**/1)': ('x(/**/ 1)', 'x(1)'),
             'x(/**/1/**/)': ('x(/**/ 1 /**/)', 'x(1)'),
             'x(/**/1,x/**/)': ('x(/**/ 1, x /**/)', 'x(1, x)'),
-            'x(1,2)': ('x(1, 2)', None),
         }
         for (f, (cssText, value)) in tests.items():
             if value is None:

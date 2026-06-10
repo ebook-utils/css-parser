@@ -14,25 +14,24 @@ TODO:
         - opt first(), naive impl for now
 
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 __all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
-from .helper import pushtoken
-import css_parser
 import itertools
 import re
 import sys
 import types
 
-if sys.version_info[0] >= 3:
-    text_type = str
-    string_type = str
-else:
-    text_type = unicode
-    string_type = basestring
+import css_parser
+from css_parser.tokenize2 import Tokenizer
+
+from .helper import pushtoken
+
+text_type = str
+string_type = str
 
 
 class ParseError(Exception):
@@ -351,7 +350,7 @@ class Prod(object):
 
 
 # global tokenizer as there is only one!
-tokenizer = css_parser.tokenize2.Tokenizer()
+tokenizer = Tokenizer()
 
 # global: saved from subProds
 savedTokens = []

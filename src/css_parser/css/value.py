@@ -1,9 +1,14 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-import re
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import colorsys
-from css_parser.helper import normalize, pushtoken
+import re
+
 import css_parser
-from css_parser.prodparser import Choice, PreDef, Sequence, ProdParser, Prod
+from css_parser.helper import normalize, pushtoken
+from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+
+from ..util import text_type, urljoin
+
 """Value related classes.
 
 DOM Level 2 CSS CSSValue, CSSPrimitiveValue and CSSValueList are **no longer**
@@ -23,7 +28,6 @@ __all__ = ['PropertyValue',
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from ..util import text_type, urljoin
 
 
 def as_list(p):
