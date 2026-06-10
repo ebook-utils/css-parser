@@ -855,6 +855,9 @@ class CSSSerializer(object):
                                 text = sel.selectorText
                                 if text.startswith('* '):
                                     text = text[2:]
+                                elif text.startswith(('*+', '*>', '*~')):
+                                    # Handle minified case where * is directly adjacent to combinator
+                                    text = text[1:]
                                 parts.append(text)
                         sep = ',%s' % self.prefs.listItemSpacer
                         inner = sep.join(parts)
