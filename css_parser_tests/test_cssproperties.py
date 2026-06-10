@@ -2,7 +2,6 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import xml.dom
 from . import basetest
 import css_parser.css
 import css_parser.profiles

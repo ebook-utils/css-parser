@@ -25,7 +25,7 @@ SELECTOR_LIST_PSEUDO_CLASSES = frozenset({
 })
 
 # Pseudo-element functions that accept a compound selector argument
-SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset({'::slotted(',})
+SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset({'::slotted('})
 
 # CSS combinators used in relative selectors
 _COMBINATORS = frozenset('>+~')
@@ -249,8 +249,10 @@ class Selector(css_parser.util.Base2):
             type_, val = item.type, item.value
             if isinstance(val, SelectorPseudoFunction):
                 uris.update(val.selector_list._getUsedUris())
-            elif type_.endswith('-selector') or type_ == 'universal' and \
-               isinstance(val, tuple) and val[0] not in (None, '*'):
+            elif (
+                    type_.endswith('-selector') or type_ == 'universal'
+                    and isinstance(val, tuple) and val[0] not in (None, '*')
+            ):
                 uris.add(val[0])
         return uris
 

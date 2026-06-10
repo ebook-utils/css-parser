@@ -107,7 +107,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         # fail
         try:
             r.cssText = '@variables {$:1}'
-        except xml.dom.DOMException as e:
+        except xml.dom.DOMException:
             pass
 
         self.assertEqual(vars2, r.variables)
@@ -134,7 +134,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
         # string fail
         try:
             r.variables = '$: x'
-        except xml.dom.DOMException as e:
+        except xml.dom.DOMException:
             pass
         self.assertEqual(vars4, r.variables)
         self.assertEqual(r, r.variables.parentRule)

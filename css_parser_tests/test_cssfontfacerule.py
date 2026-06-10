@@ -111,7 +111,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set invalid rule.cssText
         try:
             r.cssText = '@font-face { $ }'
-        except xml.dom.SyntaxErr as e:
+        except xml.dom.SyntaxErr:
             pass
         self.assertEqual(r.style, s2)
         self.assertEqual(r, s2.parentRule)
@@ -147,7 +147,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set invalid s2.cssText
         try:
             sn.cssText = '$'
-        except xml.dom.SyntaxErr as e:
+        except xml.dom.SyntaxErr:
             pass
         self.assertEqual(r.style, sn)
         self.assertEqual(r.style.cssText, 'font-family: y2')

@@ -6,7 +6,6 @@ from __future__ import unicode_literals
 import xml.dom
 from . import basetest
 import css_parser
-import types
 
 
 class PropertyValueTestCase(basetest.BaseTestCase):

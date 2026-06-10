@@ -5,7 +5,6 @@ from __future__ import unicode_literals
 from css_parser.script import csscombine
 from . import basetest
 import css_parser
-import os
 
 
 class CSSCombine(basetest.BaseTestCase):

@@ -50,7 +50,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         for invalid in invalids:
             try:
                 s.cssText = invalid
-            except xml.dom.DOMException as e:
+            except xml.dom.DOMException:
                 pass
             self.assertEqual(sel, s.selectorList)
             self.assertEqual('a', s.selectorList.selectorText)
@@ -103,7 +103,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
         # fails
         try:
             r.cssText = '$ {content: "new"}'
-        except xml.dom.SyntaxErr as e:
+        except xml.dom.SyntaxErr:
             pass
         self.assertEqual(sl, r.selectorList)
         self.assertEqual(st, r.style)

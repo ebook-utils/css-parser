@@ -4,10 +4,8 @@ from __future__ import unicode_literals
 __version__ = '$Id: test_cssvalue.py 1473 2008-09-15 21:15:54Z cthedot $'
 
 # from decimal import Decimal # maybe for later tests?
-import xml.dom
 from . import basetest
 import css_parser
-import types
 
 
 class XTestCase(basetest.BaseTestCase):

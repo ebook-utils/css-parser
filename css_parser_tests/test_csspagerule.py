@@ -337,7 +337,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set invalid rule.cssText
         try:
             r.cssText = '@page { $ }'
-        except xml.dom.SyntaxErr as e:
+        except xml.dom.SyntaxErr:
             pass
         self.assertEqual(r.style, s2)
         self.assertEqual(r, r.style.parentRule)
@@ -372,7 +372,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
         # set invalid s2.cssText
         try:
             s2.cssText = '$'
-        except xml.dom.SyntaxErr as e:
+        except xml.dom.SyntaxErr:
             pass
         self.assertEqual(r.style, s2)
         self.assertEqual(r.cssText, '@page {\n    font-family: y2\n    }')
