@@ -2,10 +2,6 @@
 # vim:fileencoding=utf-8
 # License: LGPLv3 Copyright: 2019, Kovid Goyal <kovid at kovidgoyal.net>
 
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-
-import ast
 import glob
 import os
 import re
@@ -15,8 +11,10 @@ import subprocess
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-VERSION = open('src/css_parser/version.py', 'rb').read().decode('utf-8')
-VERSION = '.'.join(map(str, ast.literal_eval(re.search(r'^version\s+=\s+(.+)', VERSION, flags=re.M).group(1))))
+VERSION = open('src/css_parser/__init__.py', 'rb').read().decode('utf-8')
+m = re.search(r"^__version__ = '.+?'", VERSION, flags=re.M)
+assert m is not None
+VERSION = m.group(1)
 
 
 def red(text):
@@ -53,10 +51,7 @@ def upload_release():
         os.path.join(os.environ['PENV'], 'pypi'), *files)
 
 
-try:
-    myinput = raw_input
-except NameError:
-    myinput = input
+myinput = input
 
 
 def has_executable(exe):

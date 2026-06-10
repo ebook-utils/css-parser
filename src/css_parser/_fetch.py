@@ -12,7 +12,6 @@ from urllib.request import Request as urllib_Request
 from urllib.request import urlopen as urllib_urlopen
 
 import css_parser.encutils as encutils
-from css_parser.version import VERSION
 
 from . import errorhandler
 
@@ -25,6 +24,7 @@ def _defaultFetcher(url):
 
     Returns ``(encoding, string)`` or ``None``
     """
+    from css_parser import VERSION
     try:
         request = urllib_Request(url)
         request.add_header('User-agent',

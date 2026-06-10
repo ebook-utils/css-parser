@@ -28,7 +28,7 @@ classifiers = [
 Homepage = "https://github.com/ebook-utils/css-parser"
 
 [tool.setuptools.dynamic]
-version = {attr = "css_parser.version.VERSION"}
+version = {attr = "css_parser.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
