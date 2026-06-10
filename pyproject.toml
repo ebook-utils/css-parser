@@ -7,7 +7,7 @@ name = "css-parser"
 dynamic = ["version"]
 description = "A CSS Cascading Style Sheets library for Python"
 readme = "README.md"
-license = {text = "LGPL-3.0-or-later"}
+license = "LGPL-3.0-or-later"
 authors = [
     {name = "Various People", email = "redacted@anonymous.net"},
 ]
@@ -18,7 +18,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 2",
     "Programming Language :: Python :: 3",
     "Topic :: Internet",
     "Topic :: Software Development :: Libraries :: Python Modules",
@@ -36,6 +35,3 @@ where = ["src"]
 
 [tool.ruff]
 line-length = 120
-
-[tool.ruff.lint]
-builtins = ["unicode", "basestring"]
