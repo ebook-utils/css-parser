@@ -376,7 +376,8 @@ class Base(_BaseClass):
                     bracket -= 1
                 # function( or single (
                 elif '(' == val or \
-                     Base._prods.FUNCTION == typ:
+                     Base._prods.FUNCTION == typ or \
+                     (typ in ('pseudo-class', 'pseudo-element') and val.endswith('(')):
                     parant += 1
                 elif ')' == val:
                     parant -= 1

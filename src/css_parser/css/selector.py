@@ -1,5 +1,7 @@
 """Selector is a single Selector of a CSSStyleRule SelectorList.
 Partly implements http://www.w3.org/TR/css3-selectors/.
+Implements CSS Selectors Level 4: :is(), :has(), :where(), :not() with
+complex selectors, and ::slotted() pseudo-element with compound selectors.
 
 TODO
     - .contains(selector)
@@ -15,6 +17,102 @@ from css_parser.helper import Deprecated
 from css_parser.util import _SimpleNamespaces
 import css_parser
 import xml.dom
+
+# Pseudo-class functions that accept a forgiving selector list argument
+# (CSS Selectors Level 4)
+SELECTOR_LIST_PSEUDO_CLASSES = frozenset([
+    ':is(', ':where(', ':not(', ':has(',
+])
+
+# Pseudo-element functions that accept a compound selector argument
+SELECTOR_ACCEPTING_PSEUDO_ELEMENTS = frozenset([
+    '::slotted(',
+])
+
+# CSS combinators used in relative selectors
+_COMBINATORS = frozenset('>+~')
+
+
+def _collect_tokens_to_closing_paren(tokenizer):
+    """Collect tokens from tokenizer up to (but not including) the matching
+    closing parenthesis. Returns (tokens, found_close) where found_close is
+    True if ')' was found."""
+    depth = 1
+    tokens = []
+    for token in tokenizer:
+        typ, val, lin, col = token
+        if typ == 'FUNCTION' or val == '(':
+            depth += 1
+        elif typ in ('pseudo-class', 'pseudo-element') and val.endswith('('):
+            # Preprocessed pseudo-class/element function token
+            depth += 1
+        elif val == ')':
+            depth -= 1
+            if depth == 0:
+                return tokens, True
+        tokens.append(token)
+    return tokens, False
+
+
+def _max_specificity(selector_list):
+    """Return the maximum specificity from a selector list as [a, b, c, d]."""
+    max_spec = [0, 0, 0, 0]
+    for selector in selector_list:
+        spec = selector.specificity
+        if spec > tuple(max_spec):
+            max_spec = list(spec)
+    return max_spec
+
+
+class SelectorPseudoFunction(object):
+    """Container for a pseudo-class/element that accepts a selector list.
+    Stores the pseudo-function name and its parsed SelectorList argument."""
+
+    __slots__ = ('name', 'selector_list')
+
+    def __init__(self, name, selector_list):
+        self.name = name  # e.g. ':is(', ':not(', ':where(', ':has(', '::slotted('
+        self.selector_list = selector_list
+
+    def __repr__(self):
+        return 'SelectorPseudoFunction(%r, %r)' % (self.name, self.selector_list)
+
+
+def _make_relative_selectors_absolute(tokens):
+    """For :has() relative selectors, if a selector (or sub-selector after a
+    comma) starts with a combinator (>, +, ~), prepend an implicit universal
+    selector (*) so it parses as a valid absolute selector."""
+    if not tokens:
+        return tokens
+    result = []
+    # Check if the first non-whitespace token is a combinator
+    i = 0
+    # Skip leading whitespace
+    while i < len(tokens) and tokens[i][0] == 'S':
+        i += 1
+    if i < len(tokens) and tokens[i][0] == 'CHAR' and tokens[i][1] in _COMBINATORS:
+        # Prepend implicit universal selector
+        lin, col = tokens[i][2], tokens[i][3]
+        result.append(('universal', '*', lin, col))
+        result.append(('S', ' ', lin, col))
+
+    # Process all tokens, looking for commas to handle each sub-selector
+    started = False
+    for token in tokens:
+        result.append(token)
+        if token[0] == 'CHAR' and token[1] == ',':
+            # After a comma, check if next selector starts with combinator
+            started = True
+        elif started:
+            if token[0] == 'S':
+                continue  # skip whitespace after comma
+            if token[0] == 'CHAR' and token[1] in _COMBINATORS:
+                # Insert * before this combinator
+                lin, col = token[2], token[3]
+                result.insert(-1, ('universal', '*', lin, col))
+                result.insert(-1, ('S', ' ', lin, col))
+            started = False
+    return result
 
 
 def as_list(p):
@@ -151,7 +249,9 @@ class Selector(css_parser.util.Base2):
         uris = set()
         for item in self.seq:
             type_, val = item.type, item.value
-            if type_.endswith('-selector') or type_ == 'universal' and \
+            if isinstance(val, SelectorPseudoFunction):
+                uris.update(val.selector_list._getUsedUris())
+            elif type_.endswith('-selector') or type_ == 'universal' and \
                isinstance(val, tuple) and val[0] not in (None, '*'):
                 uris.add(val[0])
         return uris
@@ -230,7 +330,6 @@ class Selector(css_parser.util.Base2):
             #     "|" -> type "namespace_prefix"
             #     "." + IDENT -> combined to "class"
             #     ":" + IDENT, ":" + FUNCTION -> pseudo-class
-            #     FUNCTION "not(" -> negation
             #     "::" + IDENT, "::" + FUNCTION -> pseudo-element
             tokens = []
             for t in tokenizer:
@@ -254,9 +353,6 @@ class Selector(css_parser.util.Base2):
                         t = 'pseudo-class'
                     tokens[-1] = (t, self._tokenvalue(tokens[-1])+val, lin, col)
 
-                elif typ == 'FUNCTION' and val == 'not(' and tokens and \
-                        ':' == self._tokenvalue(tokens[-1]):
-                    tokens[-1] = ('negation', ':' + val, lin, tokens[-1][3])
                 elif typ == 'FUNCTION' and tokens\
                         and self._tokenvalue(tokens[-1]).startswith(':'):
                     # pseudo-X: combine to :FUNCTION( or ::FUNCTION(
@@ -292,7 +388,7 @@ class Selector(css_parser.util.Base2):
             tokenizer = iter(tokens)
 
             # for closures: must be a mutable
-            new = {'context': [''],  # stack of: 'attrib', 'negation', 'pseudo'
+            new = {'context': [''],  # stack of: 'attrib', 'pseudo-class', 'pseudo-element'
                    'element': None,
                    '_PREFIX': None,
                    'specificity': [0, 0, 0, 0],  # mutable, finally a tuple!
@@ -365,13 +461,12 @@ class Selector(css_parser.util.Base2):
                     val = (namespaceURI, val)
 
                 # specificity
-                if not context or context == 'negation':
+                if not context:
                     if 'id' == typ:
                         new['specificity'][1] += 1
                     elif '[' == val or typ in ('class', 'pseudo-class'):
-                        if typ != 'pseudo-class' or val != ':where(':
-                            new['specificity'][2] += 1
-                    elif typ in ('type-selector', 'negation-type-selector', 'pseudo-element'):
+                        new['specificity'][2] += 1
+                    elif typ in ('type-selector', 'pseudo-element'):
                         new['specificity'][3] += 1
                 if not context and typ in ('type-selector', 'universal'):
                     # define element
@@ -381,13 +476,10 @@ class Selector(css_parser.util.Base2):
 
             # expected constants
             simple_selector_sequence = 'type_selector universal HASH class ' \
-                                       'attrib pseudo negation '
-            simple_selector_sequence2 = 'HASH class attrib pseudo negation '
+                                       'attrib pseudo '
+            simple_selector_sequence2 = 'HASH class attrib pseudo '
 
             element_name = 'element_name'
-
-            negation_arg = 'type_selector universal HASH class attrib pseudo'
-            negationend = ')'
 
             attname = 'prefix attribute'
             attname2 = 'attribute'
@@ -428,11 +520,7 @@ class Selector(css_parser.util.Base2):
                 val = self._tokenvalue(token)
                 if 'universal' in expected:
                     append(seq, val, 'universal', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
+                    return simple_selector_sequence2 + combinator
 
                 else:
                     new['wellformed'] = False
@@ -478,20 +566,76 @@ class Selector(css_parser.util.Base2):
                                ':after'):
                         # always pseudo-element ???
                         typ = 'pseudo-element'
-                    append(seq, val, typ, token=token)
 
-                    if val.endswith('('):
-                        # function
-                        # "pseudo-" "class" or "element"
-                        new['context'].append(typ)
-                        return expressionstart
-                    elif 'negation' == context:
-                        return negationend
-                    elif 'pseudo-element' == typ:
-                        # only one per element, check at ) also!
-                        return combinator
+                    if val.endswith('(') and (
+                            val in SELECTOR_LIST_PSEUDO_CLASSES or
+                            val in SELECTOR_ACCEPTING_PSEUDO_ELEMENTS):
+                        # CSS Selectors Level 4: parse argument as selector list
+                        inner_tokens, found_close = _collect_tokens_to_closing_paren(tokenizer)
+                        if not found_close:
+                            new['wellformed'] = False
+                            self._log.error(
+                                'Selector: Missing closing ")" for %s' % val,
+                                token=token)
+                            return expected
+
+                        # :has() supports relative selectors (starting with
+                        # a combinator like > + ~). Prepend implicit * to each
+                        # relative selector in the list.
+                        if val == ':has(':
+                            inner_tokens = _make_relative_selectors_absolute(inner_tokens)
+
+                        from css_parser.css.selectorlist import SelectorList
+                        # Parse inner tokens as a selector list
+                        selector_list = SelectorList(
+                            (inner_tokens, namespaces))
+                        if not selector_list.wellformed:
+                            new['wellformed'] = False
+                            self._log.error(
+                                'Selector: Invalid selector list in %s' % val,
+                                token=token,
+                                error=xml.dom.SyntaxErr)
+                            return expected
+
+                        # Append the pseudo with its selector list value
+                        if token:
+                            line, col = token[2], token[3]
+                        else:
+                            line, col = None, None
+                        pseudo_func = SelectorPseudoFunction(val, selector_list)
+                        seq.append(pseudo_func, typ, line=line, col=col)
+
+                        # Handle specificity:
+                        # Pseudo-elements (::slotted) count as type selectors
+                        if typ == 'pseudo-element':
+                            new['specificity'][3] += 1
+                        # :where() contributes 0 specificity from args
+                        # :is(), :not(), :has() contribute the max specificity
+                        #   of their most specific argument
+                        if val != ':where(':
+                            max_spec = _max_specificity(selector_list)
+                            new['specificity'][1] += max_spec[1]
+                            new['specificity'][2] += max_spec[2]
+                            new['specificity'][3] += max_spec[3]
+
+                        if typ == 'pseudo-element':
+                            return combinator
+                        else:
+                            return simple_selector_sequence2 + combinator
+
                     else:
-                        return simple_selector_sequence2 + combinator
+                        append(seq, val, typ, token=token)
+
+                        if val.endswith('('):
+                            # function
+                            # "pseudo-" "class" or "element"
+                            new['context'].append(typ)
+                            return expressionstart
+                        elif 'pseudo-element' == typ:
+                            # only one per element, check at ) also!
+                            return combinator
+                        else:
+                            return simple_selector_sequence2 + combinator
 
                 else:
                     new['wellformed'] = False
@@ -567,12 +711,6 @@ class Selector(css_parser.util.Base2):
                     append(seq, val, 'attribute-value', token=token)
                     return attend
 
-                # context: negation
-                elif 'negation' == context:
-                    # negation: (prefix|IDENT)
-                    append(seq, val, 'negation-type-selector', token=token)
-                    return negationend
-
                 # context: pseudo
                 elif context.startswith('pseudo-'):
                     # :func(...)
@@ -595,11 +733,7 @@ class Selector(css_parser.util.Base2):
                 val = self._tokenvalue(token)
                 if 'class' in expected:
                     append(seq, val, 'class', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
+                    return simple_selector_sequence2 + combinator
 
                 else:
                     new['wellformed'] = False
@@ -612,11 +746,7 @@ class Selector(css_parser.util.Base2):
                 val = self._tokenvalue(token)
                 if 'HASH' in expected:
                     append(seq, val, 'id', token=token)
-
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
+                    return simple_selector_sequence2 + combinator
 
                 else:
                     new['wellformed'] = False
@@ -634,24 +764,13 @@ class Selector(css_parser.util.Base2):
                     append(seq, val, 'attribute-end', token=token)
                     context = new['context'].pop()  # attrib is done
                     context = new['context'][-1]
-                    if 'negation' == context:
-                        return negationend
-                    else:
-                        return simple_selector_sequence2 + combinator
+                    return simple_selector_sequence2 + combinator
 
                 elif '=' == val and 'attrib' == context\
                      and 'combinator' in expected:
                     # combinator in attrib
                     append(seq, val, 'equals', token=token)
                     return attvalue
-
-                # context: negation
-                elif ')' == val and 'negation' == context and ')' in expected:
-                    # not(negation_arg)"
-                    append(seq, val, 'negation-end', token=token)
-                    new['context'].pop()  # negation is done
-                    context = new['context'][-1]
-                    return simple_selector_sequence + combinator
 
                 # context: pseudo (at least one expression)
                 elif val in '+-' and context.startswith('pseudo-'):
@@ -708,19 +827,6 @@ class Selector(css_parser.util.Base2):
                         'Selector: Unexpected CHAR.', token=token)
                     return expected
 
-            def _negation(expected, seq, token, tokenizer=None):
-                # not(
-                val = self._tokenvalue(token, normalize=True)
-                if 'negation' in expected:
-                    new['context'].append('negation')
-                    append(seq, val, 'negation-start', token=token)
-                    return negation_arg
-                else:
-                    new['wellformed'] = False
-                    self._log.error(
-                        'Selector: Unexpected negation.', token=token)
-                    return expected
-
             def _atkeyword(expected, seq, token, tokenizer=None):
                 "invalidates selector"
                 new['wellformed'] = False
@@ -740,7 +846,6 @@ class Selector(css_parser.util.Base2):
                              'STRING': _string,
                              'IDENT': _ident,
                              'namespace_prefix': _namespace_prefix,
-                             'negation': _negation,
                              'pseudo-class': _pseudo,
                              'pseudo-element': _pseudo,
                              'universal': _universal,
