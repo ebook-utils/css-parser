@@ -500,6 +500,222 @@ class SelectorTestCase(basetest.BaseTestCase):
         self.assertIsInstance(s2, s.__class__)
         self.assertEqual(sel, s2.selectorText)
 
+    def test_selector_level4_is(self):
+        "Selector :is() - CSS Selectors Level 4"
+        tests = {
+            # simple selector list
+            ':is(a)': None,
+            ':is(a, b)': None,
+            ':is(a, b, c)': None,
+            # complex selectors inside :is()
+            ':is(a > b)': None,
+            ':is(a b)': None,
+            ':is(a + b)': None,
+            ':is(a ~ b)': None,
+            ':is(.a .b)': None,
+            ':is(.a > .b)': None,
+            ':is(a > b, c > d)': None,
+            ':is(a b, c > d)': None,
+            # combined with other selectors
+            'a:is(.b, .c)': None,
+            ':is(a):hover': None,
+            ':is(h1, h2, h3):first-child': None,
+            'div:is(.a, .b) span': None,
+            ':is(.a) > :is(.b)': None,
+            # nested :is()
+            ':is(:is(a, b), c)': None,
+            # with attributes
+            ':is([type="text"], [type="email"])': None,
+            # with pseudo-classes
+            ':is(:hover, :focus)': None,
+            # universal selector
+            ':is(*)': None,
+            # with id
+            ':is(#a, #b)': None,
+            # whitespace handling
+            ':is( a , b )': ':is(a, b)',
+            ':is(  a  >  b  )': ':is(a > b)',
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_where(self):
+        "Selector :where() - CSS Selectors Level 4"
+        tests = {
+            ':where(a)': None,
+            ':where(a, b)': None,
+            ':where(a > b)': None,
+            ':where(.a .b)': None,
+            ':where(a, b, c)': None,
+            ':where(a > b, c ~ d)': None,
+            'div:where(.x, .y) span': None,
+            ':where(:hover, :focus)': None,
+            ':where( a , b )': ':where(a, b)',
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_not(self):
+        "Selector :not() - CSS Selectors Level 4 (complex selectors)"
+        tests = {
+            # Level 3 simple cases still work
+            ':not(y)': None,
+            ':not(*)': None,
+            ':not(#a)': None,
+            ':not(.a)': None,
+            ':not([a])': None,
+            ':not(:hover)': None,
+            # Level 4: selector lists
+            ':not(a, b)': None,
+            ':not(.a, .b)': None,
+            ':not(#a, #b)': None,
+            # Level 4: complex selectors
+            ':not(a > b)': None,
+            ':not(a b)': None,
+            ':not(.a .b)': None,
+            ':not(a > b, c > d)': None,
+            # combined with other selectors
+            'a:not(.b, .c)': None,
+            ':not(.disabled):hover': None,
+            ':not( a , b )': ':not(a, b)',
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_has(self):
+        "Selector :has() - CSS Selectors Level 4"
+        tests = {
+            # basic :has() with descendant
+            ':has(.icon)': None,
+            ':has(span)': None,
+            ':has(#id)': None,
+            ':has([attr])': None,
+            # complex selectors
+            ':has(.a > .b)': None,
+            ':has(.a .b)': None,
+            ':has(.a + .b)': None,
+            ':has(.a ~ .b)': None,
+            # relative selectors (leading combinators)
+            ':has(> .icon)': None,
+            ':has(+ .sibling)': None,
+            ':has(~ .sibling)': None,
+            ':has(> .a, > .b)': None,
+            ':has(> .a, .b)': None,
+            # selector list
+            ':has(.a, .b)': None,
+            ':has(span, .icon)': None,
+            # combined with other selectors
+            'a:has(> img)': None,
+            'section:has(h1, h2, h3)': None,
+            ':has(.a):hover': None,
+            ':has( > .icon )': ':has(> .icon)',
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_slotted(self):
+        "Selector ::slotted() - compound selector argument"
+        tests = {
+            '::slotted(span)': None,
+            '::slotted(.cls)': None,
+            '::slotted(#id)': None,
+            '::slotted([attr])': None,
+            '::slotted(span.cls)': None,
+            '::slotted(div.a.b)': None,
+            '::slotted(*)': None,
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_specificity(self):
+        "Selector specificity for Level 4 pseudo-classes"
+        selector = css_parser.css.Selector()
+        tests = {
+            # :is() takes specificity of most specific argument
+            ':is(a)': (0, 0, 0, 1),
+            ':is(a, b)': (0, 0, 0, 1),
+            ':is(.a)': (0, 0, 1, 0),
+            ':is(#id)': (0, 1, 0, 0),
+            ':is(#id, .cls)': (0, 1, 0, 0),
+            ':is(a, b.c)': (0, 0, 1, 1),
+            ':is(a > b)': (0, 0, 0, 2),
+            'a:is(.b, .c)': (0, 0, 1, 1),
+
+            # :where() always has 0 specificity
+            ':where(a)': (0, 0, 0, 0),
+            ':where(#id)': (0, 0, 0, 0),
+            ':where(#id, .cls)': (0, 0, 0, 0),
+            ':where(.a .b)': (0, 0, 0, 0),
+            ':where(p) span': (0, 0, 0, 1),
+            'div:where(.a) span': (0, 0, 0, 2),
+
+            # :not() takes specificity of most specific argument
+            ':not(a)': (0, 0, 0, 1),
+            ':not(.a)': (0, 0, 1, 0),
+            ':not(#id)': (0, 1, 0, 0),
+            ':not(a, b)': (0, 0, 0, 1),
+            ':not(.a, .b)': (0, 0, 1, 0),
+            ':not(#id, .cls)': (0, 1, 0, 0),
+
+            # :has() takes specificity of most specific argument
+            ':has(.icon)': (0, 0, 1, 0),
+            ':has(#id)': (0, 1, 0, 0),
+            ':has(> .icon)': (0, 0, 1, 0),
+            ':has(.a > .b)': (0, 0, 2, 0),
+            ':has(.a, #id)': (0, 1, 0, 0),
+
+            # ::slotted() = pseudo-element + argument specificity
+            '::slotted(span)': (0, 0, 0, 2),
+            '::slotted(.cls)': (0, 0, 1, 1),
+            '::slotted(#id)': (0, 1, 0, 1),
+            '::slotted(span.cls)': (0, 0, 1, 2),
+        }
+        for text, expected in tests.items():
+            selector.selectorText = text
+            self.assertEqual(expected, selector.specificity, text)
+
+    def test_selector_level4_invalid(self):
+        "Selector Level 4 invalid selectors"
+        import xml.dom
+        tests = {
+            # empty arguments
+            ':is()': xml.dom.SyntaxErr,
+            ':where()': xml.dom.SyntaxErr,
+            ':not()': xml.dom.SyntaxErr,
+            ':has()': xml.dom.SyntaxErr,
+            # missing closing paren
+            ':is(a': xml.dom.SyntaxErr,
+            ':not(a': xml.dom.SyntaxErr,
+            ':has(a': xml.dom.SyntaxErr,
+            ':where(a': xml.dom.SyntaxErr,
+            # invalid content
+            ':is(,)': xml.dom.SyntaxErr,
+            ':is(a,)': xml.dom.SyntaxErr,
+            ':has(,)': xml.dom.SyntaxErr,
+        }
+        self.do_raise_r(tests, att='_setSelectorText')
+
+    def test_selector_level4_nesting(self):
+        "Selector Level 4 nested pseudo-classes"
+        tests = {
+            ':is(:not(a))': None,
+            ':not(:is(a, b))': None,
+            ':is(:where(a, b), c)': None,
+            ':has(:is(.a, .b))': None,
+            ':is(:is(:is(a)))': None,
+        }
+        self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_complex_combinations(self):
+        "Selector Level 4 complex selector combinations"
+        tests = {
+            # Multiple Level 4 pseudo-classes in one selector
+            ':is(a):not(.disabled)': None,
+            ':is(h1, h2):where(.title)': None,
+            # With descendant/child combinators
+            ':is(article, section) > :is(h1, h2)': None,
+            'div:has(> img) + p': None,
+            # Practical patterns
+            ':is(ol, ul) :is(ol, ul) li': None,
+            'a:not(:hover):not(:focus)': None,
+        }
+        self.do_equal_r(tests, att='selectorText')
+
 
 if __name__ == '__main__':
     import unittest

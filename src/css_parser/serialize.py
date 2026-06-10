@@ -4,6 +4,7 @@ from __future__ import unicode_literals, division, absolute_import, print_functi
 from . import helper
 import css_parser
 import codecs
+import re
 from css_parser.helper import normalize
 """css_parser serializer"""
 
@@ -848,7 +849,24 @@ class CSSSerializer(object):
             DEFAULTURI = selector._namespaces.get('', None)
             for item in selector.seq:
                 type_, val = item.type, item.value
-                if isinstance(val, tuple):
+                if isinstance(val, css_parser.css.selector.SelectorPseudoFunction):
+                    # Selector-accepting pseudo-class/element: :is(), :not(),
+                    # :where(), :has(), ::slotted()
+                    if val.name == ':has(':
+                        # For :has(), serialize relative selectors by stripping
+                        # the implicit leading "* " we added during parsing
+                        parts = []
+                        for sel in val.selector_list.seq:
+                            if isinstance(sel, css_parser.css.Selector):
+                                text = sel.selectorText
+                                text = re.sub(r'^\*\s+', '', text)
+                                parts.append(text)
+                        sep = ',%s' % self.prefs.listItemSpacer
+                        inner = sep.join(parts)
+                    else:
+                        inner = self.do_css_SelectorList(val.selector_list)
+                    out.append(val.name + inner + ')', type_, space=False)
+                elif isinstance(val, tuple):
                     # namespaceURI|name (element or attribute)
                     namespaceURI, name = val
                     if DEFAULTURI == namespaceURI or (not DEFAULTURI and
