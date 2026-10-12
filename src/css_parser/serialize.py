@@ -847,18 +847,15 @@ class CSSSerializer(object):
                     # Selector-accepting pseudo-class/element: :is(), :not(),
                     # :where(), :has(), ::slotted()
                     if val.name == ':has(':
-                        # For :has(), serialize relative selectors by stripping
-                        # the implicit leading "* " we added during parsing
+                        # For :has(), serialize relative selectors with their
+                        # leading combinators
                         parts = []
-                        for sel in val.selector_list.seq:
-                            if isinstance(sel, css_parser.css.Selector):
-                                text = sel.selectorText
-                                if text.startswith('* '):
-                                    text = text[2:]
-                                elif text.startswith(('*+', '*>', '*~')):
-                                    # Handle minified case where * is directly adjacent to combinator
-                                    text = text[1:]
-                                parts.append(text)
+                        for comb, sel in zip(val.combinators,
+                                             val.selector_list.seq):
+                            text = sel.selectorText
+                            if comb:
+                                text = comb + self.prefs.selectorCombinatorSpacer + text
+                            parts.append(text)
                         sep = ',%s' % self.prefs.listItemSpacer
                         inner = sep.join(parts)
                     else:

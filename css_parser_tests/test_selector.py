@@ -606,8 +606,63 @@ class SelectorTestCase(basetest.BaseTestCase):
             'section:has(h1, h2, h3)': None,
             ':has(.a):hover': None,
             ':has( > .icon )': ':has(> .icon)',
+            # explicit universal selectors are kept
+            ':has(* a)': None,
+            ':has(* > a)': None,
+            ':has(*+a)': ':has(* + a)',
+            ':has(*)': None,
+            # comments before the leading combinator are dropped
+            ':has(/*c*/ > a)': ':has(> a)',
+            ':has(> a, /*c*/ ~ b)': ':has(> a, ~ b)',
+            # commas inside nested functions and strings
+            ':has(:is(a, b) > c)': None,
+            ':has([x=","] > a)': None,
+            ':has(+ .a ~ .b > c)': None,
+            # :has() inside other Level 4 pseudo-classes
+            ':is(:has(a))': None,
         }
         self.do_equal_r(tests, att='selectorText')
+
+    def test_selector_level4_has_invalid(self):
+        "Selector :has() - invalid arguments"
+        tests = {
+            # empty or incomplete relative selectors
+            ':has()': xml.dom.SyntaxErr,
+            ':has( )': xml.dom.SyntaxErr,
+            ':has(>)': xml.dom.SyntaxErr,
+            ':has(> > a)': xml.dom.SyntaxErr,
+            ':has(a >)': xml.dom.SyntaxErr,
+            ':has(>a,)': xml.dom.SyntaxErr,
+            ':has(,a)': xml.dom.SyntaxErr,
+            # pseudo-elements are not allowed
+            ':has(::before)': xml.dom.SyntaxErr,
+            ':has(a::after)': xml.dom.SyntaxErr,
+            ':has(:before)': xml.dom.SyntaxErr,
+            # :has() may not be nested
+            ':has(:has(a))': xml.dom.SyntaxErr,
+            ':has(> a:has(b))': xml.dom.SyntaxErr,
+            ':has(:is(:has(a)))': xml.dom.SyntaxErr,
+            # relative selectors only in :has()
+            ':is(> a)': xml.dom.SyntaxErr,
+            # :has() after a pseudo-element
+            '::before:has(a)': xml.dom.SyntaxErr,
+        }
+        self.do_raise_r(tests, att='_setSelectorText')
+
+    def test_selector_level4_has_model(self):
+        "Selector :has() - relative combinators are stored separately"
+        selector = css_parser.css.Selector(':has(> a, b, ~ c)')
+        func = selector.seq[0].value
+        self.assertEqual(func.combinators, ('>', None, '~'))
+        self.assertEqual(func.selector_list.selectorText, 'a, b, c')
+
+        selector = css_parser.css.Selector(':is(a, b)')
+        self.assertEqual(selector.seq[0].value.combinators, None)
+
+        # the anchor element is not counted as a used namespace
+        selector = css_parser.css.Selector((':has(> |a)', {'': 'http://x'}))
+        self.assertEqual(selector.selectorText, ':has(> |a)')
+        self.assertEqual(dict(selector._getUsedNamespaces()), {})
 
     def test_selector_level4_slotted(self):
         "Selector ::slotted() - compound selector argument"
@@ -658,6 +713,8 @@ class SelectorTestCase(basetest.BaseTestCase):
             ':has(> .icon)': (0, 0, 1, 0),
             ':has(.a > .b)': (0, 0, 2, 0),
             ':has(.a, #id)': (0, 1, 0, 0),
+            ':has(* > a)': (0, 0, 0, 1),
+            ':has(> #a, .b)': (0, 1, 0, 0),
 
             # ::slotted() = pseudo-element + argument specificity
             '::slotted(span)': (0, 0, 0, 2),

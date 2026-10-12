@@ -2,6 +2,8 @@
 Partly implements http://www.w3.org/TR/css3-selectors/.
 Implements CSS Selectors Level 4: :is(), :has(), :where(), :not() with
 complex selectors, and ::slotted() pseudo-element with compound selectors.
+:has() takes relative selectors and may not contain pseudo-elements or
+another :has().
 
 TODO
     - .contains(selector)
@@ -64,53 +66,79 @@ def _max_specificity(selector_list):
 
 class SelectorPseudoFunction(object):
     """Container for a pseudo-class/element that accepts a selector list.
-    Stores the pseudo-function name and its parsed SelectorList argument."""
+    Stores the pseudo-function name and its parsed SelectorList argument.
+    For :has() ``combinators`` holds the leading combinator of each relative
+    selector ('>', '+', '~' or None for the descendant combinator), for all
+    other pseudo-functions it is None."""
 
-    __slots__ = ('name', 'selector_list')
+    __slots__ = ('name', 'selector_list', 'combinators')
 
-    def __init__(self, name, selector_list):
+    def __init__(self, name, selector_list, combinators=None):
         self.name = name  # e.g. ':is(', ':not(', ':where(', ':has(', '::slotted('
         self.selector_list = selector_list
+        self.combinators = combinators
 
     def __repr__(self):
-        return 'SelectorPseudoFunction(%r, %r)' % (self.name, self.selector_list)
+        return 'SelectorPseudoFunction(%r, %r, %r)' % (
+            self.name, self.selector_list, self.combinators)
 
 
-def _make_relative_selectors_absolute(tokens):
-    """For :has() relative selectors, if a selector (or sub-selector after a
-    comma) starts with a combinator (>, +, ~), prepend an implicit universal
-    selector (*) so it parses as a valid absolute selector."""
-    if not tokens:
-        return tokens
-    result = []
-    # Check if the first non-whitespace token is a combinator
-    i = 0
-    # Skip leading whitespace
-    while i < len(tokens) and tokens[i][0] == 'S':
-        i += 1
-    if i < len(tokens) and tokens[i][0] == 'CHAR' and tokens[i][1] in _COMBINATORS:
-        # Prepend implicit universal selector
-        lin, col = tokens[i][2], tokens[i][3]
-        result.append(('universal', '*', lin, col))
-        result.append(('S', ' ', lin, col))
+def _split_relative_selectors(tokens):
+    """For :has() relative selectors, split tokens at top level commas and
+    strip the leading combinator (>, +, ~) of each relative selector.
 
-    # Process all tokens, looking for commas to handle each sub-selector
-    started = False
+    Returns (combinators, tokens) where combinators is a tuple with one
+    entry per relative selector ('>', '+', '~' or None) and tokens are the
+    remaining tokens of all selectors joined by commas, or None if a
+    relative selector is empty."""
+    parts = [[]]
+    depth = 0
     for token in tokens:
-        result.append(token)
-        if token[0] == 'CHAR' and token[1] == ',':
-            # After a comma, check if next selector starts with combinator
-            started = True
-        elif started:
-            if token[0] == 'S':
-                continue  # skip whitespace after comma
-            if token[0] == 'CHAR' and token[1] in _COMBINATORS:
-                # Insert * before this combinator
-                lin, col = token[2], token[3]
-                result.insert(-1, ('universal', '*', lin, col))
-                result.insert(-1, ('S', ' ', lin, col))
-            started = False
-    return result
+        typ, val = token[0], token[1]
+        if typ == 'FUNCTION' or val in ('(', '[') or (
+                typ in ('pseudo-class', 'pseudo-element') and val.endswith('(')):
+            depth += 1
+        elif val in (')', ']'):
+            depth -= 1
+        elif depth == 0 and typ == 'CHAR' and val == ',':
+            parts.append([])
+            continue
+        parts[-1].append(token)
+
+    combinators = []
+    result = []
+    for part in parts:
+        # skip leading whitespace and comments
+        i = 0
+        while i < len(part) and part[i][0] in ('S', 'COMMENT'):
+            i += 1
+        combinator = None
+        if i < len(part) and part[i][0] == 'CHAR' and part[i][1] in _COMBINATORS:
+            combinator = part[i][1]
+            i += 1
+        part = part[i:]
+        if not [t for t in part if t[0] not in ('S', 'COMMENT')]:
+            return combinators, None
+        if result:
+            lin, col = part[0][2], part[0][3]
+            result.append(('CHAR', ',', lin, col))
+        combinators.append(combinator)
+        result.extend(part)
+    return tuple(combinators), result
+
+
+def _has_forbidden_content(selector_list):
+    """Return True if a selector list contains a pseudo-element or a nested
+    :has(), both of which are not allowed inside :has()."""
+    for selector in selector_list:
+        for item in selector.seq:
+            if item.type == 'pseudo-element':
+                return True
+            if isinstance(item.value, SelectorPseudoFunction) and (
+                    item.value.name == ':has(' or
+                    _has_forbidden_content(item.value.selector_list)):
+                return True
+    return False
 
 
 def as_list(p):
@@ -577,11 +605,20 @@ class Selector(css_parser.util.Base2):
                                 token=token)
                             return expected
 
-                        # :has() supports relative selectors (starting with
-                        # a combinator like > + ~). Prepend implicit * to each
-                        # relative selector in the list.
+                        # :has() takes relative selectors (starting with
+                        # a combinator like > + ~). Strip the combinators
+                        # and keep them separately.
+                        combinators = None
                         if val == ':has(':
-                            inner_tokens = _make_relative_selectors_absolute(inner_tokens)
+                            combinators, inner_tokens = _split_relative_selectors(
+                                inner_tokens)
+                            if inner_tokens is None:
+                                new['wellformed'] = False
+                                self._log.error(
+                                    'Selector: Empty relative selector in %s' % val,
+                                    token=token,
+                                    error=xml.dom.SyntaxErr)
+                                return expected
 
                         from css_parser.css.selectorlist import SelectorList
                         # Parse inner tokens as a selector list
@@ -595,12 +632,21 @@ class Selector(css_parser.util.Base2):
                                 error=xml.dom.SyntaxErr)
                             return expected
 
+                        if val == ':has(' and _has_forbidden_content(selector_list):
+                            new['wellformed'] = False
+                            self._log.error(
+                                'Selector: Pseudo-elements and nested :has() are '
+                                'not allowed in :has()',
+                                token=token,
+                                error=xml.dom.SyntaxErr)
+                            return expected
+
                         # Append the pseudo with its selector list value
                         if token:
                             line, col = token[2], token[3]
                         else:
                             line, col = None, None
-                        pseudo_func = SelectorPseudoFunction(val, selector_list)
+                        pseudo_func = SelectorPseudoFunction(val, selector_list, combinators)
                         seq.append(pseudo_func, typ, line=line, col=col)
 
                         # Handle specificity:

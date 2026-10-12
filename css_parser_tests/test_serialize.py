@@ -146,6 +146,8 @@ prefix|x, a + b > c ~ d, b {
         for test, expected in {
             'p:has(+ p)': 'p:has(+ p)',
             '.p:has(+ .p)': '.p:has(+ .p)',
+            'p:has(> a, ~ b)': 'p:has(> a, ~ b)',
+            'a:has(> b) + c': 'a:has(> b) + c',
         }.items():
             css_parser.ser.prefs.useDefaults()
             s = css_parser.parseString(f'{test} {{ color: red }}')
