@@ -28,7 +28,7 @@ MACROS = {
     'invalid1': r'\"([^\n\r\f\\"]|\\{nl}|{escape})*',
     'invalid2': r"\'([^\n\r\f\\']|\\{nl}|{escape})*",
 
-    'comment': r'\/\*[^*]*\*+([^/][^*]*\*+)*\/',
+    'comment': r'\/\*[^*]*\*+([^/*][^*]*\*+)*\/',
     'ident': r'[-]?{nmstart}{nmchar}*',
     'name': r'{nmchar}+',
     # TODO???
@@ -83,7 +83,7 @@ PRODUCTIONS = [
     ('PERCENTAGE', r'{num}\%'),
     ('NUMBER', r'{num}'),
     ('HASH', r'\#{name}'),
-    ('COMMENT', r'{comment}'),  # r'\/\*[^*]*\*+([^/][^*]*\*+)*\/'),
+    ('COMMENT', r'{comment}'),  # r'\/\*[^*]*\*+([^/*][^*]*\*+)*\/'),
     ('STRING', r'{string}'),
     ('INVALID', r'{invalid}'),  # from CSS2.1
     ('ATKEYWORD', r'@{ident}'),  # other keywords are done in the tokenizer

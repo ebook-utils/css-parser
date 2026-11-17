@@ -660,6 +660,17 @@ class TokenizerTestCase(basetest.BaseTestCase):
             # EOF is added so -1
             self.assertEqual(len(tokens) - 1, len(tests[css]))
 
+    def test_unterminated_comment_with_stars(self):
+        "unterminated comment of many stars must not cause catastrophic backtracking"
+        import time
+        stars = '*' * 2000
+        start = time.monotonic()
+        tokens = list(Tokenizer().tokenize('a /*' + stars))
+        self.assertEqual(len(tokens), 2 + 2 + len(stars))
+        tokens = list(Tokenizer().tokenize('a /*' + stars, fullsheet=True))
+        self.assertEqual(tokens[2], ('COMMENT', '/*' + stars + '*/', 1, 3))
+        self.assertLess(time.monotonic() - start, 10)
+
     # --------------
 
     def __old(self):
