@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
@@ -54,7 +53,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
         """
         For parameters see :class:`~css_parser.stylesheets.StyleSheet`
         """
-        super(CSSStyleSheet, self).__init__(
+        super().__init__(
             'text/css', href, media, title, disabled,
             ownerNode, parentStyleSheet,
             validating=validating)

@@ -1,6 +1,5 @@
 """CSSRuleList implements DOM Level 2 CSS CSSRuleList.
 Partly also http://dev.w3.org/csswg/cssom/#the-cssrulelist."""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSRuleList']
 __docformat__ = 'restructuredtext'
@@ -23,7 +22,6 @@ class CSSRuleList(list):
 
     def __init__(self, *ignored):
         "Nothing is set as this must also be defined later."
-        pass
 
     def __notimplemented(self, *ignored):
         "Implemented in class using a CSSRuleList only."

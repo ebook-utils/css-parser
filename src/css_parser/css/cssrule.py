@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
@@ -68,7 +67,7 @@ class CSSRule(css_parser.util.Base2):
 
     def __init__(self, parentRule=None, parentStyleSheet=None, readonly=False):
         """Set common attributes for all rules."""
-        super(CSSRule, self).__init__()
+        super().__init__()
         self._parent = parentRule
         self._parentRule = parentRule
         self._parentStyleSheet = parentStyleSheet
@@ -154,7 +153,7 @@ class CSSRuleRules(CSSRule):
 
     def __init__(self, parentRule=None, parentStyleSheet=None):
 
-        super(CSSRuleRules, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                            parentStyleSheet=parentStyleSheet)
 
         self.cssRules = css_parser.css.CSSRuleList()

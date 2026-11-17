@@ -1,4 +1,3 @@
-from __future__ import absolute_import, print_function, unicode_literals
 
 import logging
 import os
@@ -207,7 +206,7 @@ class BaseTestCase(unittest.TestCase):
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
-                print(('"%s"' % test))
+                print('"%s"' % test)
             s = p.parseString(test)
             if expected is None:
                 expected = test
@@ -221,14 +220,14 @@ class BaseTestCase(unittest.TestCase):
         p = css_parser.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
-                print(('"%s"' % test))
+                print('"%s"' % test)
             self.assertRaises(expected, p.parseString, test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
         for test, expected in tests.items():
             if debug:
-                print(('"%s"' % test))
+                print('"%s"' % test)
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -238,14 +237,14 @@ class BaseTestCase(unittest.TestCase):
         # sets self.r and asserts raise
         for test, expected in tests.items():
             if debug:
-                print(('"%s"' % test))
+                print('"%s"' % test)
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
-                print(('"%s"' % test))
+                print('"%s"' % test)
             self.assertRaises(err, self.r.__getattribute__(att), test)
 
 
@@ -298,7 +297,7 @@ class GenerateTests(type):
 
     @classmethod
     def make_case_repr(cls, case):
-        if isinstance(case, type('')):
+        if isinstance(case, str):
             value = case
         else:
             try:

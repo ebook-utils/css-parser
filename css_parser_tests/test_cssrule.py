@@ -1,10 +1,10 @@
 """Testcases for css_parser.css.CSSRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import basetest
+
 import css_parser.css
+
+from . import basetest
 
 
 class CSSRuleTestCase(basetest.BaseTestCase):
@@ -27,7 +27,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
         self.rRO the readonly rule
         relf.r_type the type as defined in CSSRule
         """
-        super(CSSRuleTestCase, self).setUp()
+        super().setUp()
 
         self.sheet = css_parser.css.CSSStyleSheet()
         self.r = css_parser.css.CSSRule()

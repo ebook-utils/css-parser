@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 """A validating CSSParser"""
 
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSParser']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .helper import path2url
 import codecs
-import css_parser
 import sys
-from . import tokenize2
 
+import css_parser
 from css_parser import css
+
+from . import tokenize2
+from .helper import path2url
 
 if sys.version_info < (2, 6):
     bytes = str
 
 
-class CSSParser(object):
+class CSSParser:
     """Parse a CSS StyleSheet from URL, string or file and return a DOM Level 2
     CSS StyleSheet object.
 

@@ -1,11 +1,10 @@
 """Testcases for css_parser.settings"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
-from . import test_cssrule
 import css_parser
 import css_parser.settings
+
+from . import test_cssrule
 
 
 class Settings(test_cssrule.CSSRuleTestCase):
@@ -15,11 +14,11 @@ class Settings(test_cssrule.CSSRuleTestCase):
         css_parser.ser.prefs.useMinified()
         text = 'a {filter: progid:DXImageTransform.Microsoft.BasicImage( rotation = 90 )}'
 
-        self.assertEqual(css_parser.parseString(text).cssText, ''.encode())
+        self.assertEqual(css_parser.parseString(text).cssText, b'')
 
         css_parser.settings.set('DXImageTransform.Microsoft', True)
         self.assertEqual(css_parser.parseString(text).cssText,
-                         'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}'.encode())
+                         b'a{filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=90)}')
 
         css_parser.ser.prefs.useDefaults()
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# vim:fileencoding=utf-8
 # License: LGPLv3 Copyright: 2019, Kovid Goyal <kovid at kovidgoyal.net>
 
 import glob
@@ -12,7 +11,7 @@ import subprocess
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 VERSION = open('src/css_parser/__init__.py', 'rb').read().decode('utf-8')
-m = re.search(r"^__version__ = '(.+?)'", VERSION, flags=re.M)
+m = re.search(r"^__version__ = '(.+?)'", VERSION, flags=re.MULTILINE)
 assert m is not None
 VERSION = m.group(1)
 
@@ -35,14 +34,14 @@ def run(*cmd):
 
 
 def build_release():
-    for rem in 'dist build'.split():
+    for rem in ['dist', 'build']:
         os.path.exists(rem) and shutil.rmtree(rem)
     run('python', '-m', 'build')
 
 
 def tag_release():
-    run('git tag -s "v{0}" -m "version-{0}"'.format(VERSION))
-    run('git push origin "v{0}"'.format(VERSION))
+    run(f'git tag -s "v{VERSION}" -m "version-{VERSION}"')
+    run(f'git push origin "v{VERSION}"')
 
 
 def upload_release():
@@ -64,7 +63,7 @@ def has_executable(exe):
 def main():
     if not has_executable('twine'):
         raise SystemExit('Need to install twine to upload to PyPI')
-    if myinput('Publish version {} [y/n]? '.format(red(VERSION))) != 'y':
+    if myinput(f'Publish version {red(VERSION)} [y/n]? ') != 'y':
         raise SystemExit(1)
     build_release()
     if myinput(red('Upload') + ' release [y/n]? ') != 'y':

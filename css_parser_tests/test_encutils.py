@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 tests for encutils.py
 """
-from __future__ import absolute_import, unicode_literals
 
 import sys
 import unittest
 from io import StringIO
 
-import css_parser.encutils as encutils
+from css_parser import encutils
 
 PY2x = sys.version_info < (3, 0)
 

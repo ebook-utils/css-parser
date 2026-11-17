@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 """Testcases for css_parser.helper"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_util.py 1437 2008-08-18 20:30:38Z cthedot $'
 
+from css_parser.helper import normalize, string, stringvalue, uri, urivalue
+
 from . import basetest
-from css_parser.helper import normalize, uri, stringvalue, urivalue, string
 
 
 class HelperTestCase(basetest.BaseTestCase):

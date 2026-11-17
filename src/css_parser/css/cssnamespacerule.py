@@ -1,14 +1,15 @@
 """CSSNamespaceRule currently implements http://dev.w3.org/csswg/css3-namespace/
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSNamespaceRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from . import cssrule
-import css_parser
 import xml.dom
+
+import css_parser
+
+from . import cssrule
 
 
 class CSSNamespaceRule(cssrule.CSSRule):
@@ -64,7 +65,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
               : IDENT
               ;
         """
-        super(CSSNamespaceRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                                parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@namespace'
         self._prefix = ''
@@ -119,7 +120,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
               Raised if the specified CSS string value has a syntax error and
               is unparsable.
         """
-        super(CSSNamespaceRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:

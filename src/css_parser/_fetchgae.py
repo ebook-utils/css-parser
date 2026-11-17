@@ -1,8 +1,10 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
-from . import errorhandler
-from email.message import Message
-from google.appengine.api import urlfetch
 import sys
+from email.message import Message
+
+from google.appengine.api import urlfetch
+
+from . import errorhandler
+
 """GAE specific URL reading functions"""
 
 
@@ -53,7 +55,7 @@ def _defaultFetcher(url):
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
-        log.warn('Error opening url=%r: %s' % (url, e),
+        log.warning('Error opening url=%r: %s' % (url, e),
                  error=IOError)
     else:
         if r.status_code == 200:
@@ -71,5 +73,5 @@ def _defaultFetcher(url):
             return encoding, r.content
         else:
             # TODO: 301 etc
-            log.warn('Error opening url=%r: HTTP status %s' %
+            log.warning('Error opening url=%r: HTTP status %s' %
                      (url, r.status_code), error=IOError)

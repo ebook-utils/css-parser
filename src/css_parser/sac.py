@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import codecs
 import sys
@@ -14,7 +13,7 @@ __version__ = '$Id: parse.py 1754 2009-05-30 14:50:13Z cthedot $'
 PY2 = False
 
 
-class ErrorHandler(object):
+class ErrorHandler:
     """Basic class for CSS error handlers.
 
     This class class provides a default implementation ignoring warnings and
@@ -46,7 +45,7 @@ class ErrorHandler(object):
         self._log.warn(exception, token, neverraise=True)
 
 
-class DocumentHandler(object):
+class DocumentHandler:
     """
      void     endFontFace()
               Receive notification of the end of a font face statement.
@@ -115,13 +114,13 @@ class EchoHandler(DocumentHandler):
     "Echos all input to property `out`"
 
     def __init__(self):
-        super(EchoHandler, self).__init__()
+        super().__init__()
         self._out = []
 
     out = property(lambda self: ''.join(self._out))
 
     def startDocument(self, encoding):
-        super(EchoHandler, self).startDocument(encoding)
+        super().startDocument(encoding)
         if 'utf-8' != encoding:
             self._out.append('@charset "%s";\n' % encoding)
 
@@ -131,19 +130,19 @@ class EchoHandler(DocumentHandler):
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
-        super(EchoHandler, self).importStyle(uri, media, name, line, col)
+        super().importStyle(uri, media, name, line, col)
         self._out.append('@import %s%s%s;\n' % (helper.string(uri),
                                                 '%s ' % media if media else '',
                                                 '%s ' % name if name else '')
                          )
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
-        super(EchoHandler, self).namespaceDeclaration(prefix, uri, line, col)
+        super().namespaceDeclaration(prefix, uri, line, col)
         self._out.append('@namespace %s%s;\n' % ('%s ' % prefix if prefix else '',
                                                  helper.string(uri)))
 
     def startSelector(self, selectors=None, line=None, col=None):
-        super(EchoHandler, self).startSelector(selectors, line, col)
+        super().startSelector(selectors, line, col)
         if selectors:
             self._out.append(', '.join(selectors))
         self._out.append(' {\n')
@@ -152,12 +151,12 @@ class EchoHandler(DocumentHandler):
         self._out.append('    }')
 
     def property(self, name, value, important=False, line=None, col=None):
-        super(EchoHandler, self).property(name, value,  line, col)
+        super().property(name, value,  line, col)
         self._out.append('    %s: %s%s;\n' % (name, value,
                                               ' !important' if important else ''))
 
 
-class Parser(object):
+class Parser:
     """
     java.lang.String     getParserVersion()
         Returns a string about which CSS language is supported by this parser.
@@ -342,9 +341,7 @@ class Parser(object):
                             # name:
                             t = next(tokens)
                             type_, val, line, col = t
-                            if 'S' == type_:
-                                pass
-                            elif simple(t):
+                            if 'S' == type_ or simple(t):
                                 pass
                             elif 'IDENT' == type_:
                                 if name:

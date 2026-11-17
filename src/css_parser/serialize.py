@@ -1,10 +1,11 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals, division, absolute_import, print_function
-from . import helper
-import css_parser
 import codecs
+
+import css_parser
 from css_parser.helper import normalize
+
+from . import helper
+
 """css_parser serializer"""
 
 __all__ = ['CSSSerializer', 'Preferences']
@@ -34,7 +35,7 @@ def _escapecss(e):
 codecs.register_error('escapecss', _escapecss)
 
 
-class Preferences(object):
+class Preferences:
     r"""Control output of CSSSerializer.
 
     defaultAtKeyword = True
@@ -194,7 +195,7 @@ class Preferences(object):
         self.validOnly = False
 
 
-class Out(object):
+class Out:
     """A simple class which makes appended items available as a combined string"""
 
     def __init__(self, ser):
@@ -311,7 +312,7 @@ class Out(object):
         return delim.join(self.out)
 
 
-class CSSSerializer(object):
+class CSSSerializer:
     """Serialize a CSSStylesheet and its parts.
 
     To use your own serializing method the easiest is to subclass CSS

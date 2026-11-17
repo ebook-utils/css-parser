@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """encutils - encoding detection collection for Python
 
 :Version: 0.9.8
@@ -66,31 +65,36 @@ TODO
     - parse @charset of HTML elements?
     - check for more texttypes if only text given
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = [
-    'buildlog', 'encodingByMediaType', 'getHTTPInfo', 'getMetaInfo',
-    'detectXMLEncoding', 'getEncodingInfo', 'tryEncodings', 'EncodingInfo'
+    'EncodingInfo',
+    'buildlog',
+    'detectXMLEncoding',
+    'encodingByMediaType',
+    'getEncodingInfo',
+    'getHTTPInfo',
+    'getMetaInfo',
+    'tryEncodings'
 ]
 __docformat__ = 'restructuredtext'
 __author__ = 'Christof Hoeke, Robert Siemer, Fredrik Hedman'
 __version__ = '$Id$'
 
-import sys
 import re
+import sys
 import types
 from email.message import Message
 
 PY2x = sys.version_info < (3, 0)
 
 if PY2x:
-    from StringIO import StringIO as io_StringIO
-    from HTMLParser import HTMLParser as htmlparser_HTMLParser
     from HTMLParser import HTMLParseError as htmlparser_HTMLParseError
+    from HTMLParser import HTMLParser as htmlparser_HTMLParser
+    from StringIO import StringIO as io_StringIO
     from urllib2 import urlopen as urllib_urlopen
 else:
-    from io import StringIO as io_StringIO
     from html.parser import HTMLParser as htmlparser_HTMLParser
+    from io import StringIO as io_StringIO
     from urllib.request import urlopen as urllib_urlopen
 
 VERSION = '0.9.8'
@@ -126,7 +130,7 @@ _TEXT_UTF8 = 5
 _OTHER_TYPE = 4
 
 
-class EncodingInfo(object):
+class EncodingInfo:
     """
     All encoding related information, returned by :func:`getEncodingInfo`.
 
@@ -234,10 +238,10 @@ def _getTextTypeByMediaType(media_type, log=None):
     media_type = media_type.strip().lower()
 
     if media_type in xml_application_types or\
-            re.match(xml_application_types[0], media_type, re.I | re.S | re.X):
+            re.match(xml_application_types[0], media_type, re.IGNORECASE | re.DOTALL | re.VERBOSE):
         return _XML_APPLICATION_TYPE
     elif media_type in xml_text_types or\
-            re.match(xml_text_types[0], media_type, re.I | re.S | re.X):
+            re.match(xml_text_types[0], media_type, re.IGNORECASE | re.DOTALL | re.VERBOSE):
         return _XML_TEXT_TYPE
     elif media_type == 'text/html':
         return _HTML_TEXT_TYPE
@@ -380,9 +384,7 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
         - if BOM and xml declaration fail, utf-8 is returned according
           to XML 1.0.
     """
-    if PY2x and isinstance(fp, types.StringTypes):
-        fp = io_StringIO(fp)
-    elif isinstance(fp, str):
+    if PY2x and isinstance(fp, types.StringTypes) or isinstance(fp, str):
         fp = io_StringIO(fp)
 
     # detection using BOM
@@ -599,7 +601,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
         # read text from response only if not explicitly given
         try:
             text = response.read()
-        except IOError:
+        except OSError:
             pass
 
     if text is None:
@@ -662,11 +664,7 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
             encinfo.encoding = tryEncodings(text)
 
     #   text/... + xml or text/*
-    elif texttype == _XML_TEXT_TYPE or texttype == _TEXT_TYPE:
-        if not encinfo.encoding:
-            encinfo.encoding = encodingByMediaType(encinfo.http_media_type)
-
-    elif texttype == _TEXT_UTF8:
+    elif texttype == _XML_TEXT_TYPE or texttype == _TEXT_TYPE or texttype == _TEXT_UTF8:
         if not encinfo.encoding:
             encinfo.encoding = encodingByMediaType(encinfo.http_media_type)
 

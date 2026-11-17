@@ -11,7 +11,7 @@ from urllib.error import URLError as urllib_URLError
 from urllib.request import Request as urllib_Request
 from urllib.request import urlopen as urllib_urlopen
 
-import css_parser.encutils as encutils
+from css_parser import encutils
 
 from . import errorhandler
 
@@ -32,17 +32,17 @@ def _defaultFetcher(url):
         res = urllib_urlopen(request)
     except urllib_HTTPError as e:
         # http error, e.g. 404, e can be raised
-        log.warn('HTTPError opening url=%s: %s %s' %
+        log.warning('HTTPError opening url=%s: %s %s' %
                  (url, e.code, e.msg), error=e)
     except urllib_URLError as e:
         # URLError like mailto: or other IO errors, e can be raised
-        log.warn('URLError, %s' % e.reason, error=e)
+        log.warning('URLError, %s' % e.reason, error=e)
     except OSError as e:
         # e.g if file URL and not found
-        log.warn(e, error=OSError)
+        log.warning(e, error=OSError)
     except ValueError as e:
         # invalid url, e.g. "1"
-        log.warn('ValueError, %s' % e.args[0], error=ValueError)
+        log.warning('ValueError, %s' % e.args[0], error=ValueError)
     else:
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)

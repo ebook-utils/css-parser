@@ -10,7 +10,7 @@ from . import test_cssrule
 class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSNamespaceRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSNamespaceRule(namespaceURI='x')
         # self.rRO = css_parser.css.CSSNamespaceRule(namespaceURI='x',
         #                                         readonly=True)

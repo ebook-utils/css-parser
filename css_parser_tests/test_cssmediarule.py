@@ -1,16 +1,16 @@
 """Testcases for css_parser.css.CSSMediaRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSMediaRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSMediaRule()
         self.rRO = css_parser.css.CSSMediaRule(readonly=True)
         self.r_type = css_parser.css.CSSMediaRule.MEDIA_RULE
@@ -21,7 +21,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSMediaRule.__init__()"
-        super(CSSMediaRuleTestCase, self).test_init()
+        super().test_init()
 
         r = css_parser.css.CSSMediaRule()
         self.assertEqual(css_parser.css.CSSRuleList, type(r.cssRules))

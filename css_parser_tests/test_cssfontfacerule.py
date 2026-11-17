@@ -1,16 +1,16 @@
 """Testcases for css_parser.css.CSSFontFaceRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSFontFaceRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSFontFaceRule()
         self.rRO = css_parser.css.CSSFontFaceRule(readonly=True)
         self.r_type = css_parser.css.CSSFontFaceRule.FONT_FACE_RULE
@@ -18,7 +18,7 @@ class CSSFontFaceRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSFontFaceRule.__init__()"
-        super(CSSFontFaceRuleTestCase, self).test_init()
+        super().test_init()
 
         r = css_parser.css.CSSFontFaceRule()
         self.assertIsInstance(r.style, css_parser.css.CSSStyleDeclaration)

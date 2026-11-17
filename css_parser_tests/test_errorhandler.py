@@ -1,13 +1,13 @@
 """Tests for parsing which does not raise Exceptions normally"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_parse.py 1281 2008-06-04 21:12:29Z cthedot $'
 
 import logging
 import sys
 import xml.dom
-from . import basetest
+
 import css_parser
+
+from . import basetest
 
 
 class ErrorHandlerTestCase(basetest.BaseTestCase):

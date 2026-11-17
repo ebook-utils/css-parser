@@ -9,9 +9,8 @@ open issues
             CSS2.1: 'nmchar': r'[_a-z0-9-]|{nonascii}|{escape}',
             CSS3: 'nmchar': r'[_a-z-]|{nonascii}|{escape}',
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
-__all__ = ['CSSProductions', 'MACROS', 'PRODUCTIONS']
+__all__ = ['MACROS', 'PRODUCTIONS', 'CSSProductions']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -101,7 +100,7 @@ PRODUCTIONS = [
 ]
 
 
-class CSSProductions(object):
+class CSSProductions:
     """
     most attributes are set later
     """

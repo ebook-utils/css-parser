@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import colorsys
 import re
@@ -15,16 +14,17 @@ DOM Level 2 CSS CSSValue, CSSPrimitiveValue and CSSValueList are **no longer**
 supported and are replaced by these new classes.
 """
 
-__all__ = ['PropertyValue',
-           'Value',
-           'ColorValue',
-           'DimensionValue',
-           'URIValue',
-           'CSSFunction',
-           'CSSCalc',
-           'CSSVariable',
-           'MSValue'
-           ]
+__all__ = [
+    'CSSCalc',
+    'CSSFunction',
+    'CSSVariable',
+    'ColorValue',
+    'DimensionValue',
+    'MSValue',
+    'PropertyValue',
+    'URIValue',
+    'Value'
+]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -58,7 +58,7 @@ class PropertyValue(css_parser.util._NewBase):
         :param readonly:
             defaults to False
         """
-        super(PropertyValue, self).__init__()
+        super().__init__()
 
         self.parent = parent
         self.wellformed = False
@@ -249,7 +249,7 @@ class Value(css_parser.util._NewBase):
     _value = ''
 
     def __init__(self, cssText=None, parent=None, readonly=False):
-        super(Value, self).__init__()
+        super().__init__()
 
         self.parent = parent
         self.wellformed = False
@@ -500,7 +500,7 @@ class DimensionValue(Value):
 
     Covers DIMENSION, PERCENTAGE or NUMBER values.
     """
-    __reUnNumDim = re.compile(r'^([+-]?)(\d*\.\d+|\d+)(.*)$', re.I | re.U | re.X)
+    __reUnNumDim = re.compile(r'^([+-]?)(\d*\.\d+|\d+)(.*)$', re.IGNORECASE | re.UNICODE | re.VERBOSE)
     _dimension = None
     _sign = None
 
@@ -702,7 +702,7 @@ class MSValue(CSSFunction):
         return funcProds
 
     def _setCssText(self, cssText):
-        super(MSValue, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
     cssText = property(lambda self: css_parser.ser.do_css_MSValue(self),
                        _setCssText,

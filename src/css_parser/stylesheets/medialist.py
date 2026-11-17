@@ -4,8 +4,6 @@ TODO:
     - delete: maybe if deleting from all, replace *all* with all others?
     - is unknown media an exception?
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import xml.dom
 
@@ -48,7 +46,7 @@ class MediaList(css_parser.util._NewListBase):
         :param readonly:
             Not used yet.
         """
-        super(MediaList, self).__init__()
+        super().__init__()
         self._wellformed = False
 
         if isinstance(mediaText, list):

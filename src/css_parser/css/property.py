@@ -1,7 +1,8 @@
-from __future__ import unicode_literals, division, absolute_import, print_function
 import css_parser
-from .value import PropertyValue
 from css_parser.helper import Deprecated
+
+from .value import PropertyValue
+
 """Property is a single CSS property in a CSSStyleDeclaration."""
 
 __all__ = ['Property']
@@ -63,7 +64,7 @@ class Property(css_parser.util.Base):
             the parent object, normally a
             :class:`css_parser.css.CSSStyleDeclaration`
         """
-        super(Property, self).__init__()
+        super().__init__()
         self.seqs = [[], None, []]
         self.wellformed = False
         self._mediaQuery = _mediaQuery
@@ -450,7 +451,6 @@ class Property(css_parser.util.Base):
                 # TODO: same for @page
 
         if self.name and self.value:
-            pass
             # TODO
             # cv = self.propertyValue
             # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:

@@ -1,10 +1,9 @@
 """Testcases for css_parser.css.DOMImplementation"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+import unittest
 import xml.dom
 import xml.dom.minidom
-import unittest
+
 import css_parser
 
 

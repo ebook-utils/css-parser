@@ -1,16 +1,16 @@
 """testcases for css_parser.css.CSSUnkownRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSUnknownRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSUnknownRule()
         self.rRO = css_parser.css.CSSUnknownRule(readonly=True)
         self.r_type = css_parser.css.CSSUnknownRule.UNKNOWN_RULE
@@ -21,7 +21,7 @@ class CSSUnknownRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSUnknownRule.type and init"
-        super(CSSUnknownRuleTestCase, self).test_init()
+        super().test_init()
 
         self.assertFalse(self.r.wellformed)
 

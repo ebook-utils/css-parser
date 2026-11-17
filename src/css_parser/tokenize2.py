@@ -1,8 +1,6 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """New CSS Tokenizer (a generator)
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import itertools
 import re
@@ -11,7 +9,7 @@ import sys
 from .cssproductions import MACROS, PRODUCTIONS, CSSProductions
 from .helper import normalize
 
-__all__ = ['Tokenizer', 'CSSProductions']
+__all__ = ['CSSProductions', 'Tokenizer']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -21,7 +19,7 @@ unichr = chr
 _TOKENIZER_CACHE = {}
 
 
-class Tokenizer(object):
+class Tokenizer:
     """
     generates a list of Token tuples:
         (Tokenname, value, startline, startcolumn)
@@ -84,7 +82,7 @@ class Tokenizer(object):
         """compile productions into callable match objects, order is kept"""
         compiled = []
         for key, value in expanded_productions:
-            compiled.append((key, re.compile('(?:%s)' % value, re.U).match))
+            compiled.append((key, re.compile('(?:%s)' % value, re.UNICODE).match))
         return compiled
 
     def push(self, *tokens):

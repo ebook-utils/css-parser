@@ -1,10 +1,9 @@
 """Testcases for css_parser.stylesheets.StyleSheet"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
-from . import basetest
 import css_parser
+
+from . import basetest
 
 
 class StyleSheetTestCase(basetest.BaseTestCase):

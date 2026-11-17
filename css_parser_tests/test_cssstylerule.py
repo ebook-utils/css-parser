@@ -1,16 +1,16 @@
 """Testcases for css_parser.css.CSSStyleRuleTestCase"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSStyleRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSStyleRule()
         self.rRO = css_parser.css.CSSStyleRule(readonly=True)
         self.r_type = css_parser.css.CSSStyleRule.STYLE_RULE
@@ -18,7 +18,7 @@ class CSSStyleRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSStyleRule.type and init"
-        super(CSSStyleRuleTestCase, self).test_init()
+        super().test_init()
         self.assertEqual('', self.r.cssText)
         self.assertEqual(css_parser.css.selectorlist.SelectorList,
                          type(self.r.selectorList))

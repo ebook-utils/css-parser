@@ -50,15 +50,15 @@ or without option -m::
         }
 
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['csscombine']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from css_parser.script import csscombine
 import optparse
 import sys
+
+from css_parser.script import csscombine
 
 
 def main(args=None):

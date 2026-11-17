@@ -1,11 +1,11 @@
 """Testcases for css_parser.css.CSSValue and CSSPrimitiveValue."""
 
 # from decimal import Decimal # maybe for later tests?
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import basetest
+
 import css_parser
+
+from . import basetest
 
 
 class PropertyValueTestCase(basetest.BaseTestCase):

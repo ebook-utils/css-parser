@@ -49,15 +49,15 @@ TODO:
       background: no-repeat left url()  #fff
       -> background: #fff url() no-repeat left
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSStyleDeclaration', 'Property']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+import css_parser
+
 from .cssproperties import CSS2Properties
 from .property import Property
-import css_parser
 
 
 class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
@@ -111,7 +111,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
             a flag defining if this sheet should be validated on change.
             Defaults to None, which means defer to the parent stylesheet.
         """
-        super(CSSStyleDeclaration, self).__init__()
+        super().__init__()
         self._parentRule = parentRule
         self.validating = validating
         self.cssText = cssText
@@ -183,7 +183,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
                  '_readonly', '_profiles', '_validating']
         known.extend(CSS2Properties._properties)
         if n in known:
-            super(CSSStyleDeclaration, self).__setattr__(n, v)
+            super().__setattr__(n, v)
         else:
             raise AttributeError('Unknown CSS Property, '
                                  '``CSSStyleDeclaration.setProperty("%s", '
@@ -621,11 +621,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
                 nname = self._normalize(name)
                 properties = self.getProperties(name, all=(not normalize))
                 for property in reversed(properties):
-                    if normalize and property.name == nname:
-                        property.propertyValue = newp.propertyValue.cssText
-                        property.priority = newp.priority
-                        return
-                    elif property.literalname == name:
+                    if normalize and property.name == nname or property.literalname == name:
                         property.propertyValue = newp.propertyValue.cssText
                         property.priority = newp.priority
                         return

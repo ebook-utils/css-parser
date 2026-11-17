@@ -1,12 +1,12 @@
 """Testcases for css_parser.css.CSSValue and CSSPrimitiveValue."""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
-import sys
 import platform
-from . import basetest
+import sys
+
 import css_parser
+
+from . import basetest
 
 CSS2 = (css_parser.profile.CSS_LEVEL_2,)
 C3BUI = (css_parser.profile.CSS3_BASIC_USER_INTERFACE,)
@@ -195,7 +195,7 @@ class ProfilesTestCase(basetest.BaseTestCase):
                              css_parser.profile.validateWithProfile('color', color))
 
             # CSS2 only:
-        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'  # noqa
+        uicolor = 'ActiveBorder|ActiveCaption|AppWorkspace|Background|ButtonFace|ButtonHighlight|ButtonShadow|ButtonText|CaptionText|GrayText|Highlight|HighlightText|InactiveBorder|InactiveCaption|InactiveCaptionText|InfoBackground|InfoText|Menu|MenuText|Scrollbar|ThreeDDarkShadow|ThreeDFace|ThreeDHighlight|ThreeDLightShadow|ThreeDShadow|Window|WindowFrame|WindowText'
         for color in uicolor.split('|'):
             self.assertEqual(False, css_parser.profile.validate('color', color))
 

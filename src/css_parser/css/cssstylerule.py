@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
@@ -40,7 +39,7 @@ class CSSStyleRule(cssrule.CSSRule):
             readonly
                 if True allows setting of properties in constructor only
         """
-        super(CSSStyleRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                            parentStyleSheet=parentStyleSheet)
 
         self.selectorList = SelectorList()
@@ -94,7 +93,7 @@ class CSSStyleRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSStyleRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)

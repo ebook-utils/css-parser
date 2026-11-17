@@ -1,6 +1,5 @@
 """css_parser helper TEST
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: errorhandler.py 1234 2008-05-22 20:26:12Z cthedot $'
@@ -15,7 +14,7 @@ else:
     from urllib import pathname2url as urllib_pathname2url
 
 
-class Deprecated(object):
+class Deprecated:
     """This is a decorator which can be used to mark functions
     as deprecated. It will result in a warning being emitted
     when the function is used.
@@ -105,7 +104,7 @@ def stringvalue(string):
     return string.replace('\\'+string[0], string[0])[1:-1]
 
 
-_match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.U).match
+_match_forbidden_in_uri = re.compile(r'''.*?[\(\)\s\;,'"]''', re.UNICODE).match
 
 
 def uri(value):

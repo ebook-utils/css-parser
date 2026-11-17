@@ -1,18 +1,18 @@
 # -*- coding: iso-8859-1 -*-
 """Testcases for css_parser.stylesheets.MediaQuery"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import xml.dom
 import logging
-from . import basetest
+import xml.dom
+
 import css_parser.stylesheets
+
+from . import basetest
 
 
 class MediaQueryTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        super(MediaQueryTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.stylesheets.MediaQuery()
 
     def test_mediaText(self):

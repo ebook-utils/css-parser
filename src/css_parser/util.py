@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import codecs
 import re
@@ -37,7 +36,7 @@ def as_list(p):
 log = errorhandler.ErrorHandler()
 
 
-class _BaseClass(object):
+class _BaseClass:
     """
     Base class for Base, Base2 and _NewBase.
 
@@ -552,7 +551,7 @@ class Base2(Base, _NewBase):
         return defaultproductions
 
 
-class Seq(object):
+class Seq:
     """
     property seq of Base2 inheriting classes, holds a list of Item objects.
 
@@ -657,7 +656,7 @@ class Seq(object):
                                     old.line, old.col)
 
 
-class Item(object):
+class Item:
     """
     an item in the seq list of classes (successor to tuple items in old seq)
 
@@ -689,7 +688,7 @@ class Item(object):
             self.__value, self.__type, self.__line, self.__col)
 
 
-class ListSeq(object):
+class ListSeq:
     """
     (EXPERIMENTAL)
     A base class used for list classes like css_parser.css.SelectorList or
@@ -736,7 +735,7 @@ class ListSeq(object):
         raise NotImplementedError
 
 
-class _Namespaces(object):
+class _Namespaces:
     """
     A dictionary like wrapper for @namespace rules used in a CSSStyleSheet.
     Works on effective namespaces, so e.g. if::
@@ -864,7 +863,7 @@ class _SimpleNamespaces(_Namespaces):
 
     def __init__(self, log=None, *args):
         """init"""
-        super(_SimpleNamespaces, self).__init__(parentStyleSheet=None, log=log)
+        super().__init__(parentStyleSheet=None, log=log)
         self.__namespaces = dict(*args)
 
     def __setitem__(self, prefix, namespaceURI):
@@ -960,7 +959,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
                     decodedCssText = content.decode(encoding if encoding else 'utf-8')
 
             except UnicodeDecodeError as e:
-                log.warn(e, neverraise=True)
+                log.warning(e, neverraise=True)
                 decodedCssText = None
 
         return encoding, enctype, decodedCssText
@@ -968,7 +967,7 @@ def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):
         return None, None, None
 
 
-class LazyRegex(object):
+class LazyRegex:
     """A class to represent a lazily compiled regular expression.
 
     The interface is kept similar to a `re.compile`ed object from the standard
@@ -985,7 +984,7 @@ class LazyRegex(object):
                       pattern is not yet compiled.
     """
 
-    __slots__ = ('pattern', 'flags', 'matcher', 'groups', 'groupindex')
+    __slots__ = ('flags', 'groupindex', 'groups', 'matcher', 'pattern')
 
     def __init__(self, pattern, flags=0):
         self.pattern = pattern

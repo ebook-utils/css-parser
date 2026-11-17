@@ -15,14 +15,14 @@ TODO
         a CSS2 user agent must ignore the whole second line, and not set
         the color of H3 to red:
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['SelectorList']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .selector import Selector
 import css_parser
+
+from .selector import Selector
 
 
 class SelectorList(css_parser.util.Base, css_parser.util.ListSeq):
@@ -38,7 +38,7 @@ class SelectorList(css_parser.util.Base, css_parser.util.ListSeq):
             parentRule
                 the parent CSSRule if available
         """
-        super(SelectorList, self).__init__()
+        super().__init__()
 
         self._parentRule = parentRule
 

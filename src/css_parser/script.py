@@ -1,5 +1,3 @@
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 
 import codecs
 import errno
@@ -8,7 +6,7 @@ import os
 import sys
 
 import css_parser
-import css_parser.encutils as encutils
+from css_parser import encutils
 
 """classes and functions used by css_parser scripts
 """
@@ -20,18 +18,18 @@ __version__ = '$Id: parse.py 1323 2008-07-06 18:13:57Z cthedot $'
 
 if sys.version_info[0] >= 3:
     from html.parser import HTMLParser as htmlparser_HTMLParser
-    from urllib.parse import urlsplit as urllib_urlsplit
-    from urllib.parse import urljoin as urllib_urljoin
-    from urllib.request import urlopen as urllib_urlopen
-    from urllib.request import Request as urllib_Request
     from urllib.error import HTTPError as urllib_HTTPError
+    from urllib.parse import urljoin as urllib_urljoin
+    from urllib.parse import urlsplit as urllib_urlsplit
+    from urllib.request import Request as urllib_Request
+    from urllib.request import urlopen as urllib_urlopen
 else:
     from HTMLParser import HTMLParser as htmlparser_HTMLParser
-    from urlparse import urlsplit as urllib_urlsplit
-    from urlparse import urljoin as urllib_urljoin
-    from urllib2 import urlopen as urllib_urlopen
     from urllib2 import HTTPError as urllib_HTTPError
     from urllib2 import Request as urllib_Request
+    from urllib2 import urlopen as urllib_urlopen
+    from urlparse import urljoin as urllib_urljoin
+    from urlparse import urlsplit as urllib_urlsplit
 
 
 # types of sheets in HTML
@@ -75,7 +73,7 @@ class CSSCaptureHTMLParser(htmlparser_HTMLParser):
         self.curtag = ''
 
 
-class CSSCapture(object):
+class CSSCapture:
     """
     Retrieve all CSS stylesheets including embedded for a given URL.
     Optional setting of User-Agent used for retrieval possible

@@ -1,11 +1,11 @@
 """Testcases for css_parser.css.selectorlist.SelectorList."""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import basetest
+
 import css_parser
 from css_parser.css.selectorlist import SelectorList
+
+from . import basetest
 
 
 class SelectorListTestCase(basetest.BaseTestCase):

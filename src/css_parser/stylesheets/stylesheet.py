@@ -1,5 +1,4 @@
 """StyleSheet implements DOM Level 2 Style Sheets StyleSheet."""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['StyleSheet']
 __docformat__ = 'restructuredtext'
@@ -79,7 +78,7 @@ class StyleSheet(css_parser.util.Base2):
             a flag defining if this sheet should be validate on change.
 
         """
-        super(StyleSheet, self).__init__()
+        super().__init__()
 
         self.validating = validating
 

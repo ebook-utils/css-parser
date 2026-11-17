@@ -3,15 +3,16 @@ class only.
 
 Implements CSSRule which is also extended for a CSSComment rule type.
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSComment']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from . import cssrule
-import css_parser
 import xml.dom
+
+import css_parser
+
+from . import cssrule
 
 
 class CSSComment(cssrule.CSSRule):
@@ -25,7 +26,7 @@ class CSSComment(cssrule.CSSRule):
 
     def __init__(self, cssText=None, parentRule=None,
                  parentStyleSheet=None, readonly=False):
-        super(CSSComment, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                          parentStyleSheet=parentStyleSheet)
 
         self._cssText = None
@@ -65,7 +66,7 @@ class CSSComment(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSComment, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
 
         commenttoken = self._nexttoken(tokenizer)

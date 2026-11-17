@@ -6,12 +6,12 @@ what should happen here?
         does not validate but works in IE>5 and FF, does it???
 
 """
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import xml.dom
-from . import basetest
-import css_parser
 import sys
+import xml.dom
+
+import css_parser
+
+from . import basetest
 
 
 class SelectorTestCase(basetest.BaseTestCase):
@@ -123,11 +123,11 @@ class SelectorTestCase(basetest.BaseTestCase):
         sheet = css_parser.css.CSSStyleSheet()
         sheet.cssText = css
         self.assertEqual(sheet.cssText,
-                         '@namespace "default";\na[att] {\n    color: green\n    }'.encode())
+                         b'@namespace "default";\na[att] {\n    color: green\n    }')
         # use a prefix for default namespace, does not goes for atts!
         sheet.namespaces['p'] = 'default'
         self.assertEqual(sheet.cssText,
-                         '@namespace p "default";\np|a[att] {\n    color: green\n    }'.encode())
+                         b'@namespace p "default";\np|a[att] {\n    color: green\n    }')
 
     def test_parent(self):
         "Selector.parent"

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Built from something like this:
 
@@ -13,7 +12,6 @@ Built from something like this:
 
 by Simon Sapin
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 COLORS = {
     'transparent': (0, 0, 0, 0.0),

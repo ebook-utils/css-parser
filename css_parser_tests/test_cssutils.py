@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
 """Testcases for css_parser.css.CSSCharsetRule"""
-from __future__ import with_statement, unicode_literals
 
-from __future__ import absolute_import
-from . import basetest
 import codecs
-import css_parser
 import os
 import sys
 import tempfile
+
+import css_parser
+
+from . import basetest
 
 
 class CSSutilsTestCase(basetest.BaseTestCase):
@@ -191,7 +190,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         # clean up
         try:
             os.remove(name)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def test_parseUrl(self):
@@ -263,7 +262,7 @@ class CSSutilsTestCase(basetest.BaseTestCase):
             self.assertEqual(s.cssText, v)
 
         self.assertRaises(UnicodeDecodeError, css_parser.parseStyle,
-                          'content: "ä"'.encode('utf-8'), 'ascii')
+                          'content: "ä"'.encode(), 'ascii')
 
     def test_getUrls(self):
         "css_parser.getUrls()"
@@ -353,8 +352,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
 
             c.encoding = 'ascii'
             self.assertEqual(
-                r'@charset "ascii";\E4 {color:red}\E4 {color:green}'.
-                encode(), c.cssText)
+                br'@charset "ascii";\E4 {color:red}\E4 {color:green}', c.cssText)
 
         # b cannot be found
         with self.patch_default_fetcher((None, None)):
@@ -378,8 +376,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
             c = css_parser.resolveImports(s)
 
             self.assertEqual(
-                'a{color:red}@media print,tv{a{color:red}}a{color:red}'.
-                encode(), c.cssText)
+                b'a{color:red}@media print,tv{a{color:red}}a{color:red}', c.cssText)
 
         # cannot resolve with media => keep original
         a = '@import"b.css"print;'
@@ -435,7 +432,7 @@ background-image: url(prefix/1.png), url(prefix/2.png)''')
         css_parser.ser.prefs.useDefaults()
         css_parser.ser.prefs.keepComments = False
         self.assertEqual(
-            '''c {
+            b'''c {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
@@ -449,7 +446,7 @@ a {
     x: url(/img/abs.gif);
     y: url(img/img.gif);
     z: url(b/subimg/subimg.gif)
-    }'''.encode(), r.cssText)
+    }''', r.cssText)
 
     css_parser.ser.prefs.useDefaults()
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 """utility script to parse given filenames or string
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import css_parser
 import logging
 import optparse
 import sys
+
+import css_parser
 
 
 def main(args=None):

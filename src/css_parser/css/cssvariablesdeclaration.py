@@ -1,17 +1,18 @@
 """CSSVariablesDeclaration
 http://disruptive-innovations.com/zoo/cssvariables/#mozTocId496530
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSVariablesDeclaration']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: cssstyledeclaration.py 1819 2009-08-01 20:52:43Z cthedot $'
 
-from css_parser.prodparser import Prod, Sequence, PreDef, ProdParser
-from css_parser.helper import normalize
-from .value import PropertyValue
-import css_parser
 import itertools
+
+import css_parser
+from css_parser.helper import normalize
+from css_parser.prodparser import PreDef, Prod, ProdParser, Sequence
+
+from .value import PropertyValue
 
 
 def as_list(p):
@@ -49,7 +50,7 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
                 : IDENT S*
                 ;
         """
-        super(CSSVariablesDeclaration, self).__init__()
+        super().__init__()
         self._parentRule = parentRule
         self._vars = {}
         if cssText:

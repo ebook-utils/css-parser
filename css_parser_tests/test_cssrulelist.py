@@ -1,9 +1,8 @@
 """Testcases for css_parser.css.CSSRuleList"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from . import basetest
 import css_parser
+
+from . import basetest
 
 
 class CSSRuleListTestCase(basetest.BaseTestCase):

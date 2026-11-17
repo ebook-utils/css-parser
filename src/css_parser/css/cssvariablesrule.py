@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
@@ -55,7 +54,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         """
         If readonly allows setting of properties in constructor only.
         """
-        super(CSSVariablesRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                                parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@variables'
 
@@ -113,7 +112,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             : LBRACE S* vardeclaration [ ';' S* vardeclaration ]* '}' S*
             ;
         """
-        super(CSSVariablesRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)

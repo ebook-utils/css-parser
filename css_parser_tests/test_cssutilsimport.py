@@ -1,6 +1,5 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import unittest
+
 """Testcase for css_parser imports"""
 
 
@@ -11,8 +10,8 @@ class CSSutilsImportTestCase(unittest.TestCase):
         from css_parser import __all__ as aimp
 
         exp = {
-            'CSSParser': css_parser.CSSParser,  # noqa
-            'CSSSerializer': css_parser.CSSSerializer,  # noqa
+            'CSSParser': css_parser.CSSParser,
+            'CSSSerializer': css_parser.CSSSerializer,
             'css': css_parser.css,
             'stylesheets': css_parser.stylesheets,
         }

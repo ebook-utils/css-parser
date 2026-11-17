@@ -1,5 +1,4 @@
 """StyleSheetList implements DOM Level 2 Style Sheets StyleSheetList."""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['StyleSheetList']
 __docformat__ = 'restructuredtext'

@@ -50,11 +50,12 @@ __all__ = ['CSS2Properties']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-import css_parser.profiles
 import re
 
+import css_parser.profiles
 
-class CSS2Properties(object):
+
+class CSS2Properties:
     """The CSS2Properties interface represents a convenience mechanism
     for retrieving and setting properties within a CSSStyleDeclaration.
     The attributes of this interface correspond to all the properties
@@ -83,7 +84,7 @@ class CSS2Properties(object):
     def _delP(self, CSSname): pass
 
 
-_reCSStoDOMname = re.compile('-[a-z]', re.I)
+_reCSStoDOMname = re.compile('-[a-z]', re.IGNORECASE)
 
 
 def _toDOMname(CSSname):

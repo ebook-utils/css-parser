@@ -1,10 +1,9 @@
 """Testcases for css_parser.scripts.csscombine"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from css_parser.script import csscombine
-from . import basetest
 import css_parser
+from css_parser.script import csscombine
+
+from . import basetest
 
 
 class CSSCombine(basetest.BaseTestCase):
@@ -59,17 +58,17 @@ class CSSCombine(basetest.BaseTestCase):
         # default minify
         self.assertEqual(csscombine(cssText=cssText,
                                     resolveVariables=False),
-                         '@variables{c:#0f0}a{color:var(c)}'.encode())
+                         b'@variables{c:#0f0}a{color:var(c)}')
         self.assertEqual(csscombine(cssText=cssText),
-                         'a{color:#0f0}'.encode())
+                         b'a{color:#0f0}')
 
         # no minify
         self.assertEqual(csscombine(cssText=cssText,
                                     minify=False,
                                     resolveVariables=False),
-                         '@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }'.encode())
+                         b'@variables {\n    c: #0f0\n    }\na {\n    color: var(c)\n    }')
         self.assertEqual(csscombine(cssText=cssText, minify=False),
-                         'a {\n    color: #0f0\n    }'.encode())
+                         b'a {\n    color: #0f0\n    }')
 
 
 if __name__ == '__main__':

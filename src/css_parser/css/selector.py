@@ -9,16 +9,16 @@ TODO
     - .contains(selector)
     - .isSubselector(selector)
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['Selector']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
+import xml.dom
+
+import css_parser
 from css_parser.helper import Deprecated
 from css_parser.util import _SimpleNamespaces
-import css_parser
-import xml.dom
 
 # Pseudo-class functions that accept a forgiving selector list argument
 # (CSS Selectors Level 4)
@@ -64,14 +64,14 @@ def _max_specificity(selector_list):
     return max_spec
 
 
-class SelectorPseudoFunction(object):
+class SelectorPseudoFunction:
     """Container for a pseudo-class/element that accepts a selector list.
     Stores the pseudo-function name and its parsed SelectorList argument.
     For :has() ``combinators`` holds the leading combinator of each relative
     selector ('>', '+', '~' or None for the descendant combinator), for all
     other pseudo-functions it is None."""
 
-    __slots__ = ('name', 'selector_list', 'combinators')
+    __slots__ = ('combinators', 'name', 'selector_list')
 
     def __init__(self, name, selector_list, combinators=None):
         self.name = name  # e.g. ':is(', ':not(', ':where(', ':has(', '::slotted('
@@ -243,7 +243,7 @@ class Selector(css_parser.util.Base2):
             readonly
                 default to False
         """
-        super(Selector, self).__init__()
+        super().__init__()
 
         self.__namespaces = _SimpleNamespaces(log=self._log)
         self._element = None

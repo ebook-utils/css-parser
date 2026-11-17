@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 """Testcases for new css_parser.tokenize.Tokenizer
 
 TODO: old tests as new ones are **not complete**!
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import sys
 
-import css_parser.tokenize2 as tokenize2
+from css_parser import tokenize2
 from css_parser.tokenize2 import Tokenizer
 
 from . import basetest

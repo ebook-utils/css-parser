@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 from itertools import chain
@@ -77,7 +76,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
         :param style:
             CSSStyleDeclaration for this CSSStyleRule
         """
-        super(CSSPageRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                           parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@page'
         self._specificity = (0, 0, 0)
@@ -140,8 +139,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             if r.margin == margin:
                 r.style = style
                 return i
-        else:
-            return self.add(MarginRule(margin, style))
+        return self.add(MarginRule(margin, style))
 
     def __delitem__(self, margin):
         """Delete the style (the MarginRule)
@@ -295,7 +293,7 @@ class CSSPageRule(cssrule.CSSRuleRules):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSPageRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         if self._type(self._nexttoken(tokenizer)) != self._prods.PAGE_SYM:

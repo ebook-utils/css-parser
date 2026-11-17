@@ -1,19 +1,18 @@
 # -*- coding: iso-8859-1 -*-
 """Testcases for css_parser.stylesheets.MediaList"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import xml.dom
 import logging
-from . import basetest
+import xml.dom
+
 import css_parser.stylesheets
 
+from . import basetest
 
 
 class MediaListTestCase(basetest.BaseTestCase):
 
     def setUp(self):
-        super(MediaListTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.stylesheets.MediaList()
 
     def test_set(self):
@@ -109,7 +108,7 @@ class MediaListTestCase(basetest.BaseTestCase):
                              ml.appendMedium, 'print')
 
         sheet = css_parser.parseString('@media all, print { /**/ }')
-        self.assertEqual('@media all {\n    /**/\n    }'.encode(), sheet.cssText)
+        self.assertEqual(b'@media all {\n    /**/\n    }', sheet.cssText)
 
     def test_delete(self):
         "MediaList.deleteMedium()"

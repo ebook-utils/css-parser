@@ -1,13 +1,14 @@
 """CSSUnknownRule implements DOM Level 2 CSS CSSUnknownRule."""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSUnknownRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from . import cssrule
-import css_parser
 import xml.dom
+
+import css_parser
+
+from . import cssrule
 
 
 class CSSUnknownRule(cssrule.CSSRule):
@@ -26,7 +27,7 @@ class CSSUnknownRule(cssrule.CSSRule):
         :param cssText:
             of type string
         """
-        super(CSSUnknownRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                              parentStyleSheet=parentStyleSheet)
         self._atkeyword = None
         if cssText:
@@ -64,7 +65,7 @@ class CSSUnknownRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSUnknownRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if not attoken or self._type(attoken) != self._prods.ATKEYWORD:

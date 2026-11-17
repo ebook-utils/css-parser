@@ -46,7 +46,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             CSSStyleDeclaration used to hold any font descriptions
             for this CSSFontFaceRule
         """
-        super(CSSFontFaceRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                               parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@font-face'
 
@@ -88,7 +88,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSFontFaceRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)

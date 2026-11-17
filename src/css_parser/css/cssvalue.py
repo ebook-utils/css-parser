@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import math
 import re
@@ -16,8 +15,13 @@ from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
 
 """
 
-__all__ = ['CSSValue', 'CSSPrimitiveValue', 'CSSValueList', 'RGBColor',
-           'CSSVariable']
+__all__ = [
+    'CSSPrimitiveValue',
+    'CSSValue',
+    'CSSValueList',
+    'CSSVariable',
+    'RGBColor',
+]
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
@@ -54,7 +58,7 @@ class CSSValue(css_parser.util._NewBase):
         :param readonly:
             defaults to False
         """
-        super(CSSValue, self).__init__()
+        super().__init__()
 
         self._cssValueType = None
         self.wellformed = False
@@ -522,7 +526,7 @@ class CSSPrimitiveValue(CSSValue):
 
     def __init__(self, cssText=None, parent=None, readonly=False):
         """See CSSPrimitiveValue.__init__()"""
-        super(CSSPrimitiveValue, self).__init__(cssText=cssText,
+        super().__init__(cssText=cssText,
                                                 parent=parent,
                                                 readonly=readonly)
 
@@ -550,7 +554,7 @@ class CSSPrimitiveValue(CSSValue):
                   'CSS_UNICODE_RANGE'
                   ]
 
-    _reNumDim = re.compile(r'([+-]?\d*\.\d+|[+-]?\d+)(.*)$', re.I | re.U | re.X)
+    _reNumDim = re.compile(r'([+-]?\d*\.\d+|[+-]?\d+)(.*)$', re.IGNORECASE | re.UNICODE | re.VERBOSE)
 
     def _unitDIMENSION(value):
         """Check val for dimension name."""
@@ -576,7 +580,7 @@ class CSSPrimitiveValue(CSSValue):
                  }
         return units.get(re.findall(r'^(.*?\()',
                                     css_parser.helper.normalize(value.cssText),
-                                    re.U)[0],
+                                    re.UNICODE)[0],
                          'CSS_UNKNOWN')
 
     __unitbytype = {
@@ -849,7 +853,7 @@ class CSSPrimitiveValue(CSSValue):
 
     def _setCssText(self, cssText):
         """Use CSSValue."""
-        return super(CSSPrimitiveValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(_getCssText, _setCssText,
                        doc="A string representation of the current value.")
@@ -870,7 +874,7 @@ class CSSValueList(CSSValue):
 
     def __init__(self, cssText=None, parent=None, readonly=False):
         """Init a new CSSValueList"""
-        super(CSSValueList, self).__init__(cssText=cssText,
+        super().__init__(cssText=cssText,
                                            parent=parent,
                                            readonly=readonly)
         self._items = []
@@ -922,7 +926,7 @@ class CSSFunction(CSSPrimitiveValue):
         :param readonly:
             defaults to False
         """
-        super(CSSFunction, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self._funcType = None
         self.valid = False
         self.wellformed = False
@@ -1142,7 +1146,7 @@ class CalcValue(CSSFunction):
         return css_parser.ser.do_css_CalcValue(self)
 
     def _setCssText(self, cssText):
-        return super(CalcValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(_getCssText, _setCssText,
                        doc="A string representation of the current value.")
@@ -1184,7 +1188,7 @@ class ExpressionValue(CSSFunction):
 
     def _setCssText(self, cssText):
         # self._log.warn(u'CSSValue: Unoffial and probably invalid MS value used!')
-        return super(ExpressionValue, self)._setCssText(cssText)
+        return super()._setCssText(cssText)
 
     cssText = property(_getCssText, _setCssText,
                        doc="A string representation of the current value.")
@@ -1202,7 +1206,7 @@ class CSSVariable(CSSValue):
             defaults to False
         """
         self._name = None
-        super(CSSVariable, self).__init__(cssText=cssText,
+        super().__init__(cssText=cssText,
                                           parent=parent,
                                           readonly=readonly)
 

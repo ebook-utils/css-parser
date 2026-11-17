@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Productions parser used by css and stylesheets classes to parse
 test into a css_parser.util.Seq and at the same time retrieving
 additional specific css_parser.util.Item objects for later use.
@@ -14,9 +13,8 @@ TODO:
         - opt first(), naive impl for now
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
 
-__all__ = ['ProdParser', 'Sequence', 'Choice', 'Prod', 'PreDef']
+__all__ = ['Choice', 'PreDef', 'Prod', 'ProdParser', 'Sequence']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id: parse.py 1418 2008-08-09 19:27:50Z cthedot $'
 
@@ -36,30 +34,25 @@ string_type = str
 
 class ParseError(Exception):
     """Base Exception class for ProdParser (used internally)."""
-    pass
 
 
 class Done(ParseError):
     """Raised if Sequence or Choice is finished and no more Prods left."""
-    pass
 
 
 class Exhausted(ParseError):
     """Raised if Sequence or Choice is finished but token is given."""
-    pass
 
 
 class Missing(ParseError):
     """Raised if Sequence or Choice is not finished but no matching token given."""
-    pass
 
 
 class NoMatch(ParseError):
     """Raised if nothing in Sequence or Choice does match."""
-    pass
 
 
-class Choice(object):
+class Choice:
     """A Choice of productions (Sequence or single Prod)."""
 
     def __init__(self, *prods, **options):
@@ -115,10 +108,9 @@ class Choice(object):
                     return p
                 elif p.optional:
                     optional = True
-            else:
-                if not optional:
-                    # None matched but also None is optional
-                    raise NoMatch('No match for %s in %s' % (token, self))
+            if not optional:
+                # None matched but also None is optional
+                raise NoMatch('No match for %s in %s' % (token, self))
                     # raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted('Extra token')
@@ -131,7 +123,7 @@ class Choice(object):
         return 'Choice(%s)' % ', '.join([str(x) for x in self._prods])
 
 
-class Sequence(object):
+class Sequence:
     """A Sequence of productions (Choice or single Prod)."""
 
     def __init__(self, *prods, **options):
@@ -185,8 +177,7 @@ class Sequence(object):
         for prod in self._prods[self._i:]:
             if not prod.optional:
                 return str(prod)
-        else:
-            return 'Sequence'
+        return 'Sequence'
 
     optional = property(lambda self: self._min == 0)
 
@@ -246,7 +237,7 @@ class Sequence(object):
         return 'Sequence(%s)' % ', '.join([str(x) for x in self._prods])
 
 
-class Prod(object):
+class Prod:
     """Single Prod in Sequence or Choice."""
 
     def __init__(self, name, match, optional=False,
@@ -356,7 +347,7 @@ tokenizer = Tokenizer()
 savedTokens = []
 
 
-class ProdParser(object):
+class ProdParser:
     """Productions parser."""
 
     def __init__(self, clear=True):
@@ -374,7 +365,7 @@ class ProdParser(object):
             # DEFAULT, to tokenize strip space
             return tokenizer.tokenize(text.strip())
 
-        elif type(text) is types.GeneratorType:  # noqa
+        elif type(text) is types.GeneratorType:
             # DEFAULT, already tokenized, should be generator
             return text
 
@@ -662,7 +653,7 @@ class ProdParser(object):
         return wellformed, seq, store, tokens
 
 
-class PreDef(object):
+class PreDef:
     """Predefined Prod definition for use in productions definition
     for ProdParser instances.
     """

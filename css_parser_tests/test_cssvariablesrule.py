@@ -1,17 +1,17 @@
 """Testcases for css_parser.css.CSSPageRule"""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_csspagerule.py 1869 2009-10-17 19:37:40Z cthedot $'
 
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSVariablesRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSVariablesRule()
         self.rRO = css_parser.css.CSSVariablesRule(readonly=True)
         self.r_type = css_parser.css.CSSPageRule.VARIABLES_RULE
@@ -21,7 +21,7 @@ class CSSVariablesRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSVariablesRule.__init__()"
-        super(CSSVariablesRuleTestCase, self).test_init()
+        super().test_init()
 
         r = css_parser.css.CSSVariablesRule()
         self.assertEqual(css_parser.css.CSSVariablesDeclaration,

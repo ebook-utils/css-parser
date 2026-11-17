@@ -1,16 +1,16 @@
 """Testcases for css_parser.css.CSSPageRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSPageRuleTestCase, self).setUp()
+        super().setUp()
 
         css_parser.ser.prefs.useDefaults()
         self.r = css_parser.css.CSSPageRule()
@@ -23,7 +23,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSPageRule.__init__()"
-        super(CSSPageRuleTestCase, self).test_init()
+        super().test_init()
 
         r = css_parser.css.CSSPageRule()
         self.assertEqual('', r.selectorText)

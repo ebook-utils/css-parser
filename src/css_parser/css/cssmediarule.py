@@ -1,5 +1,4 @@
 """CSSMediaRule implements DOM Level 2 CSS CSSMediaRule."""
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 __all__ = ['CSSMediaRule']
 __docformat__ = 'restructuredtext'
@@ -35,7 +34,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
     def __init__(self, mediaText='all', name=None,
                  parentRule=None, parentStyleSheet=None, readonly=False):
         """constructor"""
-        super(CSSMediaRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                            parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@media'
 
@@ -84,7 +83,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
               Raised if the rule is readonly.
         """
         # media "name"? { cssRules }
-        super(CSSMediaRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
         cssText, namespaces = self._splitNamespacesOff(cssText)

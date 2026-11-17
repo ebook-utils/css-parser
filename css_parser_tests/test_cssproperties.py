@@ -1,10 +1,9 @@
 """Testcases for css_parser.css.cssproperties."""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-from . import basetest
 import css_parser.css
 import css_parser.profiles
+
+from . import basetest
 
 
 class CSSPropertiesTestCase(basetest.BaseTestCase):

@@ -1,16 +1,16 @@
 """Testcases for css_parser.css.CSSPageRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
+
+from . import test_cssrule
 
 
 class MarginRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(MarginRuleTestCase, self).setUp()
+        super().setUp()
 
         css_parser.ser.prefs.useDefaults()
         self.r = css_parser.css.MarginRule()

@@ -1,11 +1,10 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
 import css_parser
-from css_parser.util import _NewBase
 from css_parser.helper import normalize
 from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
+from css_parser.util import _NewBase
 
 """Implements a DOM for MediaQuery, see
 http://www.w3.org/TR/css3-mediaqueries/.
@@ -58,7 +57,7 @@ class MediaQuery(_NewBase):  # css_parser.util.Base):
 
         # _standalone: True if new from ML parser
         """
-        super(MediaQuery, self).__init__()
+        super().__init__()
 
         self._wellformed = False
         self._mediaType = ''

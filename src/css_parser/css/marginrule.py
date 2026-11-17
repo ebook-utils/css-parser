@@ -1,4 +1,3 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import xml.dom
 
@@ -80,7 +79,7 @@ class MarginRule(cssrule.CSSRule):
         :param style:
             CSSStyleDeclaration for this MarginRule
         """
-        super(MarginRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                          parentStyleSheet=parentStyleSheet)
 
         self._atkeyword = self._keyword = None
@@ -145,7 +144,7 @@ class MarginRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(MarginRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         # TEMP: all style tokens are saved in store to fill styledeclaration
         # TODO: resolve when all generators

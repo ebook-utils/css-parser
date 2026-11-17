@@ -7,16 +7,16 @@ TODO:
 - logger class which handles all cases when no log is given...
 - saveto: why does urllib2 hang?
 """
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSCapture']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from css_parser.script import CSSCapture
 import logging
 import optparse
 import sys
+
+from css_parser.script import CSSCapture
 
 
 def main(args=None):

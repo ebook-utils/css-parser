@@ -1,14 +1,15 @@
 """CSSCharsetRule implements DOM Level 2 CSS CSSCharsetRule."""
-from __future__ import unicode_literals, division, absolute_import, print_function
 
 __all__ = ['CSSCharsetRule']
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import codecs
-from . import cssrule
-import css_parser
 import xml.dom
+
+import css_parser
+
+from . import cssrule
 
 
 class CSSCharsetRule(cssrule.CSSRule):
@@ -49,7 +50,7 @@ class CSSCharsetRule(cssrule.CSSRule):
         :param readonly:
             defaults to False, not used yet
         """
-        super(CSSCharsetRule, self).__init__(parentRule=parentRule,
+        super().__init__(parentRule=parentRule,
                                              parentStyleSheet=parentStyleSheet)
         self._atkeyword = '@charset'
 
@@ -92,7 +93,7 @@ class CSSCharsetRule(cssrule.CSSRule):
             - :exc:`~xml.dom.NoModificationAllowedErr`:
               Raised if the rule is readonly.
         """
-        super(CSSCharsetRule, self)._setCssText(cssText)
+        super()._setCssText(cssText)
 
         wellformed = True
         tokenizer = self._tokenize2(cssText)

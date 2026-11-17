@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import logging
 import xml.dom
@@ -28,7 +27,7 @@ __version__ = '$Id$'
 
 
 
-class _ErrorHandler(object):
+class _ErrorHandler:
     """
     handles all errors and log messages
     """

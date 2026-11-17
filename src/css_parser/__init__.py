@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os.path
 import xml.dom
@@ -125,7 +124,7 @@ profile = Profiles(log=log)
 _ANYNS = -1
 
 
-class DOMImplementationCSS(object):
+class DOMImplementationCSS:
     """This interface allows the DOM user to create a CSSStyleSheet
     outside the context of a document. There is no way to associate
     the new CSSStyleSheet with a document in DOM Level 2.
@@ -169,14 +168,14 @@ class DOMImplementationCSS(object):
         # sometimes css_parser is picked automatically for
         # xml.dom.getDOMImplementation, so we should provide an implementation
         # see https://bitbucket.org/cthedot/css_parser/issues/69
-        import xml.dom.minidom as minidom
+        from xml.dom import minidom
         return minidom.DOMImplementation().createDocument(*args, **kwargs)
 
     def createDocumentType(self, *args, **kwargs):
         # sometimes css_parser is picked automatically for
         # xml.dom.getDOMImplementation, so we should provide an implementation
         # see https://bitbucket.org/cthedot/css_parser/issues/69
-        import xml.dom.minidom as minidom
+        from xml.dom import minidom
         return minidom.DOMImplementation().createDocumentType(*args, **kwargs)
 
     def hasFeature(self, feature, version):
@@ -346,7 +345,7 @@ def resolveImports(sheet, target=None):
                     # nested imports
                     importedSheet = resolveImports(rule.styleSheet)
                 except xml.dom.HierarchyRequestErr as e:
-                    log.warn('@import: Cannot resolve target, keeping rule: %s'
+                    log.warning('@import: Cannot resolve target, keeping rule: %s'
                              % e, neverraise=True)
                     target.add(rule)
                 else:
@@ -371,7 +370,7 @@ def resolveImports(sheet, target=None):
                                 keepimport = True
                                 break
                         if keepimport:
-                            log.warn('Cannot combine imported sheet with'
+                            log.warning('Cannot combine imported sheet with'
                                      ' given media as other rules then'
                                      ' comments or stylerules found %r,'
                                      ' keeping %r' % (r,

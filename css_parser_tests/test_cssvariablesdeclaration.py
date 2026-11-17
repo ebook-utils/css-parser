@@ -1,10 +1,9 @@
 """Testcases for css_parser.css.cssvariablesdelaration.CSSVariablesDeclaration."""
-from __future__ import absolute_import
-from __future__ import unicode_literals
 __version__ = '$Id: test_cssstyledeclaration.py 1869 2009-10-17 19:37:40Z cthedot $'
 
-from . import basetest
 import css_parser
+
+from . import basetest
 
 
 class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
@@ -72,7 +71,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
         v.cssText = 'x:0; y:1'
         keys = []
         # unsorted!
-        for i in range(0, v.length):
+        for i in range(v.length):
             keys.append(v.item(i))
         self.assertEqual(sorted(keys), ['x', 'y'])
 
@@ -253,7 +252,7 @@ class CSSVariablesDeclarationTestCase(basetest.BaseTestCase):
 
         # test with variables rule
         css_parser.ser.prefs.resolveVariables = False
-        self.assertEqual(s.cssText, '''@import "1.css";
+        self.assertEqual(s.cssText, b'''@import "1.css";
 @variables {
     over3-2-1-0: 0;
     over3-2-0: 0;
@@ -279,11 +278,11 @@ a {
     over3-2-0: var(over3-2-0);
     over3-2-1: var(over3-2-1);
     over3-2-1-0: var(over3-2-1-0)
-    }'''.encode())
+    }''')
 
         # test with resolved vars
         css_parser.ser.prefs.resolveVariables = True
-        self.assertEqual(s.cssText, '''@import "1.css";
+        self.assertEqual(s.cssText, b'''@import "1.css";
 a {
     local0: 0;
     local1: 1;
@@ -299,10 +298,10 @@ a {
     over3-2-0: 0;
     over3-2-1: 1;
     over3-2-1-0: 0
-    }'''.encode())
+    }''')
 
         s = css_parser.resolveImports(s)
-        self.assertEqual(s.cssText, '''/* START @import "1.css" */
+        self.assertEqual(s.cssText, b'''/* START @import "1.css" */
 /* START @import "3.css" */
 /* START @import "2.css" */
 a {
@@ -320,7 +319,7 @@ a {
     over3-2-0: 0;
     over3-2-1: 1;
     over3-2-1-0: 0
-    }'''.encode())
+    }''')
 
     def test_parentRule(self):
         "CSSVariablesDeclaration.parentRule"

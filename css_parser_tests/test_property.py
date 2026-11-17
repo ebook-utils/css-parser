@@ -1,11 +1,11 @@
 """Testcases for css_parser.css.property._Property."""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-import xml.dom
-from . import basetest
-import css_parser
 import sys
+import xml.dom
+
+import css_parser
+
+from . import basetest
 
 
 class PropertyTestCase(basetest.BaseTestCase):

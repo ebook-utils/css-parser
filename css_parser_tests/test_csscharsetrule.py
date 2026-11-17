@@ -1,17 +1,17 @@
 """Testcases for css_parser.css.CSSCharsetRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import re
 import xml.dom
-from . import test_cssrule
+
 import css_parser.css
+
+from . import test_cssrule
 
 
 class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSCharsetRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSCharsetRule()
         self.rRO = css_parser.css.CSSCharsetRule(readonly=True)
         self.r_type = css_parser.css.CSSCharsetRule.CHARSET_RULE
@@ -19,7 +19,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSCharsetRule.__init__()"
-        super(CSSCharsetRuleTestCase, self).test_init()
+        super().test_init()
         self.assertEqual(None, self.r.encoding)
         self.assertEqual('', self.r.cssText)
 

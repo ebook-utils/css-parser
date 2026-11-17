@@ -1,18 +1,16 @@
 """Testcases for css_parser.css.CSSImportRule"""
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
 import xml.dom
-from . import test_cssrule
+
 import css_parser
 
-from . import basetest
+from . import basetest, test_cssrule
 
 
 class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def setUp(self):
-        super(CSSImportRuleTestCase, self).setUp()
+        super().setUp()
         self.r = css_parser.css.CSSImportRule()
         self.rRO = css_parser.css.CSSImportRule(readonly=True)
         self.r_type = css_parser.css.CSSImportRule.IMPORT_RULE
@@ -20,7 +18,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
     def test_init(self):
         "CSSImportRule.__init__()"
-        super(CSSImportRuleTestCase, self).test_init()
+        super().test_init()
 
         # no init param
         self.assertEqual(None, self.r.href)
@@ -227,12 +225,12 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         sheet = parser.parseString('@import "http://example.com/yes" "name"')
 
         r = sheet.cssRules[0]
-        self.assertEqual('/**/'.encode(), r.styleSheet.cssText)
+        self.assertEqual(b'/**/', r.styleSheet.cssText)
         self.assertEqual(True, r.hrefFound)
         self.assertEqual('name', r.name)
 
         r.cssText = '@import url(http://example.com/none) "name2";'
-        self.assertEqual(''.encode(), r.styleSheet.cssText)
+        self.assertEqual(b'', r.styleSheet.cssText)
         self.assertEqual(False, r.hrefFound)
         self.assertEqual('name2', r.name)
 
@@ -360,7 +358,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir.styleSheet.parentStyleSheet, None)  # sheet
         self.assertEqual(ir.styleSheet.title, 'title')
         self.assertEqual(ir.styleSheet.cssText,
-                         '@charset "ascii";\n@import "level2/css.css" "title2";'.encode())
+                         b'@charset "ascii";\n@import "level2/css.css" "title2";')
 
         ir2 = ir.styleSheet.cssRules[1]
         self.assertEqual(ir2.href, 'level2/css.css')
@@ -372,7 +370,7 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
         self.assertEqual(ir2.styleSheet.parentStyleSheet, None)  # ir.styleSheet
         self.assertEqual(ir2.styleSheet.title, 'title2')
         self.assertEqual(ir2.styleSheet.cssText,
-                         '@charset "ascii";\na {\n    color: red\n    }'.encode())
+                         b'@charset "ascii";\na {\n    color: red\n    }')
 
         sheet = css_parser.parseString('@import "CANNOT-FIND.css";')
         ir = sheet.cssRules[0]
@@ -381,9 +379,9 @@ class CSSImportRuleTestCase(test_cssrule.CSSRuleTestCase):
 
         def fetcher(url):
             if url.endswith('level1.css'):
-                return None, '@charset "ascii"; @import "level2.css";'.encode()
+                return None, b'@charset "ascii"; @import "level2.css";'
             else:
-                return None, 'a { color: red }'.encode()
+                return None, b'a { color: red }'
 
         parser = css_parser.CSSParser(fetcher=fetcher)
 
