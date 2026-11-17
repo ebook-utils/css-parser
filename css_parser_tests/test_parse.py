@@ -189,11 +189,9 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('iso-8859-1',
              b'@charset "iso-8859-1";\n/*\\20AC */'),
         }
-        for test in tests:
-            css, encoding = test
+        for (css, encoding), (expected_encoding, cssText) in tests.items():
             sheet = css_parser.parseString(css, encoding=encoding)
-            encoding, cssText = tests[test]
-            self.assertEqual(encoding, sheet.encoding)
+            self.assertEqual(expected_encoding, sheet.encoding)
             self.assertEqual(cssText, sheet.cssText)
 
         tests = [
@@ -323,10 +321,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
             ('utf-8', 0, 'utf-8', '/*\u0287*/'.encode('utf-8'))
         }
         parser = css_parser.CSSParser()
-        for test in tests:
-            css, encoding, fetchdata = test
-            sheetencoding, importIndex, importEncoding, importText = tests[
-                test]
+        for (css, encoding, fetchdata), (sheetencoding, importIndex, importEncoding, importText) in tests.items():
 
             # use setFetcher
             parser.setFetcher(self._make_fetcher(*fetchdata))
@@ -421,8 +416,7 @@ a {
             'p {\n    color: green\n    }'
         }
 
-        for css in tests:
-            exp = tests[css]
+        for css, exp in tests.items():
             if exp is None:
                 exp = css
             s = css_parser.parseString(css)
@@ -460,8 +454,7 @@ o very long title"] {/*...*/}''':
     /*...*/
     }'''
         }
-        for css in tests:
-            exp = tests[css]
+        for css, exp in tests.items():
             if exp is None:
                 exp = css
             s = css_parser.parseString(css)

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """Python codec for CSS."""
 __docformat__ = 'restructuredtext'
 __author__ = 'Walter Doerwald'

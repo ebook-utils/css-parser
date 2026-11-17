@@ -173,9 +173,8 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         self.assertEqual(s.cssRules[1].selectorText, 'a:after')
 
         css = '@charset "iso-8859-1"; a:after { content: "ä" }'
-        t = codecs.open(name, 'w', 'iso-8859-1')
-        t.write(css)
-        t.close()
+        with codecs.open(name, 'w', 'iso-8859-1') as t:
+            t.write(css)
 
         self.assertRaises(UnicodeDecodeError, css_parser.parseFile, name,
                           'ascii')

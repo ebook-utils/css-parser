@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """encutils - encoding detection collection for Python
 
 :Version: 0.9.8
@@ -347,12 +346,10 @@ def getMetaInfo(text, log=None):
         encoding = m.get_param('charset')  # defaults to None
         if encoding:
             encoding = encoding.lower()
+        params = m.get_params()
+        media_type = params[0][0] if params else None
         if log:
-            try:
-                media_type = m.get_params()[0][0]
-                log.info('HTML META media_type: %s', media_type)
-            except Exception:
-                pass
+            log.info('HTML META media_type: %s', media_type)
             log.info('HTML META encoding: %s', encoding)
     else:
         media_type = encoding = None

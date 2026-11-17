@@ -429,9 +429,9 @@ class Property(css_parser.util.Base):
         else:
             if rule is not None and rule.type == rule.FONT_FACE_RULE:
                 profiles = [css_parser.profile.CSS3_FONT_FACE]
-                # TODO: same for @page
+            # TODO: same for @page
 
-        if self.name and self.value:
+        if self.name and self.value and self.name in css_parser.profile.knownNames:
             # TODO
             # cv = self.propertyValue
             # if cv.cssValueType == cv.CSS_VARIABLE and not cv.value:
@@ -439,34 +439,33 @@ class Property(css_parser.util.Base):
             #     css_parser.log.warn(u'No value for variable "%s" found, keeping '
             #                       u'variable.' % cv.name, neverraise=True)
 
-            if self.name in css_parser.profile.knownNames:
-                # add valid, matching, validprofiles...
-                valid, matching, validprofiles = \
-                    css_parser.profile.validateWithProfile(self.name, self.value, profiles)
+            # add valid, matching, validprofiles...
+            valid, matching, validprofiles = \
+                css_parser.profile.validateWithProfile(self.name, self.value, profiles)
 
-                if not valid:
-                    self._log.error('Property: Invalid value for '
-                                    '"{}" property: {}'.format('/'.join(validprofiles), self.value),
-                                    token=self.__nametoken,
-                                    neverraise=True)
+            if not valid:
+                self._log.error('Property: Invalid value for '
+                                '"{}" property: {}'.format('/'.join(validprofiles), self.value),
+                                token=self.__nametoken,
+                                neverraise=True)
 
-                # TODO: remove logic to profiles!
-                elif valid and not matching:  # (profiles and profiles not in validprofiles):
-                    if not profiles:
-                        notvalidprofiles = '/'.join(css_parser.profile.defaultProfiles)
-                    else:
-                        notvalidprofiles = profiles
-                    self._log.warn('Property: Not valid for profile "{}" '
-                                   'but valid "{}" value: {} '.format(notvalidprofiles, '/'.join(validprofiles),
-                                      self.value),
-                                   token=self.__nametoken,
-                                   neverraise=True)
-                    valid = False
+            # TODO: remove logic to profiles!
+            elif valid and not matching:  # (profiles and profiles not in validprofiles):
+                if not profiles:
+                    notvalidprofiles = '/'.join(css_parser.profile.defaultProfiles)
+                else:
+                    notvalidprofiles = profiles
+                self._log.warn('Property: Not valid for profile "{}" '
+                               'but valid "{}" value: {} '.format(notvalidprofiles, '/'.join(validprofiles),
+                                  self.value),
+                               token=self.__nametoken,
+                               neverraise=True)
+                valid = False
 
-                elif valid:
-                    self._log.debug('Property: Found valid "{}" value: {}'.format('/'.join(validprofiles), self.value),
-                                    token=self.__nametoken,
-                                    neverraise=True)
+            elif valid:
+                self._log.debug('Property: Found valid "{}" value: {}'.format('/'.join(validprofiles), self.value),
+                                token=self.__nametoken,
+                                neverraise=True)
 
         if self._priority not in ('', 'important'):
             valid = False

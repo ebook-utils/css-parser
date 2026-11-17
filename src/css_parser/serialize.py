@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import codecs
 
 import css_parser
@@ -368,7 +367,7 @@ class CSSSerializer:
             pad = len(str(text.count(self.prefs.lineSeparator)+1))
             out = []
             for i, line in enumerate(text.split(self.prefs.lineSeparator)):
-                out.append(('%*i: %s') % (pad, i+1, line))
+                out.append(f'{i+1:{pad}d}: {line}')
             text = self.prefs.lineSeparator.join(out)
         return text
 

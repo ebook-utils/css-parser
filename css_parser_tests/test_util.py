@@ -387,7 +387,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             'http://x': (URLError, ['ioerror']),
         }
         for url, (exception, args) in tests.items():
-            def do(url):
+            def do(url, exception=exception, args=args):
                 with patch_urlopen(url, exception=exception, args=args):
                     return _defaultFetcher(url)
 
@@ -399,7 +399,7 @@ class _readUrl_TestCase(basetest.BaseTestCase):
             'http://e3': (HTTPError, ['u', 404, 'not found', {}, None]),
         }
         for url, (exception, args) in tests.items():
-            def do(url):
+            def do(url, exception=exception, args=args):
                 with patch_urlopen(url, exception=exception, args=args):
                     return _defaultFetcher(url)
 

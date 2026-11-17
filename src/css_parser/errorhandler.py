@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import logging
 import xml.dom
 from urllib.error import HTTPError as urllib_HTTPError
@@ -64,7 +62,7 @@ class _ErrorHandler:
 
     def __getattr__(self, name):
         "use self._log items"
-        calls = ('debug', 'info', 'warn', 'error', 'critical', 'fatal')
+        calls = ('debug', 'info', 'warn', 'warning', 'error', 'critical', 'fatal')
         other = ('setLevel', 'getEffectiveLevel', 'addHandler', 'removeHandler')
 
         if name in calls:
@@ -98,7 +96,7 @@ class _ErrorHandler:
 
             if error and self.raiseExceptions and not neverraise:
                 if isinstance(error, (urllib_HTTPError, urllib_URLError)):
-                    raise
+                    raise error
                 elif issubclass(error, xml.dom.DOMException):
                     error.line = line
                     error.col = col

@@ -485,9 +485,8 @@ h1 {
     color: blue
     }''')
         }
-        for test in tests:
+        for test, (expwith, expwithout) in tests.items():
             s = css_parser.parseString(test)
-            expwith, expwithout = tests[test]
             css_parser.ser.prefs.keepUnknownAtRules = True
             self.assertEqual(s.cssText, expwith.encode())
             css_parser.ser.prefs.keepUnknownAtRules = False
@@ -520,9 +519,8 @@ h1 {
                 ('@namespace p "u";\n@namespace d "d";\np|a {\n    top: 0\n    }',
                  '@namespace p "u";\np|a {\n    top: 0\n    }'),
         }
-        for test in tests:
+        for test, (expwith, expwithout) in tests.items():
             s = css_parser.parseString(test)
-            expwith, expwithout = tests[test]
             css_parser.ser.prefs.keepUsedNamespaceRulesOnly = False
             self.assertEqual(s.cssText, expwith.encode())
             css_parser.ser.prefs.keepUsedNamespaceRulesOnly = True

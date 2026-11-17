@@ -3,6 +3,7 @@ import codecs
 import re
 import xml.dom
 from itertools import chain
+from typing import ClassVar
 from urllib.parse import urlparse, urlunparse, uses_netloc, uses_relative
 
 import css_parser
@@ -160,7 +161,7 @@ class Base(_BaseClass):
     # for more on shorthand properties see
     # http://www.dustindiaz.com/css-shorthand/
     # format: shorthand: [(propname, mandatorycheck?)*]
-    _SHORTHANDPROPERTIES: dict[str, list] = {
+    _SHORTHANDPROPERTIES: ClassVar[dict[str, list]] = {
         'background': [],
         # u'background-position': [], # list of 2 values!
         'border': [],

@@ -1,5 +1,6 @@
 
 import xml.dom
+from typing import ClassVar
 
 import css_parser
 
@@ -52,7 +53,7 @@ class CSSRule(css_parser.util.Base2):
     """:class:`css_parser.css.MarginRule` - experimental rule
     not in the offical spec"""
 
-    _typestrings = {UNKNOWN_RULE: 'UNKNOWN_RULE',
+    _typestrings: ClassVar[dict] = {UNKNOWN_RULE: 'UNKNOWN_RULE',
                     STYLE_RULE: 'STYLE_RULE',
                     CHARSET_RULE: 'CHARSET_RULE',
                     IMPORT_RULE: 'IMPORT_RULE',
@@ -165,7 +166,7 @@ class CSSRuleRules(CSSRule):
         "Set new cssRules and update contained rules refs."
         cssRules.append = self.insertRule
         cssRules.extend = self.insertRule
-        cssRules.__delitem__ == self.deleteRule
+        cssRules.__delitem__ = self.deleteRule
 
         for rule in cssRules:
             rule._parentRule = self
@@ -213,10 +214,8 @@ class CSSRuleRules(CSSRule):
             del self._cssRules[index]
 
         except IndexError:
-            raise xml.dom.IndexSizeErr('%s: %s is not a valid index '
-                                       'in the rulelist of length %i'
-                                       % (self.__class__.__name__,
-                                          index, self._cssRules.length))
+            raise xml.dom.IndexSizeErr(f'{self.__class__.__name__}: {index} is not a valid index '
+                                       f'in the rulelist of length {self._cssRules.length}')
 
     def _prepareInsertRule(self, rule, index=None):
         "return checked `index` and optional parsed `rule`"

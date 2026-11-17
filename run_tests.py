@@ -21,7 +21,7 @@ def itertests(suite):
                 stack.append(test)
                 continue
             if test.__class__.__name__ == 'ModuleImportFailure':
-                raise Exception(f'Failed to import a test module: {test}')
+                raise ImportError(f'Failed to import a test module: {test}')
             yield test
 
 

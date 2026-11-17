@@ -31,7 +31,10 @@ STYLE = 1  # <style type="text/css" [@title="..."]>...</style>
 class CSSCaptureHTMLParser(htmlparser_HTMLParser):
     """CSSCapture helper: Parse given data for link and style elements"""
     curtag = ''
-    sheets = []  # (type, [atts, cssText])
+
+    def __init__(self, *args, **kwargs):
+        self.sheets = []  # (type, [atts, cssText])
+        super().__init__(*args, **kwargs)
 
     def _loweratts(self, atts):
         return {a.lower(): v.lower() for a, v in atts}
@@ -299,14 +302,13 @@ class CSSCapture:
 
             self._log.info(f'SAVING {i+1}, {msg} {savefn!r}')
 
-            sf = open(savefn, 'wb')
-            if saveraw:
-                cssText = self._nonparsed[sheet]
-                uf = codecs.getwriter('css')(sf)
-                uf.write(cssText)
-            else:
-                sf.write(sheet.cssText)
-            sf.close()
+            with open(savefn, 'wb') as sf:
+                if saveraw:
+                    cssText = self._nonparsed[sheet]
+                    uf = codecs.getwriter('css')(sf)
+                    uf.write(cssText)
+                else:
+                    sf.write(sheet.cssText)
 
 
 def csscombine(path=None, url=None, cssText=None, href=None,

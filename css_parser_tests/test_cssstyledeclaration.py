@@ -338,9 +338,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             ('\\x', True): [('x', 'a', 'important'),
                             ('\\x', 'b', '')],
         }
-        for test in tests:
-            name, all = test
-            expected = tests[test]
+        for (name, all), expected in tests.items():
             actual = s.getProperties(name, all)
             self.assertEqual(len(expected), len(actual))
             for i, ex in enumerate(expected):
@@ -400,9 +398,9 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
             r'color: red !important; color: green !important': 'green',
             r'color: green !important; color: red': 'green',
         }
-        for test in tests:
+        for test, expected_value in tests.items():
             s = css_parser.css.CSSStyleDeclaration(cssText=test)
-            self.assertEqual(tests[test], s.getPropertyValue('color'))
+            self.assertEqual(expected_value, s.getPropertyValue('color'))
 
     def test_getPropertyPriority(self):
         "CSSStyleDeclaration.getPropertyPriority()"

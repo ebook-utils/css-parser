@@ -60,23 +60,26 @@ __all__ = [
 __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
-from .csscharsetrule import CSSCharsetRule
+# isort: off
+# Import order matters here to avoid circular import errors
+from .cssstylesheet import CSSStyleSheet
+from .cssrulelist import CSSRuleList
+from .cssrule import CSSRule
 from .csscomment import CSSComment
+from .csscharsetrule import CSSCharsetRule
 from .cssfontfacerule import CSSFontFaceRule
 from .cssimportrule import CSSImportRule
 from .cssmediarule import CSSMediaRule
 from .cssnamespacerule import CSSNamespaceRule
 from .csspagerule import CSSPageRule
-from .cssrule import CSSRule
-from .cssrulelist import CSSRuleList
-from .cssstyledeclaration import CSSStyleDeclaration
-from .cssstylerule import CSSStyleRule
-from .cssstylesheet import CSSStyleSheet
-from .cssunknownrule import CSSUnknownRule
-from .cssvariablesdeclaration import CSSVariablesDeclaration
-from .cssvariablesrule import CSSVariablesRule
 from .marginrule import MarginRule
-from .property import Property
+from .cssstylerule import CSSStyleRule
+from .cssvariablesrule import CSSVariablesRule
+from .cssunknownrule import CSSUnknownRule
 from .selector import Selector
 from .selectorlist import SelectorList
-from .value import ColorValue, CSSFunction, CSSVariable, DimensionValue, MSValue, PropertyValue, URIValue, Value
+from .cssstyledeclaration import CSSStyleDeclaration
+from .cssvariablesdeclaration import CSSVariablesDeclaration
+from .property import Property
+from .value import PropertyValue, Value, ColorValue, DimensionValue, URIValue, CSSFunction, CSSVariable, MSValue
+# isort: on

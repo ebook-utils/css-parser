@@ -118,7 +118,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                 nametokens, end = self._tokensupto2(tokenizer,
                                                     blockstartonly=True,
                                                     separateEnd=True)
-                wellformed, expected = self._parse(None,
+                wellformed, _expected = self._parse(None,
                                                    nameseq,
                                                    nametokens,
                                                    {})

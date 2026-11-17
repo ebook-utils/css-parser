@@ -1,5 +1,6 @@
 
 import re
+from typing import ClassVar
 
 from css_parser import util
 
@@ -67,7 +68,7 @@ class Profiles:
     CSS3_PAGED_MEDIA = 'CSS3 Paged Media Module'
     CSS3_TEXT = 'CSS Text Level 3'
 
-    _TOKEN_MACROS = {
+    _TOKEN_MACROS: ClassVar[dict] = {
         'ident': r'[-]?{nmstart}{nmchar}*',
         'name': r'{nmchar}+',
         'nmstart': r'[_a-z]|{nonascii}|{escape}',
@@ -87,7 +88,7 @@ class Profiles:
         'nl': r'\n|\r\n|\r|\f',
         'w': r'\s*',
     }
-    _MACROS = {
+    _MACROS: ClassVar[dict] = {
         'hexcolor': r'#[0-9a-f]{3}|#[0-9a-f]{6}',
         'rgbcolor': r'rgb\({w}{int}{w}\,{w}{int}{w}\,{w}{int}{w}\)|rgb\({w}{num}%{w}\,{w}{num}%{w}\,{w}{num}%{w}\)',
         'namedcolor': r'(transparent|orange|maroon|red|orange|yellow|olive|purple|fuchsia|white|lime|green|navy|blue|aqua|teal|black|silver|gray)',
@@ -385,7 +386,7 @@ class Profiles:
                 try:
                     # custom validation errors are caught
                     r = bool(self._profilesProperties[profile][name](value))
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 custom validators may raise anything
                     # TODO: more specific exception?
                     # Validate should not be fatal though!
                     self._log.error(e, error=Exception)
@@ -431,7 +432,7 @@ class Profiles:
                     try:
                         if validate(value):
                             return True, True, [profilename]
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 custom validators may raise anything
                         self._log.error(e, error=Exception)
 
             for profilename in (p for p in self._profileNames
@@ -442,7 +443,7 @@ class Profiles:
                     try:
                         if validate(value):
                             return True, False, [profilename]
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 custom validators may raise anything
                         self._log.error(e, error=Exception)
 
             names = []

@@ -1,5 +1,6 @@
 
 import xml.dom
+from typing import ClassVar
 
 import css_parser
 from css_parser.helper import normalize
@@ -45,7 +46,7 @@ class MediaQuery(_NewBase):  # css_parser.util.Base):
          ;
 
     """
-    MEDIA_TYPES = ['all', 'braille', 'handheld', 'print', 'projection',
+    MEDIA_TYPES: ClassVar[list] = ['all', 'braille', 'handheld', 'print', 'projection',
                    'speech', 'screen', 'tty', 'tv', 'embossed',
                    'amzn-mobi', 'amzn-kf8'  # ebooks (not in w3 spec)
                    ]

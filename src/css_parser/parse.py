@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """A validating CSSParser"""
 
 
@@ -173,9 +172,8 @@ class CSSParser:
         if not href:
             href = path2url(filename)
 
-        f = open(filename, 'rb')
-        css = f.read()
-        f.close()
+        with open(filename, 'rb') as f:
+            css = f.read()
 
         return self.parseString(css,
                                 encoding=encoding,  # read returns a str

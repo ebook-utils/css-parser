@@ -474,8 +474,8 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             rule = self._cssRules[index]
         except IndexError:
             raise xml.dom.IndexSizeErr(
-                'CSSStyleSheet: %s is not a valid index in the rulelist of '
-                'length %i' % (index, self._cssRules.length))
+                f'CSSStyleSheet: {index} is not a valid index in the rulelist of '
+                f'length {self._cssRules.length}')
         else:
             if rule.type == rule.NAMESPACE_RULE:
                 # check all namespacerules if used
@@ -799,7 +799,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
         if isinstance(cssserializer, css_parser.CSSSerializer):
             css_parser.ser = cssserializer
         else:
-            raise ValueError('Serializer must be an instance of '
+            raise ValueError('Serializer must be an instance of '  # noqa: TRY004
                              'css_parser.CSSSerializer.')
 
     @Deprecated('Set pref in ``css_parser.ser.prefs`` instead.')

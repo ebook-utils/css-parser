@@ -235,7 +235,7 @@ class SequenceTestCase(basetest.BaseTestCase):
         }
         for seqitems, results in tests.items():
             for result in results:
-                seq = Sequence(minmax=lambda: (1, 2), *seqitems)
+                seq = Sequence(*seqitems, minmax=lambda: (1, 2))
                 for t, p in result:
                     if isinstance(p, basestring):
                         self.assertRaisesMsg(ParseError, p, seq.nextProd, t)
@@ -338,8 +338,8 @@ class ProdParserTestCase(basetest.BaseTestCase):
                                      PreDef.char(':', ':')
                                      )
 
-        w, seq, store, unused = p.parse('; :', 'test', prods(),
-                                        keepS=True)
+        w, seq, _store, _unused = p.parse('; :', 'test', prods(),
+                                          keepS=True)
         self.assertTrue(w)
         self.assertEqual(3, len(seq))
 
@@ -371,7 +371,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
             prods = Choice(Sequence(p1, p2, minmax=lambda: (1, 2)),
                            p3)
             if exp is True:
-                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                wellformed, _seq, _store, _unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
                 self.assertRaisesMsg(xml.dom.SyntaxErr, f'T: {exp}',

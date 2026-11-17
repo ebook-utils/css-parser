@@ -10,7 +10,8 @@ import subprocess
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-VERSION = open('src/css_parser/__init__.py', 'rb').read().decode('utf-8')
+with open('src/css_parser/__init__.py', 'rb') as f:
+    VERSION = f.read().decode('utf-8')
 m = re.search(r"^__version__ = '(.+?)'", VERSION, flags=re.MULTILINE)
 assert m is not None
 VERSION = m.group(1)

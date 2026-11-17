@@ -484,9 +484,9 @@ class SelectorTestCase(basetest.BaseTestCase):
             ':where(p)': (0, 0, 0, 0),
             ':where(p) span': (0, 0, 0, 1),
         }
-        for text in tests:
+        for text, expected in tests.items():
             selector.selectorText = text
-            self.assertEqual(tests[text], selector.specificity, text)
+            self.assertEqual(expected, selector.specificity, text)
 
     def test_reprANDstr(self):
         "Selector.__repr__(), .__str__()"

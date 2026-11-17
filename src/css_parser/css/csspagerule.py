@@ -196,7 +196,6 @@ class CSSPageRule(cssrule.CSSRuleRules):
             return expected
 
         def IDENT(expected, seq, token, tokenizer=None):
-            ""
             val = self._tokenvalue(token)
             if 'page' == expected:
                 if self._normalize(val) == 'auto':

@@ -1,10 +1,10 @@
-#!/usr/bin/env python
 """New CSS Tokenizer (a generator)
 """
 
 import itertools
 import re
 import sys
+from typing import ClassVar
 
 from .cssproductions import MACROS, PRODUCTIONS, CSSProductions
 from .helper import normalize
@@ -24,7 +24,7 @@ class Tokenizer:
     generates a list of Token tuples:
         (Tokenname, value, startline, startcolumn)
     """
-    _atkeywords = {
+    _atkeywords: ClassVar[dict] = {
         '@font-face': CSSProductions.FONT_FACE_SYM,
         '@import': CSSProductions.IMPORT_SYM,
         '@media': CSSProductions.MEDIA_SYM,

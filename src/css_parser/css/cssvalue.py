@@ -2,6 +2,7 @@
 import math
 import re
 import xml.dom
+from typing import ClassVar
 
 import css_parser
 import css_parser.helper
@@ -45,7 +46,7 @@ class CSSValue(css_parser.util._NewBase):
     # The value is a CSSVariable.
     CSS_VARIABLE = 4
 
-    _typestrings = {0: 'CSS_INHERIT',
+    _typestrings: ClassVar[dict] = {0: 'CSS_INHERIT',
                     1: 'CSS_PRIMITIVE_VALUE',
                     2: 'CSS_VALUE_LIST',
                     3: 'CSS_CUSTOM',
@@ -244,10 +245,9 @@ class CSSValue(css_parser.util._NewBase):
                     # URI or STRING value might be a single CHAR too!
                     newseq.appendItem(item)
                     count -= 1
-                    if firstvalue:
-                        # list of IDENTs is handled as STRING!
-                        if firstvalue[1] == self._prods.IDENT:
-                            firstvalue = firstvalue[0], 'STRING'
+                    # list of IDENTs is handled as STRING!
+                    if firstvalue and firstvalue[1] == self._prods.IDENT:
+                        firstvalue = firstvalue[0], 'STRING'
 
                 elif item.value == '/':
                     # / separated items count as one
@@ -474,7 +474,7 @@ class CSSPrimitiveValue(CSSValue):
                     CSS_PX, CSS_CM, CSS_MM, CSS_IN, CSS_PT, CSS_PC)
 
     # oldtype: newType: converterfunc
-    _converter = {
+    _converter: ClassVar[dict] = {
         # cm <-> mm <-> in, 1 inch is equal to 2.54 centimeters.
         # pt <-> pc, the points used by CSS 2.1 are equal to 1/72nd of an inch.
         # pc: picas - 1 pica is equal to 12 points
@@ -528,7 +528,7 @@ class CSSPrimitiveValue(CSSValue):
     def __str__(self):
         return f"<css_parser.css.{self.__class__.__name__} object primitiveType={self.primitiveTypeString} cssText={self.cssText!r} at 0x{id(self):x}>"
 
-    _unitnames = ['CSS_UNKNOWN',
+    _unitnames: ClassVar[list] = ['CSS_UNKNOWN',
                   'CSS_NUMBER', 'CSS_PERCENTAGE',
                   'CSS_EMS', 'CSS_EXS',
                   'CSS_PX',
@@ -574,7 +574,7 @@ class CSSPrimitiveValue(CSSValue):
                                     re.UNICODE)[0],
                          'CSS_UNKNOWN')
 
-    __unitbytype = {
+    __unitbytype: ClassVar[dict] = {
         __types.NUMBER: 'CSS_NUMBER',
         __types.PERCENTAGE: 'CSS_PERCENTAGE',
         __types.STRING: 'CSS_STRING',

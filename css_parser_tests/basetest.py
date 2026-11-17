@@ -139,7 +139,7 @@ class BaseTestCase(unittest.TestCase):
                 self.assertTrue(exc_pattern.search(str(exc)),
                                 f"{callsig} raised {exc.__class__}, but the exception "
                                 f"does not match '{exc_pattern.pattern}': {str(exc)!r}")
-        except Exception:
+        except Exception:  # noqa: BLE001 any other exception is a test failure
             exc_info = sys.exc_info()
             self.fail(f"{callsig} raised an unexpected exception type: "
                       f"expected={exception}, actual={exc_info[0]}")
@@ -281,13 +281,13 @@ class GenerateTests(type):
                     def wrapper(self):
                         aobj(self, *case)
                     return wrapper
-                wrapper = make_wrapper()
-                wrapper.__name__ = str(case_name)
-                wrapper.__doc__ = "{}({})".format(test_name,
-                                              ", ".join(map(repr, case)))
+                test_func = make_wrapper()
+                test_func.__name__ = str(case_name)
+                test_func.__doc__ = "{}({})".format(test_name,
+                                                ", ".join(map(repr, case)))
                 if aobj.__doc__ is not None:
-                    wrapper.__doc__ += "\n\n" + aobj.__doc__
-                new_attrs[case_name] = wrapper
+                    test_func.__doc__ += "\n\n" + aobj.__doc__
+                new_attrs[case_name] = test_func
         return type(name, bases, new_attrs)
 
     @classmethod

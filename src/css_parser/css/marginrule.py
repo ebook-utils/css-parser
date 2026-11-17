@@ -1,5 +1,6 @@
 
 import xml.dom
+from typing import ClassVar
 
 import css_parser
 from css_parser.prodparser import Choice, PreDef, Prod, ProdParser, Sequence
@@ -53,7 +54,7 @@ class MarginRule(cssrule.CSSRule):
             content: "123";
             }
     """
-    margins = ['@top-left-corner',
+    margins: ClassVar[list] = ['@top-left-corner',
                '@top-left',
                '@top-center',
                '@top-right',

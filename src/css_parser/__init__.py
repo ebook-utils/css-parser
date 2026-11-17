@@ -1,7 +1,6 @@
-#!/usr/bin/env python
-
 import os.path
 import xml.dom
+from typing import ClassVar
 from urllib.parse import urlsplit as urllib_urlsplit
 from urllib.request import pathname2url as urllib_pathname2url
 
@@ -114,7 +113,6 @@ text_type = str
 
 # order of imports is important (partly circular)
 log = errorhandler.ErrorHandler()
-VERSION
 
 ser = CSSSerializer()
 
@@ -133,7 +131,7 @@ class DOMImplementationCSS:
     xml.dom.registerDOMImplementation which simply calls it and receives
     an instance of this class then.
     """
-    _features = [
+    _features: ClassVar[list] = [
         ('css', '1.0'),
         ('css', '2.0'),
         ('stylesheets', '1.0'),

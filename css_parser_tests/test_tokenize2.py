@@ -5,6 +5,7 @@ TODO: old tests as new ones are **not complete**!
 
 
 import sys
+from typing import ClassVar
 
 from css_parser import tokenize2
 from css_parser.tokenize2 import Tokenizer
@@ -14,7 +15,7 @@ from . import basetest
 
 class TokenizerTestCase(basetest.BaseTestCase):
 
-    testsall = {
+    testsall: ClassVar[dict] = {
         # IDENT
         'äöüß€': [('IDENT', 'äöüß€', 1, 1)],
         ' a ': [('S', ' ', 1, 1),
@@ -227,7 +228,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('S', ' ', 1, 3)],
     }
 
-    tests3 = {
+    tests3: ClassVar[dict] = {
         # UNICODE-RANGE
         ' u+0 ': [('S', ' ', 1, 1),
                    ('UNICODE-RANGE', 'u+0', 1, 2),
@@ -345,7 +346,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                             ('IDENT', '\xef\xbb\xbf', 1, 2),
                             ('S', ' ', 1, 5)], }
 
-    tests2 = {
+    tests2: ClassVar[dict] = {
         # escapes work not for a-f!
         # IMPORT_SYM
         ' @import ': [('S', ' ', 1, 1),
@@ -480,7 +481,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
     }
 
     # overwriting tests in testsall
-    tests2only = {
+    tests2only: ClassVar[dict] = {
         # LBRACE
         ' { ': [('S', ' ', 1, 1),
                  ('LBRACE', '{', 1, 2),
@@ -503,7 +504,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
                  ('S', ' ', 1, 3)],
     }
 
-    testsfullsheet = {
+    testsfullsheet: ClassVar[dict] = {
         # escape ends with explicit space but \r\n as single space
         '\\65\r\nb': [('IDENT', 'eb', 1, 1)],
 
@@ -540,7 +541,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
     }
 
     # tests if fullsheet=False is set on tokenizer
-    testsfullsheetfalse = {
+    testsfullsheetfalse: ClassVar[dict] = {
         # COMMENT incomplete
         '/*': [('CHAR', '/', 1, 1),
                 ('CHAR', '*', 1, 2)],
@@ -563,7 +564,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
     }
 
     # tests if fullsheet=True is set on tokenizer
-    testsfullsheettrue = {
+    testsfullsheettrue: ClassVar[dict] = {
         # COMMENT incomplete
         '/*': [('COMMENT', '/**/', 1, 1)],
 
@@ -619,16 +620,16 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.tests3)
         tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheetfalse)
-        for css in tests:
+        for css, expected_tokens in tests.items():
             # check token format
             tokens = tokenizer.tokenize(css)
             for i, actual in enumerate(tokens):
-                expected = tests[css][i]
+                expected = expected_tokens[i]
                 self.assertEqual(expected, actual)
 
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css))
-            self.assertEqual(len(tokens), len(tests[css]))
+            self.assertEqual(len(tokens), len(expected_tokens))
 
     def test_tokenizefullsheet(self):
         "css_parser Tokenizer().tokenize(fullsheet=True)"
@@ -641,12 +642,12 @@ class TokenizerTestCase(basetest.BaseTestCase):
         tests.update(self.tests3)
         tests.update(self.testsfullsheet)
         tests.update(self.testsfullsheettrue)
-        for css in tests:
+        for css, expected_tokens in tests.items():
             # check token format
             tokens = tokenizer.tokenize(css, fullsheet=True)
             for i, actual in enumerate(tokens):
                 try:
-                    expected = tests[css][i]
+                    expected = expected_tokens[i]
                 except IndexError:
                     # EOF is added
                     self.assertEqual(actual[0], 'EOF')
@@ -656,7 +657,7 @@ class TokenizerTestCase(basetest.BaseTestCase):
             # check if all same number of tokens
             tokens = list(tokenizer.tokenize(css, fullsheet=True))
             # EOF is added so -1
-            self.assertEqual(len(tokens) - 1, len(tests[css]))
+            self.assertEqual(len(tokens) - 1, len(expected_tokens))
 
     def test_unterminated_comment_with_stars(self):
         "unterminated comment of many stars must not cause catastrophic backtracking"
@@ -680,13 +681,12 @@ class TokenizerTestCase(basetest.BaseTestCase):
 #            self.assertRaises(exception, self.tokenizer.tokenize, css)
 
 
-class TokenizerUtilsTestCase(basetest.BaseTestCase):
+class TokenizerUtilsTestCase(basetest.BaseTestCase, metaclass=basetest.GenerateTests):
     """Tests for the util functions of tokenize"""
-    __metaclass__ = basetest.GenerateTests
 
     def gen_test_has_at(self, string, pos, text, expected):
         self.assertEqual(tokenize2.has_at(string, pos, text), expected)
-    gen_test_has_at.cases = [
+    gen_test_has_at.cases = (
         ('foo', 0, 'foo', True),
         ('foo', 0, 'f', True),
         ('foo', 1, 'o', True),
@@ -694,16 +694,16 @@ class TokenizerUtilsTestCase(basetest.BaseTestCase):
         ('foo', 4, 'foo', False),
         ('foo', 0, 'bar', False),
         ('foo', 0, 'foobar', False),
-    ]
+    )
 
     def gen_test_suffix_eq(self, string, pos, suffix, expected):
         self.assertEqual(tokenize2.suffix_eq(string, pos, suffix), expected)
-    gen_test_suffix_eq.cases = [
+    gen_test_suffix_eq.cases = (
         ('foobar', 0, 'foobar', True),
         ('foobar', 3, 'bar', True),
         ('foobar', 3, 'foo', False),
         ('foobar', 10, 'bar', False),
-    ]
+    )
 
 
 if __name__ == '__main__':

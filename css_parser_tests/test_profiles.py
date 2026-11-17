@@ -3,6 +3,7 @@ __version__ = '$Id: test_cssvalue.py 1443 2008-08-31 13:54:39Z cthedot $'
 
 import platform
 import sys
+from typing import ClassVar
 
 import css_parser
 
@@ -21,10 +22,10 @@ CSS2_FM3 = (FM3[0], CSS2[0])
 
 
 class ProfilesTestCase(basetest.BaseTestCase):
-    M1 = {
+    M1: ClassVar[dict] = {
         'testvalue': 'x'
     }
-    P1 = {
+    P1: ClassVar[dict] = {
         '-test-tokenmacro': '({num}{w}){1,2}',
         '-test-macro': '{ident}|{percentage}',
         '-test-custommacro': '{testvalue}',

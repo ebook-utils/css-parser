@@ -66,7 +66,10 @@ def pushtoken(token, tokens):
     ``tokens``"""
     # TODO: may use itertools.chain?
     yield token
-    yield from tokens
+    # Do not use yield from here as that would close tokens when this
+    # generator is closed/garbage collected, but callers continue to use tokens
+    for t in tokens:  # noqa: UP028
+        yield t
 
 
 def string(value):
