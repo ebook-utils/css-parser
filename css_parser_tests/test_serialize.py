@@ -137,8 +137,8 @@ prefix|x, a + b > c ~ d, b {
         }
         css_parser.ser.prefs.useDefaults()
         for test, exp in tests.items():
-            s = css_parser.parseString('a{x:%s}' % test)
-            self.assertEqual(('a {\n    x: %s\n    }' % exp).encode(), s.cssText)
+            s = css_parser.parseString(f'a{{x:{test}}}')
+            self.assertEqual((f'a {{\n    x: {exp}\n    }}').encode(), s.cssText)
 
     def test_level4_selector_serialization(self):
         for test, expected in {
@@ -232,8 +232,8 @@ prefix|x, a + b > c ~ d, b {
             '.1 .1 .1px .1px .1% .1% +.1 +.1 +.1px +.1px +.1% +.1% -.1 -.1 -.1px -.1px -.1% -.1%'
         }
         for test, exp in valuetests.items():
-            s = css_parser.parseString('a{x:%s}' % test)
-            self.assertEqual(('a{x:%s}' % exp).encode(), s.cssText)
+            s = css_parser.parseString(f'a{{x:{test}}}')
+            self.assertEqual((f'a{{x:{exp}}}').encode(), s.cssText)
 
     def test_defaultAtKeyword(self):
         "Preferences.defaultAtKeyword"

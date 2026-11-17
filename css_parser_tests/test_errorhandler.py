@@ -110,7 +110,7 @@ class ErrorHandlerTestCase(basetest.BaseTestCase):
 
     def test_parsevalidation(self):
         style = 'color: 1'
-        t = 'a { %s }' % style
+        t = f'a {{ {style} }}'
 
         css_parser.log.setLevel(logging.DEBUG)
 

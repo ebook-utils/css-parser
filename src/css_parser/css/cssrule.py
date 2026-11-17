@@ -83,8 +83,7 @@ class CSSRule(css_parser.util.Base2):
             self._atkeyword = atkeyword
             self._keyword = keyword
         else:
-            self._log.error('%s: Invalid atkeyword for this rule: %r' %
-                            (self.atkeyword, keyword),
+            self._log.error(f'{self.atkeyword}: Invalid atkeyword for this rule: {keyword!r}',
                             error=xml.dom.InvalidModificationErr)
 
     atkeyword = property(lambda self: self._atkeyword, _setAtkeyword,
@@ -160,8 +159,7 @@ class CSSRuleRules(CSSRule):
 
     def __iter__(self):
         """Generator iterating over these rule's cssRules."""
-        for rule in self._cssRules:
-            yield rule
+        yield from self._cssRules
 
     def _setCssRules(self, cssRules):
         "Set new cssRules and update contained rules refs."
@@ -206,9 +204,8 @@ class CSSRuleRules(CSSRule):
                     index = i
                     break
             else:
-                raise xml.dom.IndexSizeErr("%s: Not a rule in "
-                                           "this rule'a cssRules list: %s"
-                                           % (self.__class__.__name__, index))
+                raise xml.dom.IndexSizeErr(f"{self.__class__.__name__}: Not a rule in "
+                                           f"this rule'a cssRules list: {index}")
 
         try:
             # detach
@@ -230,10 +227,8 @@ class CSSRuleRules(CSSRule):
             index = len(self._cssRules)
 
         elif index < 0 or index > self._cssRules.length:
-            raise xml.dom.IndexSizeErr('%s: Invalid index %s for '
-                                       'CSSRuleList with a length of %s.'
-                                       % (self.__class__.__name__,
-                                          index, self._cssRules.length))
+            raise xml.dom.IndexSizeErr(f'{self.__class__.__name__}: Invalid index {index} for '
+                                       f'CSSRuleList with a length of {self._cssRules.length}.')
 
         # check and optionally parse rule
         # Under Python 2.x this was basestring but ...
@@ -242,8 +237,7 @@ class CSSRuleRules(CSSRule):
             tempsheet.cssText = rule
             if len(tempsheet.cssRules) != 1 or (tempsheet.cssRules and
                                                 not isinstance(tempsheet.cssRules[0], css_parser.css.CSSRule)):
-                self._log.error('%s: Invalid Rule: %s' % (self.__class__.__name__,
-                                                          rule))
+                self._log.error(f'{self.__class__.__name__}: Invalid Rule: {rule}')
                 return False, False
             rule = tempsheet.cssRules[0]
 
@@ -254,8 +248,7 @@ class CSSRuleRules(CSSRule):
             return True, True
 
         elif not isinstance(rule, css_parser.css.CSSRule):
-            self._log.error('%s: Not a CSSRule: %s' % (rule,
-                                                       self.__class__.__name__))
+            self._log.error(f'{rule}: Not a CSSRule: {self.__class__.__name__}')
             return False, False
 
         return rule, index

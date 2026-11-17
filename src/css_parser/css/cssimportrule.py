@@ -74,23 +74,14 @@ class CSSImportRule(cssrule.CSSRule):
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "css_parser.css.%s(href=%r, mediaText=%r, name=%r)" % (
-            self.__class__.__name__,
-            self.href,
-            mediaText,
-            self.name)
+        return f"css_parser.css.{self.__class__.__name__}(href={self.href!r}, mediaText={mediaText!r}, name={self.name!r})"
 
     def __str__(self):
         if self._usemedia:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "<css_parser.css.%s object href=%r mediaText=%r name=%r at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.href,
-                  mediaText,
-                  self.name,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object href={self.href!r} mediaText={mediaText!r} name={self.name!r} at 0x{id(self):x}>"
 
     _usemedia = property(lambda self: self.media.mediaText not in ('', 'all'),
                          doc="if self.media is used (or simply empty)")
@@ -118,8 +109,7 @@ class CSSImportRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.IMPORT_SYM:
-            self._log.error('CSSImportRule: No CSSImportRule found: %s' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSImportRule: No CSSImportRule found: {self._valuestr(cssText)}',
                             error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
@@ -179,8 +169,7 @@ class CSSImportRule(cssrule.CSSRule):
                     if lastval != ';' and lasttyp not in ('EOF',
                                                           self._prods.STRING):
                         new['wellformed'] = False
-                        self._log.error('CSSImportRule: No ";" found: %s' %
-                                        self._valuestr(cssText), token=token)
+                        self._log.error(f'CSSImportRule: No ";" found: {self._valuestr(cssText)}', token=token)
 
                     newMedia = css_parser.stylesheets.MediaList(parentRule=self)
                     newMedia.mediaText = mediatokens
@@ -189,8 +178,7 @@ class CSSImportRule(cssrule.CSSRule):
                         seq.append(newMedia, 'media')
                     else:
                         new['wellformed'] = False
-                        self._log.error('CSSImportRule: Invalid MediaList: %s' %
-                                        self._valuestr(cssText), token=token)
+                        self._log.error(f'CSSImportRule: Invalid MediaList: {self._valuestr(cssText)}', token=token)
 
                     if lasttyp == self._prods.STRING:
                         # name
@@ -232,13 +220,11 @@ class CSSImportRule(cssrule.CSSRule):
             # post conditions
             if not new['href']:
                 ok = False
-                self._log.error('CSSImportRule: No href found: %s' %
-                                self._valuestr(cssText))
+                self._log.error(f'CSSImportRule: No href found: {self._valuestr(cssText)}')
 
             if expected != 'EOF':
                 ok = False
-                self._log.error('CSSImportRule: No ";" found: %s' %
-                                self._valuestr(cssText))
+                self._log.error(f'CSSImportRule: No ";" found: {self._valuestr(cssText)}')
 
             # set all
             if ok:
@@ -312,8 +298,7 @@ class CSSImportRule(cssrule.CSSRule):
 
             except (OSError, ValueError) as e:
                 self._log.warn('CSSImportRule: While processing imported '
-                               'style sheet href=%s: %r'
-                               % (self.href, e), neverraise=True)
+                               f'style sheet href={self.href}: {e!r}', neverraise=True)
 
             else:
                 # used by resolveImports if to keep unprocessed href
@@ -378,7 +363,7 @@ class CSSImportRule(cssrule.CSSRule):
                 self.styleSheet.title = name
 
         else:
-            self._log.error('CSSImportRule: Not a valid name: %s' % name)
+            self._log.error(f'CSSImportRule: Not a valid name: {name}')
 
     name = property(lambda self: self._name, _setName,
                     doc="An optional name for the imported sheet.")

@@ -69,12 +69,10 @@ class MediaQuery(_NewBase):  # css_parser.util.Base):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.stylesheets.%s(mediaText=%r)" % (
-            self.__class__.__name__, self.mediaText)
+        return f"css_parser.stylesheets.{self.__class__.__name__}(mediaText={self.mediaText!r})"
 
     def __str__(self):
-        return "<css_parser.stylesheets.%s object mediaText=%r at 0x%x>" % (
-            self.__class__.__name__, self.mediaText, id(self))
+        return f"<css_parser.stylesheets.{self.__class__.__name__} object mediaText={self.mediaText!r} at 0x{id(self):x}>"
 
     def _getMediaText(self):
         return css_parser.ser.do_stylesheets_mediaquery(self)
@@ -175,7 +173,7 @@ class MediaQuery(_NewBase):  # css_parser.util.Base):
                        )
 
         # parse
-        ok, seq, store, unused = ProdParser().parse(mediaText,
+        ok, seq, store, _unused = ProdParser().parse(mediaText,
                                                     'MediaQuery',
                                                     prods)
         self._wellformed = ok
@@ -213,7 +211,7 @@ class MediaQuery(_NewBase):  # css_parser.util.Base):
 
         if nmediaType not in self.MEDIA_TYPES:
             self._log.warn(
-                'MediaQuery: Unknown media type: "%s".' % mediaType,
+                f'MediaQuery: Unknown media type: "{mediaType}".',
                 error=UnknownMediaType, neverraise=True)
 
         # set

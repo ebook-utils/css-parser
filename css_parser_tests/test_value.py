@@ -327,7 +327,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                   '/* comment */  green  /* comment */',
                   '/* comment *//**/  green  /* comment *//**/',
                   ):
-            sheet = css_parser.parseString('body {color: %s; }' % t)
+            sheet = css_parser.parseString(f'body {{color: {t}; }}')
             p = sheet.cssRules[0].style.getProperties()[0]
             self.assertEqual(p.valid, True)
         for t in ('gree',
@@ -337,7 +337,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
                   '/* comment */  gree  /* comment */',
                   '/* comment *//**/  gree  /* comment *//**/',
                   ):
-            sheet = css_parser.parseString('body {color: %s; }' % t)
+            sheet = css_parser.parseString(f'body {{color: {t}; }}')
             p = sheet.cssRules[0].style.getProperties()[0]
             self.assertEqual(p.valid, False)
 
@@ -348,7 +348,7 @@ class PropertyValueTestCase(basetest.BaseTestCase):
             'url(a': 'url(a)'
         }
         for v, exp in tests.items():
-            s = css_parser.parseString('a { background: %s' % v)
+            s = css_parser.parseString(f'a {{ background: {v}')
             v = s.cssRules[0].style.background
             self.assertEqual(v, exp)
 

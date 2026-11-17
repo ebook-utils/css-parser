@@ -10,8 +10,7 @@ from . import basetest
 __version__ = '$Id: test_csscharsetrule.py 1356 2008-07-13 17:29:09Z cthedot $'
 
 
-if sys.version_info.major > 2:
-    basestring = str
+basestring = str
 
 
 class ProdTestCase(basetest.BaseTestCase):
@@ -344,7 +343,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
         self.assertTrue(w)
         self.assertEqual(3, len(seq))
 
-        w, seq, store, unused = p.parse('; :', 'test', prods(),
+        w, seq, _store, _unused = p.parse('; :', 'test', prods(),
                                         keepS=False)
         self.assertTrue(w)
         self.assertEqual(2, len(seq))
@@ -375,7 +374,7 @@ class ProdParserTestCase(basetest.BaseTestCase):
                 wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
+                self.assertRaisesMsg(xml.dom.SyntaxErr, f'T: {exp}',
                                      ProdParser().parse, text, 'T', prods)
 
         tests = {'1 3': True,
@@ -396,10 +395,10 @@ class ProdParserTestCase(basetest.BaseTestCase):
                                     p2),
                              p3)
             if exp is True:
-                wellformed, seq, store, unused = ProdParser().parse(text, 'T', prods)
+                wellformed, _seq, _store, _unused = ProdParser().parse(text, 'T', prods)
                 self.assertEqual(wellformed, exp)
             else:
-                self.assertRaisesMsg(xml.dom.SyntaxErr, 'T: %s' % exp,
+                self.assertRaisesMsg(xml.dom.SyntaxErr, f'T: {exp}',
                                      ProdParser().parse, text, 'T', prods)
 
 

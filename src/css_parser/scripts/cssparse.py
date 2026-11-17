@@ -54,7 +54,7 @@ def main(args=None):
         print(sheet.cssText)
     else:
         for filename in params:
-            sys.stderr.write('=== CSS FILE: "%s" ===\n' % filename)
+            sys.stderr.write(f'=== CSS FILE: "{filename}" ===\n')
             sheet = p.parseFile(filename, encoding=options.encoding)
             print(sheet.cssText)
             print()

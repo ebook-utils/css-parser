@@ -49,7 +49,7 @@ class _BaseClass:
         "Raise xml.dom.NoModificationAllowedErr if rule/... is readonly"
         if hasattr(self, '_readonly') and self._readonly:
             raise xml.dom.NoModificationAllowedErr(
-                '%s is readonly.' % self.__class__)
+                f'{self.__class__} is readonly.')
             return True
         return False
 
@@ -355,7 +355,7 @@ class Base(_BaseClass):
 
         if tokenizer:
             for token in tokenizer:
-                typ, val, line, col = token
+                typ, val, _line, _col = token
                 if 'EOF' == typ:
                     resulttokens.append(token)
                     break
@@ -470,8 +470,7 @@ class Base(_BaseClass):
             def tokens():
                 "Build new tokenizer including initialtoken"
                 yield initialtoken
-                for item in tokenizer:
-                    yield item
+                yield from tokenizer
             fulltokenizer = chain([initialtoken], tokenizer)
         else:
             fulltokenizer = tokenizer
@@ -484,7 +483,7 @@ class Base(_BaseClass):
                     expected = p(expected, seq, token, tokenizer)
                 else:
                     wellformed = False
-                    self._log.error('Unexpected token (%s, %s, %s, %s)' % token)
+                    self._log.error('Unexpected token ({}, {}, {}, {})'.format(*token))
         return wellformed, expected
 
 
@@ -570,8 +569,8 @@ class Seq:
 
     def __repr__(self):
         "returns a repr same as a list of tuples of (value, type)"
-        return 'css_parser.%s.%s([\n    %s], readonly=%r)' % (
-                self.__module__, self.__class__.__name__, ',\n    '.join(['%r' % item for item in self._seq]),
+        return 'css_parser.{}.{}([\n    {}], readonly={!r})'.format(
+                self.__module__, self.__class__.__name__, ',\n    '.join([f'{item!r}' for item in self._seq]),
                 self._readonly)
 
     def __str__(self):
@@ -584,9 +583,7 @@ class Seq:
             else:
                 vals.append(repr(v))
 
-        return "<css_parser.%s.%s object length=%r items=%r readonly=%r at 0x%x>" % (
-            self.__module__, self.__class__.__name__, len(self),
-            vals, self._readonly, id(self))
+        return f"<css_parser.{self.__module__}.{self.__class__.__name__} object length={len(self)!r} items={vals!r} readonly={self._readonly!r} at 0x{id(self):x}>"
 
     def __delitem__(self, i):
         del self._seq[i]
@@ -683,9 +680,7 @@ class Item:
     col = property(lambda self: self.__col)
 
     def __repr__(self):
-        return "%s.%s(value=%r, type=%r, line=%r, col=%r)" % (
-            self.__module__, self.__class__.__name__,
-            self.__value, self.__type, self.__line, self.__col)
+        return f"{self.__module__}.{self.__class__.__name__}(value={self.__value!r}, type={self.__type!r}, line={self.__line!r}, col={self.__col!r})"
 
 
 class ListSeq:
@@ -719,8 +714,7 @@ class ListSeq:
 
     def __iter__(self):
         def gen():
-            for x in self.seq:
-                yield x
+            yield from self.seq
         return gen()
 
     def __len__(self):
@@ -758,7 +752,7 @@ class _Namespaces:
         self._log = log
 
     def __repr__(self):
-        return "%r" % self.namespaces
+        return f"{self.namespaces!r}"
 
     def __contains__(self, prefix):
         return prefix in self.namespaces
@@ -777,14 +771,14 @@ class _Namespaces:
                 self.parentStyleSheet.deleteRule(i)
                 return
 
-        self._log.error('Prefix %s not found.' % prefix,
+        self._log.error(f'Prefix {prefix} not found.',
                         error=xml.dom.NamespaceErr)
 
     def __getitem__(self, prefix):
         try:
             return self.namespaces[prefix]
         except KeyError:
-            self._log.error('Prefix %s not found.' % prefix,
+            self._log.error(f'Prefix {prefix} not found.',
                             error=xml.dom.NamespaceErr)
 
     def __iter__(self):
@@ -848,11 +842,10 @@ class _Namespaces:
         for prefix, uri in list(self.namespaces.items()):
             if uri == namespaceURI:
                 return prefix
-        raise IndexError('NamespaceURI %s not found.' % namespaceURI)
+        raise IndexError(f'NamespaceURI {namespaceURI} not found.')
 
     def __str__(self):
-        return "<css_parser.util.%s object parentStyleSheet=%r at 0x%x>" % (
-            self.__class__.__name__, str(self.parentStyleSheet), id(self))
+        return f"<css_parser.util.{self.__class__.__name__} object parentStyleSheet={str(self.parentStyleSheet)!r} at 0x{id(self):x}>"
 
 
 class _SimpleNamespaces(_Namespaces):
@@ -873,12 +866,10 @@ class _SimpleNamespaces(_Namespaces):
                           doc='Dict Wrapper for self.sheets @namespace rules.')
 
     def __str__(self):
-        return "<css_parser.util.%s object namespaces=%r at 0x%x>" % (
-            self.__class__.__name__, self.namespaces, id(self))
+        return f"<css_parser.util.{self.__class__.__name__} object namespaces={self.namespaces!r} at 0x{id(self):x}>"
 
     def __repr__(self):
-        return "css_parser.util.%s(%r)" % (
-                self.__class__.__name__, self.namespaces)
+        return f"css_parser.util.{self.__class__.__name__}({self.namespaces!r})"
 
 
 def _readUrl(url, fetcher=None, overrideEncoding=None, parentEncoding=None):

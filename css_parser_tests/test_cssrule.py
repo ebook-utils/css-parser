@@ -143,7 +143,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                 self.assertEqual(rule.parentStyleSheet, mr.parentStyleSheet)
                 self.assertEqual(rule.type, rules[i][1])
 
-        cssText = '@media all { %s }' % ''.join(r[0] for r in rules)
+        cssText = '@media all {{ {} }}'.format(''.join(r[0] for r in rules))
         # parsing
         s = css_parser.parseString(cssText)
         test(s)
@@ -213,8 +213,8 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                  '@font-face {}',
                  '@import url(x);',
                  '@media all {}',
-                 '@namespace "x";'
-                 '@page {}',
+                 ('@namespace "x";'
+                 '@page {}'),
                  '@unknown;',
                  '@variables;',
                  # TODO:
@@ -227,7 +227,7 @@ class CSSRuleTestCase(basetest.BaseTestCase):
                 continue
 
             if test.startswith(startwithspace):
-                test = ' %s' % test
+                test = f' {test}'
 
             self.assertRaises(xml.dom.InvalidModificationErr,
                               self.r._setCssText, test)

@@ -239,8 +239,7 @@ def getUrls(sheet):
         "recursive generator to find all CSSStyleDeclarations"
         if hasattr(base, 'cssRules'):
             for rule in base.cssRules:
-                for s in styleDeclarations(rule):
-                    yield s
+                yield from styleDeclarations(rule)
         elif hasattr(base, 'style'):
             yield base.style
 
@@ -274,8 +273,7 @@ def replaceUrls(sheetOrStyle, replacer, ignoreImportRules=False):
         "recursive generator to find all CSSStyleDeclarations"
         if hasattr(base, 'cssRules'):
             for rule in base.cssRules:
-                for s in styleDeclarations(rule):
-                    yield s
+                yield from styleDeclarations(rule)
         elif hasattr(base, 'style'):
             yield base.style
         elif isinstance(sheetOrStyle, css.CSSStyleDeclaration):
@@ -314,11 +312,11 @@ def resolveImports(sheet, target=None):
 
     def getReplacer(targetbase):
         "Return a replacer which uses base to return adjusted URLs"
-        basesch, baseloc, basepath, basequery, basefrag = urllib_urlsplit(targetbase)
-        basepath, basepathfilename = os.path.split(basepath)
+        _basesch, _baseloc, basepath, _basequery, _basefrag = urllib_urlsplit(targetbase)
+        basepath, _basepathfilename = os.path.split(basepath)
 
         def replacer(uri):
-            scheme, location, path, query, fragment = urllib_urlsplit(uri)
+            scheme, location, path, _query, _fragment = urllib_urlsplit(uri)
             if not scheme and not location and not path.startswith('/'):
                 # relative
                 path, filename = os.path.split(path)
@@ -334,23 +332,21 @@ def resolveImports(sheet, target=None):
         if rule.type == rule.CHARSET_RULE:
             pass
         elif rule.type == rule.IMPORT_RULE:
-            log.info('Processing @import %r' % rule.href, neverraise=True)
+            log.info(f'Processing @import {rule.href!r}', neverraise=True)
 
             if rule.hrefFound:
                 # add all rules of @import to current sheet
-                target.add(css.CSSComment(cssText='/* START @import "%s" */'
-                                          % rule.href))
+                target.add(css.CSSComment(cssText=f'/* START @import "{rule.href}" */'))
 
                 try:
                     # nested imports
                     importedSheet = resolveImports(rule.styleSheet)
                 except xml.dom.HierarchyRequestErr as e:
-                    log.warning('@import: Cannot resolve target, keeping rule: %s'
-                             % e, neverraise=True)
+                    log.warning(f'@import: Cannot resolve target, keeping rule: {e}', neverraise=True)
                     target.add(rule)
                 else:
                     # adjust relative URI references
-                    log.info('@import: Adjusting paths for %r' % rule.href,
+                    log.info(f'@import: Adjusting paths for {rule.href!r}',
                              neverraise=True)
                     replaceUrls(importedSheet,
                                 getReplacer(rule.href),
@@ -372,17 +368,15 @@ def resolveImports(sheet, target=None):
                         if keepimport:
                             log.warning('Cannot combine imported sheet with'
                                      ' given media as other rules then'
-                                     ' comments or stylerules found %r,'
-                                     ' keeping %r' % (r,
-                                                      rule.cssText),
+                                     f' comments or stylerules found {r!r},'
+                                     f' keeping {rule.cssText!r}',
                                      neverraise=True)
                             target.add(rule)
                             continue
 
                         # wrap in @media if media is not `all`
                         log.info('@import: Wrapping some rules in @media '
-                                 ' to keep media: %s'
-                                 % rule.media.mediaText, neverraise=True)
+                                 f' to keep media: {rule.media.mediaText}', neverraise=True)
                         mediaproxy = css.CSSMediaRule(rule.media.mediaText)
 
                     for r in importedSheet:
@@ -397,8 +391,7 @@ def resolveImports(sheet, target=None):
 
             else:
                 # keep @import as it is
-                log.error('Cannot get referenced stylesheet %r, keeping rule'
-                          % rule.href, neverraise=True)
+                log.error(f'Cannot get referenced stylesheet {rule.href!r}, keeping rule', neverraise=True)
                 target.add(rule)
 
         else:

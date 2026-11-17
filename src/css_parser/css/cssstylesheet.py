@@ -70,28 +70,22 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
 
     def __iter__(self):
         "Generator which iterates over cssRules."
-        for rule in self._cssRules:
-            yield rule
+        yield from self._cssRules
 
     def __repr__(self):
         if self.media:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "css_parser.css.%s(href=%r, media=%r, title=%r)" % (
-            self.__class__.__name__,
-            self.href, mediaText, self.title)
+        return f"css_parser.css.{self.__class__.__name__}(href={self.href!r}, media={mediaText!r}, title={self.title!r})"
 
     def __str__(self):
         if self.media:
             mediaText = self.media.mediaText
         else:
             mediaText = None
-        return "<css_parser.css.%s object encoding=%r href=%r "\
-               "media=%r title=%r namespaces=%r at 0x%x>" % (
-                   self.__class__.__name__, self.encoding, self.href,
-                   mediaText, self.title, self.namespaces.namespaces,
-                   id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object encoding={self.encoding!r} href={self.href!r} "\
+               f"media={mediaText!r} title={self.title!r} namespaces={self.namespaces.namespaces!r} at 0x{id(self):x}>"
 
     def _cleanNamespaces(self):
         "Remove all namespace rules with same namespaceURI but last."
@@ -298,7 +292,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
         newseq = []
 
         # ['CHARSET', 'IMPORT', ('VAR', NAMESPACE'), ('PAGE', 'MEDIA', ruleset)]
-        wellformed, expected = self._parse(0, newseq, tokenizer,
+        wellformed, _expected = self._parse(0, newseq, tokenizer,
                                            {'S': S,
                                             'COMMENT': COMMENT,
                                             'CDO': lambda *ignored: None,
@@ -474,8 +468,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                     break
             else:
                 raise xml.dom.IndexSizeErr("CSSStyleSheet: Not a rule in"
-                                           " this sheets'a cssRules list: %s"
-                                           % index)
+                                           f" this sheets'a cssRules list: {index}")
 
         try:
             rule = self._cssRules[index]
@@ -540,8 +533,8 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
             index = len(self._cssRules)
         elif index < 0 or index > self._cssRules.length:
             raise xml.dom.IndexSizeErr(
-                'CSSStyleSheet: Invalid index %s for CSSRuleList with a '
-                'length of %s.' % (index, self._cssRules.length))
+                f'CSSStyleSheet: Invalid index {index} for CSSRuleList with a '
+                f'length of {self._cssRules.length}.')
             return
 
         if isinstance(rule, string_type):
@@ -569,7 +562,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
 
             if len(tempsheet.cssRules) != newrulescount or (not isinstance(
                tempsheet.cssRules[newruleindex], css_parser.css.CSSRule)):
-                self._log.error('CSSStyleSheet: Not a CSSRule: %s' % rule)
+                self._log.error(f'CSSStyleSheet: Not a CSSRule: {rule}')
                 return
             rule = tempsheet.cssRules[newruleindex]
             rule._parentStyleSheet = None  # done later?
@@ -657,8 +650,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @import here,'
                             ' found @namespace, @variables, @media, @page or'
-                            ' CSSStyleRule before index %s.' %
-                            index,
+                            f' CSSStyleRule before index {index}.',
                             error=xml.dom.HierarchyRequestErr)
                         return
             self._cssRules.insert(index, rule)
@@ -688,8 +680,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                     if r.type in (r.CHARSET_RULE, r.IMPORT_RULE):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @namespace here,'
-                            ' found @charset or @import after index %s.' %
-                            index,
+                            f' found @charset or @import after index {index}.',
                             error=xml.dom.HierarchyRequestErr)
                         return
                 # before @variables @media @page @font-face and stylerule
@@ -702,8 +693,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @namespace here,'
                             ' found @variables, @media, @page or CSSStyleRule'
-                            ' before index %s.' %
-                            index,
+                            f' before index {index}.',
                             error=xml.dom.HierarchyRequestErr)
                         return
 
@@ -743,8 +733,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @variables here,'
                             ' found @charset, @import or @namespace after'
-                            ' index %s.' %
-                            index,
+                            f' index {index}.',
                             error=xml.dom.HierarchyRequestErr)
                         return
                 # before @media @page @font-face and stylerule
@@ -756,8 +745,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                         self._log.error(
                             'CSSStylesheet: Cannot insert @variables here,'
                             ' found @media, @page or CSSStyleRule'
-                            ' before index %s.' %
-                            index,
+                            f' before index {index}.',
                             error=xml.dom.HierarchyRequestErr)
                         return
 
@@ -777,8 +765,7 @@ class CSSStyleSheet(css_parser.stylesheets.StyleSheet):
                                   r.NAMESPACE_RULE):
                         self._log.error(
                             'CSSStylesheet: Cannot insert rule here, found '
-                            '@charset, @import or @namespace before index %s.'
-                            % index, error=xml.dom.HierarchyRequestErr)
+                            f'@charset, @import or @namespace before index {index}.', error=xml.dom.HierarchyRequestErr)
                         return
                 self._cssRules.insert(index, rule)
 

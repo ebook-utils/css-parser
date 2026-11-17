@@ -60,11 +60,10 @@ class MediaList(css_parser.util._NewListBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.stylesheets.%s(mediaText=%r)" % (self.__class__.__name__, self.mediaText)
+        return f"css_parser.stylesheets.{self.__class__.__name__}(mediaText={self.mediaText!r})"
 
     def __str__(self):
-        return "<css_parser.stylesheets.%s object mediaText=%r at 0x%x>" % (
-                self.__class__.__name__, self.mediaText, id(self))
+        return f"<css_parser.stylesheets.{self.__class__.__name__} object mediaText={self.mediaText!r} at 0x{id(self):x}>"
 
     def __iter__(self):
         for item in self._seq:
@@ -107,7 +106,7 @@ class MediaList(css_parser.util._NewListBase):
 
                          )
         # parse
-        ok, seq, store, unused = ProdParser().parse(mediaText,
+        ok, seq, _store, _unused = ProdParser().parse(mediaText,
                                                     'MediaList',
                                                     prods, debug="ml")
 
@@ -209,8 +208,7 @@ class MediaList(css_parser.util._NewListBase):
 
             if 'all' in mts:
                 self._log.info(
-                    'MediaList: Ignoring new medium %r as already specified "all" (set ``mediaText`` instead).' %
-                    newMedium, error=xml.dom.InvalidModificationErr)
+                    f'MediaList: Ignoring new medium {newMedium!r} as already specified "all" (set ``mediaText`` instead).', error=xml.dom.InvalidModificationErr)
 
             elif newmt and newmt in mts:
                 # might be empty
@@ -253,7 +251,7 @@ class MediaList(css_parser.util._NewListBase):
                 del self[i]
                 break
         else:
-            self._log.error('"%s" not in this MediaList' % oldMedium,
+            self._log.error(f'"{oldMedium}" not in this MediaList',
                             error=xml.dom.NotFoundErr)
 
     def item(self, index):

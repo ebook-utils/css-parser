@@ -1,17 +1,12 @@
 
 import re
-import sys
 from contextlib import contextmanager
 from email.message import Message
+from urllib.error import HTTPError, URLError
 
 from css_parser.util import Base, LazyRegex, ListSeq, _defaultFetcher, _readUrl
 
 from . import basetest
-
-if sys.version_info.major > 2:
-    from urllib.error import HTTPError, URLError
-else:
-    from urllib2 import HTTPError, URLError
 
 """Testcases for css_parser.util"""
 
@@ -422,7 +417,7 @@ class TestLazyRegex(basetest.BaseTestCase):
                    'finditer', 'pattern', 'flags', 'groups', 'groupindex', ]
         for method in methods:
             self.assertTrue(hasattr(self.lazyre, method),
-                            'expected %r public attribute' % method)
+                            f'expected {method!r} public attribute')
 
     def test_ensure(self):
         self.assertIsNone(self.lazyre.matcher)

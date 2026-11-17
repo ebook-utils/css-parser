@@ -84,21 +84,10 @@ class Property(css_parser.util.Base):
             self.priority = priority
 
     def __repr__(self):
-        return "css_parser.css.%s(name=%r, value=%r, priority=%r)" % (
-            self.__class__.__name__,
-            self.literalname,
-            self.propertyValue.cssText,
-            self.priority)
+        return f"css_parser.css.{self.__class__.__name__}(name={self.literalname!r}, value={self.propertyValue.cssText!r}, priority={self.priority!r})"
 
     def __str__(self):
-        return "<%s.%s object name=%r value=%r priority=%r valid=%r at 0x%x>" \
-               % (self.__class__.__module__,
-                  self.__class__.__name__,
-                  self.name,
-                  self.propertyValue.cssText,
-                  self.priority,
-                  self.valid,
-                  id(self))
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} object name={self.name!r} value={self.propertyValue.cssText!r} priority={self.priority!r} valid={self.valid!r} at 0x{id(self):x}>"
 
     def _isValidating(self):
         """Return True if validation is enabled."""
@@ -143,12 +132,10 @@ class Property(css_parser.util.Base):
             colontoken = nametokens.pop()
             if self._tokenvalue(colontoken) != ':':
                 wellformed = False
-                self._log.error('Property: No ":" after name found: %s' %
-                                self._valuestr(cssText), colontoken)
+                self._log.error(f'Property: No ":" after name found: {self._valuestr(cssText)}', colontoken)
             elif not nametokens:
                 wellformed = False
-                self._log.error('Property: No property name found: %s' %
-                                self._valuestr(cssText), colontoken)
+                self._log.error(f'Property: No property name found: {self._valuestr(cssText)}', colontoken)
 
             if valuetokens:
                 if self._tokenvalue(valuetokens[-1]) == '!':
@@ -156,8 +143,7 @@ class Property(css_parser.util.Base):
                     prioritytokens.insert(0, valuetokens.pop(-1))
             else:
                 wellformed = False
-                self._log.error('Property: No property value found: %s' %
-                                self._valuestr(cssText), colontoken)
+                self._log.error(f'Property: No property value found: {self._valuestr(cssText)}', colontoken)
 
             if wellformed:
                 self.wellformed = True
@@ -171,8 +157,7 @@ class Property(css_parser.util.Base):
                     self.validate()
 
         else:
-            self._log.error('Property: No property name found: %s' %
-                            self._valuestr(cssText))
+            self._log.error(f'Property: No property name found: {self._valuestr(cssText)}')
 
     cssText = property(fget=_getCssText, fset=_setCssText,
                        doc="A parsable textual representation.")
@@ -200,7 +185,7 @@ class Property(css_parser.util.Base):
                 return expected
 
         newseq = []
-        wellformed, expected = self._parse(expected='name',
+        wellformed, _expected = self._parse(expected='name',
                                            seq=newseq,
                                            tokenizer=self._tokenize2(name),
                                            productions={'IDENT': _ident})
@@ -216,8 +201,7 @@ class Property(css_parser.util.Base):
 
         if not new['literalname']:
             wellformed = False
-            self._log.error('Property: No name found: %s' %
-                            self._valuestr(name), token=token)
+            self._log.error(f'Property: No name found: {self._valuestr(name)}', token=token)
 
         if wellformed:
             self.wellformed = True
@@ -312,7 +296,7 @@ class Property(css_parser.util.Base):
             return
 
         if isinstance(priority, string_type) and 'important' == self._normalize(priority):
-            priority = '!%s' % priority
+            priority = f'!{priority}'
 
         # for closures: must be a mutable
         new = {'literalpriority': '',
@@ -342,7 +326,7 @@ class Property(css_parser.util.Base):
                 return expected
 
         newseq = []
-        wellformed, expected = self._parse(expected='!',
+        wellformed, _expected = self._parse(expected='!',
                                            seq=newseq,
                                            tokenizer=self._tokenize2(priority),
                                            productions={'CHAR': _char,
@@ -352,8 +336,7 @@ class Property(css_parser.util.Base):
         # post conditions
         if priority and not new['literalpriority']:
             wellformed = False
-            self._log.info('Property: Invalid priority: %s' %
-                           self._valuestr(priority))
+            self._log.info(f'Property: Invalid priority: {self._valuestr(priority)}')
 
         if wellformed:
             self.wellformed = self.wellformed and wellformed
@@ -362,8 +345,7 @@ class Property(css_parser.util.Base):
             self.seqs[2] = newseq
             # validate priority
             if self._priority not in ('', 'important'):
-                self._log.error('Property: No CSS priority value: %s' %
-                                self._priority)
+                self._log.error(f'Property: No CSS priority value: {self._priority}')
 
     priority = property(lambda self: self._priority, _setPriority,
                         doc="Priority of this property.")
@@ -445,9 +427,8 @@ class Property(css_parser.util.Base):
         except AttributeError:
             pass
         else:
-            if rule is not None:
-                if rule.type == rule.FONT_FACE_RULE:
-                    profiles = [css_parser.profile.CSS3_FONT_FACE]
+            if rule is not None and rule.type == rule.FONT_FACE_RULE:
+                profiles = [css_parser.profile.CSS3_FONT_FACE]
                 # TODO: same for @page
 
         if self.name and self.value:
@@ -465,8 +446,7 @@ class Property(css_parser.util.Base):
 
                 if not valid:
                     self._log.error('Property: Invalid value for '
-                                    '"%s" property: %s'
-                                    % ('/'.join(validprofiles), self.value),
+                                    '"{}" property: {}'.format('/'.join(validprofiles), self.value),
                                     token=self.__nametoken,
                                     neverraise=True)
 
@@ -476,17 +456,15 @@ class Property(css_parser.util.Base):
                         notvalidprofiles = '/'.join(css_parser.profile.defaultProfiles)
                     else:
                         notvalidprofiles = profiles
-                    self._log.warn('Property: Not valid for profile "%s" '
-                                   'but valid "%s" value: %s '
-                                   % (notvalidprofiles, '/'.join(validprofiles),
+                    self._log.warn('Property: Not valid for profile "{}" '
+                                   'but valid "{}" value: {} '.format(notvalidprofiles, '/'.join(validprofiles),
                                       self.value),
                                    token=self.__nametoken,
                                    neverraise=True)
                     valid = False
 
                 elif valid:
-                    self._log.debug('Property: Found valid "%s" value: %s'
-                                    % ('/'.join(validprofiles), self.value),
+                    self._log.debug('Property: Found valid "{}" value: {}'.format('/'.join(validprofiles), self.value),
                                     token=self.__nametoken,
                                     neverraise=True)
 

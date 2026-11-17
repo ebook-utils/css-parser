@@ -287,10 +287,10 @@ class CSSutilsTestCase(basetest.BaseTestCase):
         urls = set(css_parser.getUrls(css_parser.parseString(css)))
         self.assertEqual(
             urls,
-            set([
+            {
                 "im1", "im2", "im3", "im4", "im5", "a", "b", "c", 'f.woff',
                 'f.svg#f', 'f.otf'
-            ]))
+            })
         css_parser.ser.prefs.keepAllProperties = False
 
     def test_replaceUrls(self):

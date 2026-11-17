@@ -28,8 +28,8 @@ def _escapecss(e):
     E.g. the german umlaut 'ä' is escaped as \E4
     """
     s = e.object[e.start:e.end]
-    return ''.join([r'\%s ' % str(hex(ord(x)))[2:]  # remove 0x from hex
-                    .upper() for x in s]), e.end
+    return ''.join([r'\{} '.format(str(hex(ord(x)))[2:]  # remove 0x from hex
+                    .upper()) for x in s]), e.end
 
 
 codecs.register_error('escapecss', _escapecss)
@@ -131,14 +131,14 @@ class Preferences:
                 self.__setattr__(key, value)
 
     def __repr__(self):
-        return "css_parser.css.%s(%s)" % (
+        return "css_parser.css.{}({})".format(
                 self.__class__.__name__, ', '.join([
-                    '\n    %s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]))
+                    f'\n    {p}={self.__getattribute__(p)!r}' for p in self.__dict__]))
 
     def __str__(self):
-        return "<css_parser.css.%s object %s at 0x%x" % (
+        return "<css_parser.css.{} object {} at 0x{:x}".format(
                 self.__class__.__name__, ' '.join([
-                    '%s=%r' % (p, self.__getattribute__(p)) for p in self.__dict__]), id(self))
+                    f'{p}={self.__getattribute__(p)!r}' for p in self.__dict__]), id(self))
 
     def useDefaults(self):
         "Reset all preference options to their default value."
@@ -348,7 +348,7 @@ class CSSSerializer:
         if not self.prefs.lineSeparator:
             return text
         return self.prefs.lineSeparator.join(
-            ['%s%s' % (level * self.prefs.indent, line)
+            [f'{level * self.prefs.indent}{line}'
                 for line in text.split(self.prefs.lineSeparator) if line]
         )
 
@@ -381,7 +381,7 @@ class CSSSerializer:
                 val[1] == val[2] and\
                 val[3] == val[4] and\
                 val[5] == val[6]:
-            return '#%s%s%s' % (val[1], val[3], val[5])
+            return f'#{val[1]}{val[3]}{val[5]}'
         return val
 
     def _valid(self, x):
@@ -432,7 +432,7 @@ class CSSSerializer:
         no comments or other things allowed!
         """
         if rule.wellformed:
-            return '@charset %s;' % helper.string(rule.encoding)
+            return f'@charset {helper.string(rule.encoding)};'
         else:
             return ''
 
@@ -456,8 +456,8 @@ class CSSSerializer:
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s' % variablesText, indent=1)
-            out.append('%s' % self.prefs.lineSeparator)
+            out.append(f'{variablesText}', indent=1)
+            out.append(f'{self.prefs.lineSeparator}')
             out.append('}')
             return out.value()
         else:
@@ -481,8 +481,8 @@ class CSSSerializer:
                 # assume comments {
                 out.append(item.value, item.type)
             out.append('{')
-            out.append('%s' % styleText, indent=1)
-            out.append('%s' % self.prefs.lineSeparator)
+            out.append(f'{styleText}', indent=1)
+            out.append(f'{self.prefs.lineSeparator}')
             out.append('}')
             return out.value()
         else:
@@ -643,14 +643,14 @@ class CSSSerializer:
 
             if styleText:
                 if not rulesText:
-                    out.append('%s' % styleText, indent=1)
-                    out.append('%s' % self.prefs.lineSeparator)
+                    out.append(f'{styleText}', indent=1)
+                    out.append(f'{self.prefs.lineSeparator}')
                 else:
                     out.append(styleText, type_='styletext', indent=1, space=False)
 
             if rulesText:
                 out.append(rulesText, indent=1)
-                out.append('%s' % self.prefs.lineSeparator)
+                out.append(f'{self.prefs.lineSeparator}')
 
             out.append('}', indent=False)
 
@@ -699,8 +699,7 @@ class CSSSerializer:
                 # ok for now:
                 out.append(self._atkeyword(rule), type_='ATKEYWORD')
                 out.append('{')
-                out.append('%s%s' % (self._indentblock(styleText, self._level+1),
-                                     self.prefs.lineSeparator))
+                out.append(f'{self._indentblock(styleText, self._level+1)}{self.prefs.lineSeparator}')
                 out.append('}')
                 return out.value()
 
@@ -768,10 +767,10 @@ class CSSSerializer:
         # TODO: sort selectors!
         if self.prefs.indentSpecificities:
             # subselectorlist?
-            elements = set([s.element for s in rule.selectorList])
+            elements = {s.element for s in rule.selectorList}
             specitivities = [s.specificity for s in rule.selectorList]
             for selector in self._selectors:
-                lastelements = set([s.element for s in selector])
+                lastelements = {s.element for s in selector}
                 if elements.issubset(lastelements):
                     # higher specificity?
                     lastspecitivities = [s.specificity for s in selector]
@@ -798,11 +797,10 @@ class CSSSerializer:
             self._level -= 1
         if not styleText:
             if self.prefs.keepEmptyRules:
-                return '%s%s{}' % (selectorText,
-                                   self.prefs.paranthesisSpacer)
+                return f'{selectorText}{self.prefs.paranthesisSpacer}{{}}'
         else:
             return self._indentblock(
-                '%s%s{%s%s%s%s}' % (
+                '{}{}{{{}{}{}{}}}'.format(
                     selectorText,
                     self.prefs.paranthesisSpacer,
                     self.prefs.lineSeparator,
@@ -822,7 +820,7 @@ class CSSSerializer:
                     out.append(part.selectorText)
                 else:
                     out.append(part)  # should not happen
-            sep = ',%s' % self.prefs.listItemSpacer
+            sep = f',{self.prefs.listItemSpacer}'
             return sep.join(out)
         else:
             return ''
@@ -857,7 +855,7 @@ class CSSSerializer:
                             if comb:
                                 text = comb + self.prefs.selectorCombinatorSpacer + text
                             parts.append(text)
-                        sep = ',%s' % self.prefs.listItemSpacer
+                        sep = f',{self.prefs.listItemSpacer}'
                         inner = sep.join(parts)
                     else:
                         inner = self.do_css_SelectorList(val.selector_list)
@@ -878,7 +876,7 @@ class CSSSerializer:
                             except IndexError:
                                 prefix = ''
 
-                        out.append('%s|%s' % (prefix, name), type_, space=False)
+                        out.append(f'{prefix}|{name}', type_, space=False)
                 else:
                     out.append(val, type_, space=False, keepS=True)
 
@@ -1082,7 +1080,7 @@ class CSSSerializer:
                     # cut off after . which is zero anyway
                     val = text_type(int(value.value))
                 elif self.prefs.omitLeadingZero and -1 < value.value < 1:
-                    v = self._strip_zeros('%f' % value.value)  # issue #27
+                    v = self._strip_zeros(f'{value.value:f}')  # issue #27
                     val = v
                     if value._sign == '-':
                         val = v[0] + v[2:]
@@ -1090,7 +1088,7 @@ class CSSSerializer:
                         val = v[1:]
                 else:
 
-                    val = self._strip_zeros('%f' % value.value)  # issue #27
+                    val = self._strip_zeros(f'{value.value:f}')  # issue #27
 
                 # keep '+' if given
                 if value.value != 0 and value._sign == '+':

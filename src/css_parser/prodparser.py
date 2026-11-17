@@ -110,17 +110,16 @@ class Choice:
                     optional = True
             if not optional:
                 # None matched but also None is optional
-                raise NoMatch('No match for %s in %s' % (token, self))
+                raise NoMatch(f'No match for {token} in {self}')
                     # raise ParseError(u'No match in %s for %s' % (self, token))
         elif token:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<css_parser.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
-            self.__class__.__name__, self.__str__(), self.optional, id(self))
+        return f"<css_parser.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
-        return 'Choice(%s)' % ', '.join([str(x) for x in self._prods])
+        return 'Choice({})'.format(', '.join([str(x) for x in self._prods]))
 
 
 class Sequence:
@@ -215,26 +214,25 @@ class Sequence:
                 continue
 
             elif round < self._min or self._roundstarted:  # or (round == 0 and self._min == 0):
-                raise Missing('Missing token for production %s' % p)
+                raise Missing(f'Missing token for production {p}')
 
             elif not token:
                 if self._roundstarted:
-                    raise Missing('Missing token for production %s' % p)
+                    raise Missing(f'Missing token for production {p}')
                 else:
                     raise Done()
 
             else:
-                raise NoMatch('No match for %s in %s' % (token, self))
+                raise NoMatch(f'No match for {token} in {self}')
 
         if token:
             raise Exhausted('Extra token')
 
     def __repr__(self):
-        return "<css_parser.prodsparser.%s object sequence=%r optional=%r at 0x%x>" % (
-            self.__class__.__name__, self.__str__(), self.optional, id(self))
+        return f"<css_parser.prodsparser.{self.__class__.__name__} object sequence={self.__str__()!r} optional={self.optional!r} at 0x{id(self):x}>"
 
     def __str__(self):
-        return 'Sequence(%s)' % ', '.join([str(x) for x in self._prods])
+        return 'Sequence({})'.format(', '.join([str(x) for x in self._prods]))
 
 
 class Prod:
@@ -314,7 +312,7 @@ class Prod:
         else:
             self.toSeq = lambda t, tokens: (t[0], t[1])
 
-        if hasattr(toStore, '__call__'):
+        if callable(toStore):
             self.toStore = toStore
         elif toStore:
             self.toStore = makeToStore(toStore)
@@ -326,7 +324,7 @@ class Prod:
         """Return if token matches."""
         if not token:
             return False
-        type_, val, line, col = token
+        type_, val, _line, _col = token
         return self.match(type_, val)
 
     def reset(self):
@@ -336,8 +334,7 @@ class Prod:
         return self._name
 
     def __repr__(self):
-        return "<css_parser.prodsparser.%s object name=%r at 0x%x>" % (
-            self.__class__.__name__, self._name, id(self))
+        return f"<css_parser.prodsparser.{self.__class__.__name__} object name={self._name!r} at 0x{id(self):x}>"
 
 
 # global tokenizer as there is only one!
@@ -501,7 +498,7 @@ class ProdParser:
             elif type_ == self.types.INVALID:
                 # invalidate parse
                 wellformed = False
-                self._log.error('Invalid token: %r' % (token,))
+                self._log.error(f'Invalid token: {token!r}')
                 break
 
             elif type_ == 'EOF':
@@ -542,7 +539,7 @@ class ProdParser:
 
                     else:
                         wellformed = False
-                        self._log.error('%s: %s: %r' % (name, e, token))
+                        self._log.error(f'{name}: {e}: {token!r}')
                     break
 
                 except ParseError as e:
@@ -554,7 +551,7 @@ class ProdParser:
 
                     else:
                         wellformed = False
-                        self._log.error('%s: %s: %r' % (name, e, token))
+                        self._log.error(f'{name}: {e}: {token!r}')
                     break
 
                 else:
@@ -619,12 +616,12 @@ class ProdParser:
                     # last was a S operator which may End a Sequence, then ok
                     if hasattr(lastprod, 'mayEnd') and not lastprod.mayEnd:
                         wellformed = False
-                        self._log.error('%s: %s' % (name, e))
+                        self._log.error(f'{name}: {e}')
 
                 except ParseError as e:
                     prod = None
                     wellformed = False
-                    self._log.error('%s: %s' % (name, e))
+                    self._log.error(f'{name}: {e}')
 
                 else:
                     if prods[-1].optional:
@@ -635,8 +632,7 @@ class ProdParser:
 
                 if prod and not prod.optional:
                     wellformed = False
-                    self._log.error('%s: Missing token for production %r'
-                                    % (name, text_type(prod)))
+                    self._log.error(f'{name}: Missing token for production {text_type(prod)!r}')
                     break
                 elif len(prods) > 1:
                     # nested exhausted, next in parent

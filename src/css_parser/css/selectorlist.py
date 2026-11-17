@@ -52,14 +52,11 @@ class SelectorList(css_parser.util.Base, css_parser.util.ListSeq):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "css_parser.css.%s(selectorText=%r)" % (self.__class__.__name__, st)
+        return f"css_parser.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object selectorText=%r _namespaces=%r at " \
-               "0x%x>" % (self.__class__.__name__,
-                          self.selectorText,
-                          self._namespaces,
-                          id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object selectorText={self.selectorText!r} _namespaces={self._namespaces!r} at " \
+               f"0x{id(self):x}>"
 
     def __setitem__(self, index, newSelector):
         """Overwrite ListSeq.__setitem__
@@ -202,20 +199,17 @@ class SelectorList(css_parser.util.Base, css_parser.util.ListSeq):
                     newseq.append(selector)
                 else:
                     wellformed = False
-                    self._log.error('SelectorList: Invalid Selector: %s' %
-                                    self._valuestr(selectortokens))
+                    self._log.error(f'SelectorList: Invalid Selector: {self._valuestr(selectortokens)}')
             else:
                 break
 
         # post condition
         if ',' == expected:
             wellformed = False
-            self._log.error('SelectorList: Cannot end with ",": %r' %
-                            self._valuestr(selectorText))
+            self._log.error(f'SelectorList: Cannot end with ",": {self._valuestr(selectorText)!r}')
         elif expected:
             wellformed = False
-            self._log.error('SelectorList: Unknown Syntax: %r' %
-                            self._valuestr(selectorText))
+            self._log.error(f'SelectorList: Unknown Syntax: {self._valuestr(selectorText)!r}')
         if wellformed:
             self.seq = newseq
 

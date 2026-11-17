@@ -99,8 +99,7 @@ class MarginRule(cssrule.CSSRule):
         n = self._normalize(margin)
 
         if n not in MarginRule.margins:
-            self._log.error('Invalid margin @keyword for this %s rule: %r' %
-                            (self.margin, margin),
+            self._log.error(f'Invalid margin @keyword for this {self.margin} rule: {margin!r}',
                             error=xml.dom.InvalidModificationErr)
 
         else:
@@ -115,15 +114,11 @@ class MarginRule(cssrule.CSSRule):
     atkeyword = margin
 
     def __repr__(self):
-        return "css_parser.css.%s(margin=%r, style=%r)" % (
-                self.__class__.__name__, self.margin, self.style.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(margin={self.margin!r}, style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object margin=%r style=%r "\
-               "at 0x%x>" % (self.__class__.__name__,
-                             self.margin,
-                             self.style.cssText,
-                             id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object margin={self.margin!r} style={self.style.cssText!r} "\
+               f"at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -171,7 +166,7 @@ class MarginRule(cssrule.CSSRule):
                          PreDef.char('CLOSE', '}', stopAndKeep=True)
                          )
         # parse
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, store, _unused = ProdParser().parse(cssText,
                                                     'MarginRule',
                                                     prods)
 
@@ -183,8 +178,7 @@ class MarginRule(cssrule.CSSRule):
                 # may raise:
                 self.margin = store['margin'].value
             else:
-                self._log.error('No margin @keyword for this %s rule' %
-                                self.margin,
+                self._log.error(f'No margin @keyword for this {self.margin} rule',
                                 error=xml.dom.InvalidModificationErr)
 
             # new empty style

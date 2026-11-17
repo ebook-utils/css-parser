@@ -58,16 +58,10 @@ class CSSFontFaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(style=%r)" % (
-            self.__class__.__name__,
-            self.style.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object style=%r valid=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.style.cssText,
-            self.valid,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object style={self.style.cssText!r} valid={self.valid!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -93,8 +87,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.FONT_FACE_SYM:
-            self._log.error('CSSFontFaceRule: No CSSFontFaceRule found: %s' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSFontFaceRule: No CSSFontFaceRule found: {self._valuestr(cssText)}',
                             error=xml.dom.InvalidModificationErr)
         else:
             newStyle = CSSStyleDeclaration(parentRule=self)
@@ -106,14 +99,13 @@ class CSSFontFaceRule(cssrule.CSSRule):
             if self._tokenvalue(brace) != '{':
                 ok = False
                 self._log.error('CSSFontFaceRule: No start { of style '
-                                'declaration found: %r'
-                                % self._valuestr(cssText), brace)
+                                f'declaration found: {self._valuestr(cssText)!r}', brace)
 
             # parse stuff before { which should be comments and S only
             new = {'wellformed': True}
             newseq = self._tempSeq()
 
-            beforewellformed, expected = self._parse(expected=':',
+            beforewellformed, _expected = self._parse(expected=':',
                                                      seq=newseq, tokenizer=self._tokenize2(beforetokens),
                                                      productions={})
             ok = ok and beforewellformed and new['wellformed']
@@ -126,8 +118,7 @@ class CSSFontFaceRule(cssrule.CSSRule):
             if val != '}' and type_ != 'EOF':
                 ok = False
                 self._log.error('CSSFontFaceRule: No "}" after style '
-                                'declaration found: %r'
-                                % self._valuestr(cssText))
+                                f'declaration found: {self._valuestr(cssText)!r}')
 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:

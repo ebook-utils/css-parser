@@ -39,7 +39,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             else:
                 self.assertEqual(enc.lower(), r.encoding)
                 self.assertEqual(
-                    '@charset "%s";' % enc.lower(), r.cssText)
+                    f'@charset "{enc.lower()}";', r.cssText)
 
         for enc in (' ascii ', ' ascii', 'ascii '):
             self.assertRaisesEx(xml.dom.SyntaxErr,
@@ -57,7 +57,7 @@ class CSSCharsetRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.r.encoding = enc
             self.assertEqual(enc.lower(), self.r.encoding)
             self.assertEqual(
-                '@charset "%s";' % enc.lower(), self.r.cssText)
+                f'@charset "{enc.lower()}";', self.r.cssText)
 
         for enc in (None, ' ascii ', ' ascii', 'ascii '):
             self.assertRaisesEx(xml.dom.SyntaxErr,

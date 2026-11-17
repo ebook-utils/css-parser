@@ -62,10 +62,10 @@ def main(args=None):
         c.saveto(saveto, saveraw=options.saveraw, minified=options.minified)
     else:
         for i, s in enumerate(stylesheetlist):
-            print('''%s.
-    encoding: %r
-    title: %r
-    href: %r''' % (i + 1, s.encoding, s.title, s.href))
+            print(f'''{i + 1}.
+    encoding: {s.encoding!r}
+    title: {s.title!r}
+    href: {s.href!r}''')
 
 
 if __name__ == "__main__":

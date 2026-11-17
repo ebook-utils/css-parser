@@ -55,8 +55,8 @@ class Tokenizer:
                 productions = PRODUCTIONS
             tokenmatches = self._compile_productions(self._expand_macros(macros,
                                                                          productions))
-            commentmatcher = [x[1] for x in tokenmatches if x[0] == 'COMMENT'][0]
-            urimatcher = [x[1] for x in tokenmatches if x[0] == 'URI'][0]
+            commentmatcher = next(x[1] for x in tokenmatches if x[0] == 'COMMENT')
+            urimatcher = next(x[1] for x in tokenmatches if x[0] == 'URI')
             _TOKENIZER_CACHE[hash_key] = (tokenmatches, commentmatcher, urimatcher)
 
         self.tokenmatches = tokenmatches
@@ -69,7 +69,7 @@ class Tokenizer:
     def _expand_macros(self, macros, productions):
         """returns macro expanded productions, order of productions is kept"""
         def macro_value(m):
-            return '(?:%s)' % macros[m.groupdict()['macro']]
+            return '(?:{})'.format(macros[m.groupdict()['macro']])
         expanded = []
         for key, value in productions:
             while re.search(r'{[a-zA-Z][a-zA-Z0-9-]*}', value):
@@ -82,7 +82,7 @@ class Tokenizer:
         """compile productions into callable match objects, order is kept"""
         compiled = []
         for key, value in expanded_productions:
-            compiled.append((key, re.compile('(?:%s)' % value, re.UNICODE).match))
+            compiled.append((key, re.compile(f'(?:{value})', re.UNICODE).match))
         return compiled
 
     def push(self, *tokens):
@@ -146,8 +146,7 @@ class Tokenizer:
         _orig_text = text
         while pos < _len_text:
             # do pushed tokens before new ones
-            for pushed in self._pushed:
-                yield pushed
+            yield from self._pushed
 
             # speed test for most used CHARs, sadly . not possible :(
             c = text[pos]
@@ -164,7 +163,7 @@ class Tokenizer:
                     if (fullsheet and name == 'CHAR' and
                             has_at(text, pos, '/*')):
                         # before CHAR production test for incomplete comment
-                        possiblecomment = '%s*/' % text[pos:]
+                        possiblecomment = f'{text[pos:]}*/'
                         match = self.commentmatcher(possiblecomment)
                         if match and self._doComments:
                             yield ('COMMENT', possiblecomment, line, col)
@@ -192,14 +191,14 @@ class Tokenizer:
                             if ('INVALID' == name and
                                     suffix_eq(text, pos, found)):
                                 # complete INVALID to STRING with start char " or '
-                                name, found = 'STRING', '%s%s' % (found, found[0])
+                                name, found = 'STRING', f'{found}{found[0]}'
 
                             elif 'FUNCTION' == name and\
                                  'url(' == _normalize(found):
                                 # url( is a FUNCTION if incomplete sheet
                                 # FUNCTION production MUST BE after URI production
                                 for end in ("')", '")', ')'):
-                                    possibleuri = '%s%s' % (text[pos:], end)
+                                    possibleuri = f'{text[pos:]}{end}'
                                     match = self.urimatcher(possibleuri)
                                     if match:
                                         name, found = 'URI', match.group(0)

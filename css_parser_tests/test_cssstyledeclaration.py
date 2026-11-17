@@ -148,11 +148,11 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         }
         css_parser.ser.prefs.keepAllProperties = False
         for test, exp in tests.items():
-            sh = css_parser.parseString('a { %s }' % test)
+            sh = css_parser.parseString(f'a {{ {test} }}')
             if exp is None:
-                exp = '%s' % test
+                exp = f'{test}'
             elif exp != '':
-                exp = '%s' % exp
+                exp = f'{exp}'
             self.assertEqual(exp, sh.cssRules[0].style.cssText)
 
         css_parser.ser.prefs.useDefaults()
@@ -597,7 +597,7 @@ color: green;''': 'voice-family: inherit;\ncolor: green',
         ]
         for case, expected in cases:
             s = css_parser.css.CSSStyleDeclaration(cssText=case)
-            msg = '%r should be %s' % (case,
+            msg = '{!r} should be {}'.format(case,
                                        'valid' if expected else 'invalid')
             self.assertEqual(s.valid, expected, msg)
 

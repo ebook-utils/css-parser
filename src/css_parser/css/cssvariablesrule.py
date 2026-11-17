@@ -69,18 +69,11 @@ class CSSVariablesRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(mediaText=%r, variables=%r)" % (
-            self.__class__.__name__,
-            self._media.mediaText,
-            self.variables.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(mediaText={self._media.mediaText!r}, variables={self.variables.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object mediaText=%r variables=%r valid=%r " \
-               "at 0x%x>" % (self.__class__.__name__,
-                             self._media.mediaText,
-                             self.variables.cssText,
-                             self.valid,
-                             id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object mediaText={self._media.mediaText!r} variables={self.variables.cssText!r} valid={self.valid!r} " \
+               f"at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -117,8 +110,7 @@ class CSSVariablesRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.VARIABLES_SYM:
-            self._log.error('CSSVariablesRule: No CSSVariablesRule found: %s' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSVariablesRule: No CSSVariablesRule found: {self._valuestr(cssText)}',
                             error=xml.dom.InvalidModificationErr)
         else:
             newVariables = CSSVariablesDeclaration(parentRule=self)
@@ -130,14 +122,13 @@ class CSSVariablesRule(cssrule.CSSRule):
             if self._tokenvalue(brace) != '{':
                 ok = False
                 self._log.error('CSSVariablesRule: No start { of variable '
-                                'declaration found: %r'
-                                % self._valuestr(cssText), brace)
+                                f'declaration found: {self._valuestr(cssText)!r}', brace)
 
             # parse stuff before { which should be comments and S only
             new = {'wellformed': True}
             newseq = self._tempSeq()  # []
 
-            beforewellformed, expected = self._parse(expected=':',
+            beforewellformed, _expected = self._parse(expected=':',
                                                      seq=newseq, tokenizer=self._tokenize2(beforetokens),
                                                      productions={})
             ok = ok and beforewellformed and new['wellformed']
@@ -151,8 +142,7 @@ class CSSVariablesRule(cssrule.CSSRule):
             if val != '}' and type_ != 'EOF':
                 ok = False
                 self._log.error('CSSVariablesRule: No "}" after variables '
-                                'declaration found: %r'
-                                % self._valuestr(cssText))
+                                f'declaration found: {self._valuestr(cssText)!r}')
 
             nonetoken = self._nexttoken(tokenizer)
             if nonetoken:

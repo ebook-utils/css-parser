@@ -62,15 +62,10 @@ class CSSCharsetRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(encoding=%r)" % (
-            self.__class__.__name__,
-            self.encoding)
+        return f"css_parser.css.{self.__class__.__name__}(encoding={self.encoding!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object encoding=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.encoding,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object encoding={self.encoding!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """The parsable textual representation."""
@@ -108,15 +103,13 @@ class CSSCharsetRule(cssrule.CSSRule):
         encoding = self._stringtokenvalue(encodingtoken)
         if self._prods.STRING != encodingtype or not encoding:
             wellformed = False
-            self._log.error('CSSCharsetRule: no encoding found; %r.' %
-                            self._valuestr(cssText))
+            self._log.error(f'CSSCharsetRule: no encoding found; {self._valuestr(cssText)!r}.')
 
         semicolon = self._tokenvalue(self._nexttoken(tokenizer))
         EOFtype = self._type(self._nexttoken(tokenizer))
         if ';' != semicolon or EOFtype not in ('EOF', None):
             wellformed = False
-            self._log.error('CSSCharsetRule: Syntax Error: %r.' %
-                            self._valuestr(cssText))
+            self._log.error(f'CSSCharsetRule: Syntax Error: {self._valuestr(cssText)!r}.')
 
         if wellformed:
             self.encoding = encoding
@@ -144,13 +137,12 @@ class CSSCharsetRule(cssrule.CSSRule):
         if not encodingtoken or unexpected or\
            self._prods.IDENT != self._type(encodingtoken):
             self._log.error('CSSCharsetRule: Syntax Error in encoding value '
-                            '%r.' % encoding)
+                            f'{encoding!r}.')
         else:
             try:
                 codecs.lookup(encoding)
             except LookupError:
-                self._log.error('CSSCharsetRule: Unknown (Python) encoding %r.'
-                                % encoding)
+                self._log.error(f'CSSCharsetRule: Unknown (Python) encoding {encoding!r}.')
             else:
                 self._encoding = encoding.lower()
 

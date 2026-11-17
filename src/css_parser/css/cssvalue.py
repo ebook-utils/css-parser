@@ -67,22 +67,18 @@ class CSSValue(css_parser.util._NewBase):
             if isinstance(cssText, int):
                 cssText = text_type(cssText)  # if it is an integer
             elif isinstance(cssText, float):
-                cssText = '%f' % cssText  # if it is a floating point number
+                cssText = f'{cssText:f}'  # if it is a floating point number
 
             self.cssText = cssText
 
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object cssValueTypeString=%r cssText=%r at "\
-               "0x%x>" % (self.__class__.__name__,
-                          self.cssValueTypeString,
-                          self.cssText,
-                          id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object cssValueTypeString={self.cssValueTypeString!r} cssText={self.cssText!r} at "\
+               f"0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         """
@@ -227,7 +223,7 @@ class CSSValue(css_parser.util._NewBase):
                                        term,
                                        minmax=lambda: (0, None)))
         # parse
-        wellformed, seq, store, notused = ProdParser().parse(cssText,
+        wellformed, seq, _store, _notused = ProdParser().parse(cssText,
                                                              'CSSValue',
                                                              valueprods,
                                                              keepS=True)
@@ -286,8 +282,7 @@ class CSSValue(css_parser.util._NewBase):
 
             if not firstvalue:
                 self._log.error(
-                    'CSSValue: Unknown syntax or no value: %r.' %
-                    self._valuestr(cssText))
+                    f'CSSValue: Unknown syntax or no value: {self._valuestr(cssText)!r}.')
             else:
                 # ok and set
                 self._setSeq(newseq)
@@ -531,11 +526,7 @@ class CSSPrimitiveValue(CSSValue):
                                                 readonly=readonly)
 
     def __str__(self):
-        return "<css_parser.css.%s object primitiveType=%s cssText=%r at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.primitiveTypeString,
-                  self.cssText,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object primitiveType={self.primitiveTypeString} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     _unitnames = ['CSS_UNKNOWN',
                   'CSS_NUMBER', 'CSS_PERCENTAGE',
@@ -567,7 +558,7 @@ class CSSPrimitiveValue(CSSValue):
                  'ms': 'CSS_MS', 's': 'CSS_S',
                  'hz': 'CSS_HZ', 'khz': 'CSS_KHZ'
                  }
-        val, dim = CSSPrimitiveValue._reNumDim.findall(css_parser.helper.normalize(value))[0]
+        _val, dim = CSSPrimitiveValue._reNumDim.findall(css_parser.helper.normalize(value))[0]
         return units.get(dim, 'CSS_DIMENSION')
 
     def _unitFUNCTION(value):
@@ -626,7 +617,7 @@ class CSSPrimitiveValue(CSSValue):
         try:
             return self._unitnames[type]
         except (IndexError, TypeError):
-            return '%r (UNKNOWN TYPE)' % type
+            return f'{type!r} (UNKNOWN TYPE)'
 
     def _getNumDim(self, value=None):
         "Split self._value in numerical and dimension part."
@@ -643,7 +634,7 @@ class CSSPrimitiveValue(CSSValue):
                 val = int(val)
         except ValueError:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue: No float value %r' % self._value[0])
+                f'CSSPrimitiveValue: No float value {self._value[0]!r}')
 
         return val, dim
 
@@ -670,7 +661,7 @@ class CSSPrimitiveValue(CSSValue):
             raise xml.dom.InvalidAccessErr(
                 'unitType Parameter is not a float type')
 
-        val, dim = self._getNumDim()
+        val, _dim = self._getNumDim()
 
         if unitType is not None and self.primitiveType != unitType:
             # convert if needed
@@ -678,9 +669,7 @@ class CSSPrimitiveValue(CSSValue):
                 val = self._converter[self.primitiveType, unitType](val)
             except KeyError:
                 raise xml.dom.InvalidAccessErr(
-                    'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
-                    % (self.primitiveTypeString,
-                       self._getCSSPrimitiveTypeString(unitType)))
+                    f'CSSPrimitiveValue: Cannot coerce primitiveType {self.primitiveTypeString!r} to {self._getCSSPrimitiveTypeString(unitType)!r}')
 
         if val == int(val):
             val = int(val)
@@ -712,30 +701,26 @@ class CSSPrimitiveValue(CSSValue):
         self._checkReadonly()
         if unitType not in self._floattypes:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue: unitType %r is not a float type' %
-                self._getCSSPrimitiveTypeString(unitType))
+                f'CSSPrimitiveValue: unitType {self._getCSSPrimitiveTypeString(unitType)!r} is not a float type')
         try:
             val = float(floatValue)
         except ValueError:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue: floatValue %r is not a float' %
-                floatValue)
+                f'CSSPrimitiveValue: floatValue {floatValue!r} is not a float')
 
-        oldval, dim = self._getNumDim()
+        _oldval, dim = self._getNumDim()
         if self.primitiveType != unitType:
             # convert if possible
             try:
                 val = self._converter[unitType, self.primitiveType](val)
             except KeyError:
                 raise xml.dom.InvalidAccessErr(
-                    'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
-                    % (self.primitiveTypeString,
-                       self._getCSSPrimitiveTypeString(unitType)))
+                    f'CSSPrimitiveValue: Cannot coerce primitiveType {self.primitiveTypeString!r} to {self._getCSSPrimitiveTypeString(unitType)!r}')
 
         if val == int(val):
             val = int(val)
 
-        self.cssText = '%s%s' % (val, dim)
+        self.cssText = f'{val}{dim}'
 
     def getStringValue(self):
         """(DOM) This method is used to get the string value. If the
@@ -749,8 +734,7 @@ class CSSPrimitiveValue(CSSValue):
         """
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue %r is not a string type'
-                % self.primitiveTypeString)
+                f'CSSPrimitiveValue {self.primitiveTypeString!r} is not a string type')
 
         if CSSPrimitiveValue.CSS_ATTR == self.primitiveType:
             return self._value[0].cssText[5:-1]
@@ -787,26 +771,22 @@ class CSSPrimitiveValue(CSSValue):
         # self not stringType
         if self.primitiveType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue %r is not a string type'
-                % self.primitiveTypeString)
+                f'CSSPrimitiveValue {self.primitiveTypeString!r} is not a string type')
         # given stringType is no StringType
         if stringType not in self._stringtypes:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue: stringType %s is not a string type'
-                % self._getCSSPrimitiveTypeString(stringType))
+                f'CSSPrimitiveValue: stringType {self._getCSSPrimitiveTypeString(stringType)} is not a string type')
 
         if self._primitiveType != stringType:
             raise xml.dom.InvalidAccessErr(
-                'CSSPrimitiveValue: Cannot coerce primitiveType %r to %r'
-                % (self.primitiveTypeString,
-                   self._getCSSPrimitiveTypeString(stringType)))
+                f'CSSPrimitiveValue: Cannot coerce primitiveType {self.primitiveTypeString!r} to {self._getCSSPrimitiveTypeString(stringType)!r}')
 
         if CSSPrimitiveValue.CSS_STRING == self._primitiveType:
             self.cssText = css_parser.helper.string(stringValue)
         elif CSSPrimitiveValue.CSS_URI == self._primitiveType:
             self.cssText = css_parser.helper.uri(stringValue)
         elif CSSPrimitiveValue.CSS_ATTR == self._primitiveType:
-            self.cssText = 'attr(%s)' % stringValue
+            self.cssText = f'attr({stringValue})'
         else:
             self.cssText = stringValue
         self._primitiveType = stringType
@@ -885,12 +865,8 @@ class CSSValueList(CSSValue):
             yield item.value
 
     def __str__(self):
-        return "<css_parser.css.%s object cssValueType=%r cssText=%r length=%r "\
-               "at 0x%x>" % (self.__class__.__name__,
-                             self.cssValueTypeString,
-                             self.cssText,
-                             self.length,
-                             id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object cssValueType={self.cssValueTypeString!r} cssText={self.cssText!r} length={self.length!r} "\
+               f"at 0x{id(self):x}>"
 
     def __items(self):
         return [item for item in self._seq
@@ -977,7 +953,7 @@ class CSSFunction(CSSPrimitiveValue):
     def _setCssText(self, cssText):
         self._checkReadonly()
         # store: colorType, parts
-        wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
+        wellformed, seq, _store, _unusedtokens = ProdParser().parse(cssText,
                                                                   self._functionName,
                                                                   self._productiondefinition(),
                                                                   keepS=True)
@@ -1046,15 +1022,10 @@ class RGBColor(CSSFunction):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(%r)" % (
-                self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object colorType=%r cssText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.colorType,
-            self.cssText,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object colorType={self.colorType!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -1087,7 +1058,7 @@ class RGBColor(CSSFunction):
                                  )
                             )
         # store: colorType, parts
-        wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
+        wellformed, seq, store, _unusedtokens = ProdParser().parse(cssText,
                                                                   'RGBColor',
                                                                   colorprods,
                                                                   keepS=True,
@@ -1211,14 +1182,10 @@ class CSSVariable(CSSValue):
                                           readonly=readonly)
 
     def __repr__(self):
-        return "css_parser.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object name=%r value=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.name,
-            self.value,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object name={self.name!r} value={self.value!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -1233,7 +1200,7 @@ class CSSVariable(CSSValue):
 
         # store: name of variable
         store = {'ident': None}
-        wellformed, seq, store, unusedtokens = ProdParser().parse(cssText,
+        wellformed, seq, store, _unusedtokens = ProdParser().parse(cssText,
                                                                   'CSSVariable',
                                                                   funcProds,
                                                                   keepS=True)

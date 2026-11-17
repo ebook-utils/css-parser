@@ -598,8 +598,8 @@ codecs.register(search_function)
 
 def cssescape(exc):
     if not isinstance(exc, UnicodeEncodeError):
-        raise TypeError("don't know how to handle %r" % exc)
-    return ("".join("\\%06x" % ord(c) for c in exc.object[exc.start:exc.end]), exc.end)
+        raise TypeError(f"don't know how to handle {exc!r}")
+    return ("".join(f"\\{ord(c):06x}" for c in exc.object[exc.start:exc.end]), exc.end)
 
 
 codecs.register_error("cssescape", cssescape)

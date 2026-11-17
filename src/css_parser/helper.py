@@ -6,12 +6,7 @@ __version__ = '$Id: errorhandler.py 1234 2008-05-22 20:26:12Z cthedot $'
 
 import os
 import re
-import sys
-
-if sys.version_info[0] >= 3:
-    from urllib.request import pathname2url as urllib_pathname2url
-else:
-    from urllib import pathname2url as urllib_pathname2url
+from urllib.request import pathname2url as urllib_pathname2url
 
 
 class Deprecated:
@@ -29,8 +24,7 @@ class Deprecated:
     def __call__(self, func):
         def newFunc(*args, **kwargs):
             import warnings
-            warnings.warn("Call to deprecated method %r. %s" %
-                          (func.__name__, self.msg),
+            warnings.warn(f"Call to deprecated method {func.__name__!r}. {self.msg}",
                           category=DeprecationWarning,
                           stacklevel=2)
             return func(*args, **kwargs)
@@ -72,8 +66,7 @@ def pushtoken(token, tokens):
     ``tokens``"""
     # TODO: may use itertools.chain?
     yield token
-    for t in tokens:
-        yield t
+    yield from tokens
 
 
 def string(value):
@@ -91,7 +84,7 @@ def string(value):
     if value.endswith('\\'):
         value = value[:-1] + '\\\\'
 
-    return '"%s"' % value
+    return f'"{value}"'
 
 
 def stringvalue(string):
@@ -115,7 +108,7 @@ def uri(value):
     """
     if _match_forbidden_in_uri(value):
         value = string(value)
-    return 'url(%s)' % value
+    return f'url({value})'
 
 
 def urivalue(uri):

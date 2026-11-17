@@ -164,10 +164,10 @@ class Profiles:
     def _expand_macros(self, dictionary, macros):
         """Expand macros in token dictionary"""
         def macro_value(m):
-            return '(?:%s)' % macros[m.groupdict()['macro']]
+            return '(?:{})'.format(macros[m.groupdict()['macro']])
 
         for key, value in as_list(dictionary.items()):
-            if not hasattr(value, '__call__'):
+            if not callable(value):
                 while re.search(r'{[a-z][a-z0-9-]*}', value):
                     value = re.sub(r'{(?P<macro>[a-z][a-z0-9-]*)}',
                                    macro_value, value)
@@ -178,12 +178,12 @@ class Profiles:
     def _compile_regexes(self, dictionary):
         """Compile all regular expressions into callable objects"""
         for key, value in as_list(dictionary.items()):
-            if not hasattr(value, '__call__'):
+            if not callable(value):
                 # Compiling them now will slow down the css_parser import time,
                 # even if css_parser is not needed. We lazily compile them the
                 # first time they're needed.
                 # https://bitbucket.org/cthedot/css_parser/issues/72
-                value = util.LazyRegex('^(?:%s)$' % value, re.IGNORECASE)
+                value = util.LazyRegex(f'^(?:{value})$', re.IGNORECASE)
             dictionary[key] = value
 
         return dictionary
@@ -342,7 +342,7 @@ class Profiles:
                 del self._rawProfiles[profile]
                 del self._profileNames[self._profileNames.index(profile)]
             except KeyError:
-                raise NoSuchProfileException('No profile %r.' % profile)
+                raise NoSuchProfileException(f'No profile {profile!r}.')
 
             else:
                 if reset:
@@ -364,8 +364,7 @@ class Profiles:
             profiles = (profiles, )
         try:
             for profile in sorted(profiles):
-                for name in sorted(self._profilesProperties[profile].keys()):
-                    yield name
+                yield from sorted(self._profilesProperties[profile].keys())
         except KeyError as e:
             raise NoSuchProfileException(e)
 

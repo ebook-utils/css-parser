@@ -1,19 +1,13 @@
 """Tests for parsing which does not raise Exceptions normally"""
 
-import sys
 import xml.dom
+from urllib.error import HTTPError, URLError
 
 import css_parser
 
 from . import basetest
 
-if sys.version_info.major > 2:
-    from urllib.error import HTTPError, URLError
-    FetchError = OSError
-else:
-    from socket import error as FetchError
-
-    from urllib2 import HTTPError, URLError
+FetchError = OSError
 
 
 class CSSParserTestCase(basetest.BaseTestCase):
@@ -216,7 +210,7 @@ class CSSParserTestCase(basetest.BaseTestCase):
     def test_validate(self):
         """CSSParser(validate)"""
         style = 'color: red'
-        t = 'a { %s }' % style
+        t = f'a {{ {style} }}'
 
         # helper
         s = css_parser.parseString(t)

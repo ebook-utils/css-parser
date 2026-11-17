@@ -36,15 +36,10 @@ class CSSComment(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(cssText=%r)" % (
-            self.__class__.__name__,
-            self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(cssText={self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object cssText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.cssText,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -75,8 +70,7 @@ class CSSComment(cssrule.CSSRule):
         if not commenttoken or\
            self._type(commenttoken) != self._prods.COMMENT or\
            unexpected:
-            self._log.error('CSSComment: Not a CSSComment: %r' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSComment: Not a CSSComment: {self._valuestr(cssText)!r}',
                             error=xml.dom.InvalidModificationErr)
         else:
             self._cssText = self._tokenvalue(commenttoken)

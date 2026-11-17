@@ -239,7 +239,7 @@ class CSSPageRuleTestCase(test_cssrule.CSSRuleTestCase):
             self.assertEqual(r.specificity, exp)
 
             r = css_parser.css.CSSPageRule()
-            r.cssText = '@page %s {}' % sel
+            r.cssText = f'@page {sel} {{}}'
             self.assertEqual(r.specificity, exp)
 
     def test_cssRules(self):

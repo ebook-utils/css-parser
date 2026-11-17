@@ -335,7 +335,7 @@ ex2|x {
         self.assertEqual('example', s.namespaces['ex2'])
         self.assertRaises(xml.dom.NamespaceErr, s.namespaces.__getitem__, 'UNSET')
         # __iter__
-        self.assertEqual(['', 'ex2'], sorted(list(s.namespaces)))
+        self.assertEqual(['', 'ex2'], sorted(s.namespaces))
         # __len__
         self.assertEqual(2, len(s.namespaces))
         # __setitem__
@@ -353,7 +353,7 @@ ex2|x {
         self.assertRaises(IndexError,
                           s.namespaces.prefixForNamespaceURI, 'UNSET')
         # .keys
-        self.assertEqual(set(s.namespaces.keys()), set(['', 'ex2', 'n']))
+        self.assertEqual(set(s.namespaces.keys()), {'', 'ex2', 'n'})
         # .get
         self.assertEqual('x', s.namespaces.get('UNKNOWN', 'x'))
         self.assertEqual('example', s.namespaces.get('ex2', 'not used defa'))
@@ -557,7 +557,7 @@ ex2|SEL4, a, ex2|SELSR {
         b { color: blue; }
         c { color: green; }
         '''
-        n, s1, s2, s3 = s.cssRules
+        n, _s1, s2, _s3 = s.cssRules
 
         r = css_parser.css.CSSStyleRule()
         self.assertRaises(xml.dom.IndexSizeErr, s.deleteRule, r)
@@ -731,7 +731,7 @@ ex2|SEL4, a, ex2|SELSR {
         s.insertRule(self.sr)
         self.assertEqual(L+2, s.cssRules.length)
         # insert rulelist
-        s2, L2 = self._gets()
+        s2, _L2 = self._gets()
         rulelist = s2.cssRules
         del rulelist[:-2]
         s.insertRule(rulelist)
@@ -775,7 +775,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_charset(self):
         "CSSStyleSheet.insertRule(@charset)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = (self.cr, self.ir, self.nr, self.mr, self.pr, self.sr,
                     self.c, self.ur)
@@ -785,7 +785,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_import(self):
         "CSSStyleSheet.insertRule(@import)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = (self.nr, self.pr, self.mr, self.sr)
         anywhere = (self.c, self.ur, self.ir)
@@ -794,7 +794,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_namespace(self):
         "CSSStyleSheet.insertRule(@namespace)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr, self.ir)
         notafter = (self.pr, self.mr, self.sr)
         anywhere = (self.c, self.ur, self.nr)
@@ -803,7 +803,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_media_page_style(self):
         "CSSStyleSheet.insertRule(@media, @page, stylerule)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr, self.ir, self.nr)
         notafter = ()
         anywhere = (self.c, self.ur, self.mr, self.pr, self.sr)
@@ -812,7 +812,7 @@ ex2|SEL4, a, ex2|SELSR {
 
     def test_insertRule_unknownandcomment(self):
         "CSSStyleSheet.insertRule(@ unknown, comment)"
-        s, L = self._gets()
+        _s, _L = self._gets()
         notbefore = (self.cr,)
         notafter = ()
         anywhere = (self.c, self.ur, self.ir, self.nr, self.mr, self.pr,
@@ -886,7 +886,7 @@ body {
         ]
         for case, expected in cases:
             sheet = css_parser.parseString(case)
-            msg = "%r should be %s" % (case,
+            msg = "{!r} should be {}".format(case,
                                        'valid' if expected else 'invalid')
             self.assertEqual(sheet.valid, expected, msg)
 

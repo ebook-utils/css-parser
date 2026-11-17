@@ -7,16 +7,12 @@ __docformat__ = 'restructuredtext'
 __version__ = '$Id$'
 
 import codecs
-import sys
 
 import css_parser
 from css_parser import css
 
 from . import tokenize2
 from .helper import path2url
-
-if sys.version_info < (2, 6):
-    bytes = str
 
 
 class CSSParser:

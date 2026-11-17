@@ -123,8 +123,8 @@ class BaseTestCase(unittest.TestCase):
             exc_pattern = None
 
         argv = [repr(a) for a in args]\
-            + ["%s=%r" % (k, v) for k, v in kwargs.items()]
-        callsig = "%s(%s)" % (callable.__name__, ", ".join(argv))
+            + [f"{k}={v!r}" for k, v in kwargs.items()]
+        callsig = "{}({})".format(callable.__name__, ", ".join(argv))
 
         try:
             callable(*args, **kwargs)
@@ -133,21 +133,18 @@ class BaseTestCase(unittest.TestCase):
                 self.assertEqual(
                     exc.args,
                     exc_args,
-                    '%s raised %s with unexpected args: expected=%r, actual=%r' % (callsig, exc.__class__, exc_args, exc.args)
+                    f'{callsig} raised {exc.__class__} with unexpected args: expected={exc_args!r}, actual={exc.args!r}'
                 )
             if exc_pattern is not None:
                 self.assertTrue(exc_pattern.search(str(exc)),
-                                "%s raised %s, but the exception "
-                                "does not match '%s': %r"
-                                % (callsig, exc.__class__, exc_pattern.pattern,
-                                   str(exc)))
+                                f"{callsig} raised {exc.__class__}, but the exception "
+                                f"does not match '{exc_pattern.pattern}': {str(exc)!r}")
         except Exception:
             exc_info = sys.exc_info()
-            self.fail("%s raised an unexpected exception type: "
-                      "expected=%s, actual=%s"
-                      % (callsig, exception, exc_info[0]))
+            self.fail(f"{callsig} raised an unexpected exception type: "
+                      f"expected={exception}, actual={exc_info[0]}")
         else:
-            self.fail("%s did not raise %s" % (callsig, exception))
+            self.fail(f"{callsig} did not raise {exception}")
 
     def _assertRaisesMsgSubstring(self, excClass, msg, substring_match, callableObj, *args, **kwargs):
         try:
@@ -163,16 +160,14 @@ class BaseTestCase(unittest.TestCase):
             else:
                 # Message provided, and it didn't match: fail!
                 raise self.failureException(
-                    "Right exception, wrong message: got '%s' instead of '%s'" %
-                    (excMsg, msg))
+                    f"Right exception, wrong message: got '{excMsg}' instead of '{msg}'")
         else:
             if hasattr(excClass, '__name__'):
                 excName = excClass.__name__
             else:
                 excName = str(excClass)
             raise self.failureException(
-                "Expected to raise %s, didn't get an exception at all" %
-                excName
+                f"Expected to raise {excName}, didn't get an exception at all"
             )
 
     def assertRaisesMsg(self, excClass, msg, callableObj, *args, **kwargs):
@@ -206,7 +201,7 @@ class BaseTestCase(unittest.TestCase):
         # parses with self.p and checks att of result
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(f'"{test}"')
             s = p.parseString(test)
             if expected is None:
                 expected = test
@@ -220,14 +215,14 @@ class BaseTestCase(unittest.TestCase):
         p = css_parser.CSSParser(raiseExceptions=raising)
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(f'"{test}"')
             self.assertRaises(expected, p.parseString, test)
 
     def do_equal_r(self, tests, att='cssText', debug=False):
         # sets attribute att of self.r and asserts Equal
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(f'"{test}"')
             self.r.__setattr__(att, test)
             if expected is None:
                 expected = test
@@ -237,14 +232,14 @@ class BaseTestCase(unittest.TestCase):
         # sets self.r and asserts raise
         for test, expected in tests.items():
             if debug:
-                print('"%s"' % test)
+                print(f'"{test}"')
             self.assertRaises(expected, self.r.__getattribute__(att), test)
 
     def do_raise_r_list(self, tests, err, att='_setCssText', debug=False):
         # sets self.r and asserts raise
         for test in tests:
             if debug:
-                print('"%s"' % test)
+                print(f'"{test}"')
             self.assertRaises(err, self.r.__getattribute__(att), test)
 
 
@@ -279,7 +274,7 @@ class GenerateTests(type):
             cases = aobj.cases
             for case_num, case in enumerate(cases):
                 stringed_case = cls.make_case_repr(case)
-                case_name = "%s_%s_%s" % (test_name, case_num, stringed_case)
+                case_name = f"{test_name}_{case_num}_{stringed_case}"
                 # Force the closure binding
 
                 def make_wrapper(case=case, aobj=aobj):
@@ -288,7 +283,7 @@ class GenerateTests(type):
                     return wrapper
                 wrapper = make_wrapper()
                 wrapper.__name__ = str(case_name)
-                wrapper.__doc__ = "%s(%s)" % (test_name,
+                wrapper.__doc__ = "{}({})".format(test_name,
                                               ", ".join(map(repr, case)))
                 if aobj.__doc__ is not None:
                     wrapper.__doc__ += "\n\n" + aobj.__doc__

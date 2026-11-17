@@ -58,16 +58,11 @@ class CSSStyleRule(cssrule.CSSRule):
             st = (self.selectorText, self._namespaces)
         else:
             st = self.selectorText
-        return "css_parser.css.%s(selectorText=%r, style=%r)" % (
-            self.__class__.__name__, st, self.style.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(selectorText={st!r}, style={self.style.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object selectorText=%r style=%r _namespaces=%r "\
-               "at 0x%x>" % (self.__class__.__name__,
-                             self.selectorText,
-                             self.style.cssText,
-                             self._namespaces,
-                             id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object selectorText={self.selectorText!r} style={self.style.cssText!r} _namespaces={self._namespaces!r} "\
+               f"at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -108,14 +103,11 @@ class CSSStyleRule(cssrule.CSSRule):
         styletokens = self._tokensupto2(tokenizer, blockendonly=True)
         trail = self._nexttoken(tokenizer)
         if trail:
-            self._log.error('CSSStyleRule: Trailing content: %s' %
-                            self._valuestr(cssText), token=trail)
+            self._log.error(f'CSSStyleRule: Trailing content: {self._valuestr(cssText)}', token=trail)
         elif not selectortokens:
-            self._log.error('CSSStyleRule: No selector found: %r' %
-                            self._valuestr(cssText))
+            self._log.error(f'CSSStyleRule: No selector found: {self._valuestr(cssText)!r}')
         elif self._tokenvalue(selectortokens[0]).startswith('@'):
-            self._log.error('CSSStyleRule: No style rule: %r' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSStyleRule: No style rule: {self._valuestr(cssText)!r}',
                             error=xml.dom.InvalidModificationErr)
         else:
             newSelectorList = SelectorList(parentRule=self)
@@ -126,12 +118,10 @@ class CSSStyleRule(cssrule.CSSRule):
             if self._tokenvalue(bracetoken) != '{':
                 ok = False
                 self._log.error(
-                    'CSSStyleRule: No start { of style declaration found: %r' %
-                    self._valuestr(cssText), bracetoken)
+                    f'CSSStyleRule: No start {{ of style declaration found: {self._valuestr(cssText)!r}', bracetoken)
             elif not selectortokens:
                 ok = False
-                self._log.error('CSSStyleRule: No selector found: %r.' %
-                                self._valuestr(cssText), bracetoken)
+                self._log.error(f'CSSStyleRule: No selector found: {self._valuestr(cssText)!r}.', bracetoken)
             # SET
             newSelectorList.selectorText = (selectortokens,
                                             namespaces)
@@ -139,16 +129,14 @@ class CSSStyleRule(cssrule.CSSRule):
             if not styletokens:
                 ok = False
                 self._log.error(
-                    'CSSStyleRule: No style declaration or "}" found: %r' %
-                    self._valuestr(cssText))
+                    f'CSSStyleRule: No style declaration or "}}" found: {self._valuestr(cssText)!r}')
             else:
                 braceorEOFtoken = styletokens.pop()
                 val, typ = self._tokenvalue(braceorEOFtoken), self._type(braceorEOFtoken)
                 if val != '}' and typ != 'EOF':
                     ok = False
                     self._log.error('CSSStyleRule: No "}" after style '
-                                    'declaration found: %r'
-                                    % self._valuestr(cssText))
+                                    f'declaration found: {self._valuestr(cssText)!r}')
                 else:
                     if 'EOF' == typ:
                         # add again as style needs it

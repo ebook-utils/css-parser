@@ -48,15 +48,10 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(mediaText=%r)" % (
-            self.__class__.__name__,
-            self.media.mediaText)
+        return f"css_parser.css.{self.__class__.__name__}(mediaText={self.media.mediaText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object mediaText=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.media.mediaText,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object mediaText={self.media.mediaText!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText."""
@@ -86,13 +81,12 @@ class CSSMediaRule(cssrule.CSSRuleRules):
         super()._setCssText(cssText)
 
         # might be (cssText, namespaces)
-        cssText, namespaces = self._splitNamespacesOff(cssText)
+        cssText, _namespaces = self._splitNamespacesOff(cssText)
 
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.MEDIA_SYM:
-            self._log.error('CSSMediaRule: No CSSMediaRule found: %s' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSMediaRule: No CSSMediaRule found: {self._valuestr(cssText)}',
                             error=xml.dom.InvalidModificationErr)
 
         else:
@@ -130,13 +124,11 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                                                    {})
                 if not wellformed:
                     ok = False
-                    self._log.error('CSSMediaRule: Syntax Error: %s' %
-                                    self._valuestr(cssText))
+                    self._log.error(f'CSSMediaRule: Syntax Error: {self._valuestr(cssText)}')
 
             # check for {
             if '{' != self._tokenvalue(end):
-                self._log.error('CSSMediaRule: No "{" found: %s' %
-                                self._valuestr(cssText))
+                self._log.error(f'CSSMediaRule: No "{{" found: {self._valuestr(cssText)}')
                 return
 
             # cssRules
@@ -190,7 +182,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                                  '@namespace', '@variables'):
                         self._log.error('CSSMediaRule: This rule is not '
                                         'allowed in CSSMediaRule - ignored: '
-                                        '%s.' % self._valuestr(tokens),
+                                        f'{self._valuestr(tokens)}.',
                                         token=token,
                                         error=xml.dom.HierarchyRequestErr)
                     elif atval in factories:
@@ -216,7 +208,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
                 seq = []  # not used really
 
                 tokenizer = iter(cssrulestokens)
-                wellformed, expected = self._parse(braceOrEOF,
+                wellformed, _expected = self._parse(braceOrEOF,
                                                    seq,
                                                    tokenizer, {
                                                        'COMMENT': COMMENT,
@@ -252,7 +244,7 @@ class CSSMediaRule(cssrule.CSSRuleRules):
 
             self._name = name
         else:
-            self._log.error('CSSImportRule: Not a valid name: %s' % name)
+            self._log.error(f'CSSImportRule: Not a valid name: {name}')
 
     name = property(lambda self: self._name, _setName,
                     doc="An optional name for this media rule.")
@@ -296,13 +288,8 @@ class CSSMediaRule(cssrule.CSSRuleRules):
             return
 
         # check hierarchy
-        if isinstance(rule, css_parser.css.CSSCharsetRule) or \
-           isinstance(rule, css_parser.css.CSSFontFaceRule) or \
-           isinstance(rule, css_parser.css.CSSImportRule) or \
-           isinstance(rule, css_parser.css.CSSNamespaceRule) or \
-           isinstance(rule, css_parser.css.MarginRule):
-            self._log.error('%s: This type of rule is not allowed here: %s'
-                            % (self.__class__.__name__, rule.cssText),
+        if isinstance(rule, (css_parser.css.CSSCharsetRule, css_parser.css.CSSFontFaceRule, css_parser.css.CSSImportRule, css_parser.css.CSSNamespaceRule, css_parser.css.MarginRule)):
+            self._log.error(f'{self.__class__.__name__}: This type of rule is not allowed here: {rule.cssText}',
                             error=xml.dom.HierarchyRequestErr)
             return
 

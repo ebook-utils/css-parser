@@ -81,16 +81,14 @@ class PropertyValue(css_parser.util._NewBase):
 
     def __iter__(self):
         "Generator which iterates over values."
-        for item in self.__items():
-            yield item
+        yield from self.__items()
 
     def __repr__(self):
-        return "css_parser.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object length=%r cssText=%r at "\
-               "0x%x>" % (self.__class__.__name__,
-                          self.length, self.cssText, id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object length={self.length!r} cssText={self.cssText!r} at "\
+               f"0x{id(self):x}>"
 
     def __items(self, seq=None):
         "a generator of Value obects only, no , / or ' '"
@@ -179,7 +177,7 @@ class PropertyValue(css_parser.util._NewBase):
                              term,
                              minmax=lambda: (0, None)))
         # parse
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, _store, _unused = ProdParser().parse(cssText,
                                                     'PropertyValue',
                                                     prods)
         # must be at least one value!
@@ -194,8 +192,7 @@ class PropertyValue(css_parser.util._NewBase):
         if ok:
             self._setSeq(seq)
         else:
-            self._log.error('PropertyValue: Unknown syntax or no value: %s' %
-                            self._valuestr(cssText))
+            self._log.error(f'PropertyValue: Unknown syntax or no value: {self._valuestr(cssText)}')
 
     cssText = property(lambda self: css_parser.ser.do_css_PropertyValue(self),
                        _setCssText,
@@ -258,13 +255,10 @@ class Value(css_parser.util._NewBase):
             self.cssText = cssText
 
     def __repr__(self):
-        return "css_parser.css.%s(%r)" % (self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}({self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object type=%s value=%r cssText=%r at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.type, self.value, self.cssText,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object type={self.type} value={self.value!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -274,7 +268,7 @@ class Value(css_parser.util._NewBase):
                        PreDef.string(stop=True),
                        PreDef.unicode_range(stop=True),
                        )
-        ok, seq, store, unused = ProdParser().parse(cssText, 'Value', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'Value', prods)
         self.wellformed = ok
         if ok:
             # only 1 value anyway!
@@ -318,12 +312,8 @@ class ColorValue(Value):
     _alpha = 0
 
     def __str__(self):
-        return "<css_parser.css.%s object type=%s value=%r colorType=%r "\
-               "red=%s blue=%s green=%s alpha=%s at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.type, self.value,
-                  self.colorType, self.red, self.green, self.blue, self.alpha,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object type={self.type} value={self.value!r} colorType={self.colorType!r} "\
+               f"red={self.red} blue={self.green} green={self.blue} alpha={self.alpha} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -377,7 +367,7 @@ class ColorValue(Value):
                        noalp,
                        witha)
 
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, _store, _unused = ProdParser().parse(cssText,
                                                     self.type,
                                                     prods)
         self.wellformed = ok
@@ -433,9 +423,9 @@ class ColorValue(Value):
                     # ORDER h l_ s !!!
                     r, g, b = colorsys.hls_to_rgb(h, l_, s)
                     # back to 255 based
-                    rgba = [int(round(r*255)),
-                            int(round(g*255)),
-                            int(round(b*255))]
+                    rgba = [round(r*255),
+                            round(g*255),
+                            round(b*255)]
 
                     if len(raw) > 3:
                         rgba.append(raw[3])
@@ -454,9 +444,8 @@ class ColorValue(Value):
                           'hsla(': ('NPPN',)
                           }
                 if check not in checks[functiontype]:
-                    self._log.error('ColorValue has invalid %s) parameters: '
-                                    '%s (N=Number, P=Percentage)' %
-                                    (functiontype, check))
+                    self._log.error(f'ColorValue has invalid {functiontype}) parameters: '
+                                    f'{check} (N=Number, P=Percentage)')
 
             self._colorType = t
             self._red, self._green, self._blue, self._alpha = tuple(rgba)
@@ -469,8 +458,6 @@ class ColorValue(Value):
     value = property(lambda self: css_parser.ser.do_css_CSSFunction(self, True),
                      doc='Same as cssText but without comments.')
 
-    type = property(lambda self: Value.COLOR_VALUE,
-                    doc="Type is fixed to Value.COLOR_VALUE.")
 
     def _getName(self):
         for n, v in as_list(self.COLORS.items()):
@@ -505,10 +492,7 @@ class DimensionValue(Value):
     _sign = None
 
     def __str__(self):
-        return "<css_parser.css.%s object type=%s value=%r dimension=%r cssText=%r at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.type, self.value, self.dimension, self.cssText,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object type={self.type} value={self.value!r} dimension={self.dimension!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -519,7 +503,7 @@ class DimensionValue(Value):
                    PreDef.percentage(stop=True)
                    )
         )
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, _store, _unused = ProdParser().parse(cssText,
                                                     'DimensionValue',
                                                     prods)
         self.wellformed = ok
@@ -561,17 +545,14 @@ class URIValue(Value):
     _uri = Value._value
 
     def __str__(self):
-        return "<css_parser.css.%s object type=%s value=%r uri=%r cssText=%r at 0x%x>"\
-               % (self.__class__.__name__,
-                  self.type, self.value, self.uri, self.cssText,
-                  id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object type={self.type} value={self.value!r} uri={self.uri!r} cssText={self.cssText!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
 
         prods = Sequence(PreDef.uri(stop=True))
 
-        ok, seq, store, unused = ProdParser().parse(cssText, 'URIValue', prods)
+        ok, seq, _store, _unused = ProdParser().parse(cssText, 'URIValue', prods)
         self.wellformed = ok
         if ok:
             # only 1 value only anyway
@@ -639,7 +620,7 @@ class CSSFunction(Value):
 
     def _setCssText(self, cssText):
         self._checkReadonly()
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, _store, _unused = ProdParser().parse(cssText,
                                                     self.type,
                                                     self._productions())
         self.wellformed = ok
@@ -718,8 +699,7 @@ class CSSCalc(CSSFunction):
     _functionName = 'CSSCalc'
 
     def __str__(self):
-        return "<css_parser.css.%s object at 0x%x>" % (
-            self.__class__.__name__, id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -769,7 +749,7 @@ class CSSCalc(CSSFunction):
                          )
 
         # store: name of variable
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, _store, _unused = ProdParser().parse(cssText,
                                                     'CSSCalc',
                                                     prods,
                                                     checkS=True)
@@ -795,8 +775,7 @@ class CSSVariable(CSSFunction):
     _fallback = None
 
     def __str__(self):
-        return "<css_parser.css.%s object name=%r value=%r at 0x%x>" % (
-            self.__class__.__name__, self.name, self.value, id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object name={self.name!r} value={self.value!r} at 0x{id(self):x}>"
 
     def _setCssText(self, cssText):
         self._checkReadonly()
@@ -822,7 +801,7 @@ class CSSVariable(CSSFunction):
 
         # store: name of variable
         store = {'ident': None, 'fallback': None}
-        ok, seq, store, unused = ProdParser().parse(cssText,
+        ok, seq, store, _unused = ProdParser().parse(cssText,
                                                     'CSSVariable',
                                                     prods)
         self.wellformed = ok

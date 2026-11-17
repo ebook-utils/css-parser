@@ -76,7 +76,7 @@ class _ErrorHandler:
             return getattr(self._log, name)
         else:
             raise AttributeError(
-                '(errorhandler) No Attribute %r found' % name)
+                f'(errorhandler) No Attribute {name!r} found')
 
     def __handle(self, msg='', token=None, error=xml.dom.SyntaxErr,
                  neverraise=False, args=None):
@@ -94,11 +94,10 @@ class _ErrorHandler:
                     value, line, col = token[1], token[2], token[3]
                 else:
                     value, line, col = token.value, token.line, token.col
-                msg = '%s [%s:%s: %s]' % (
-                    msg, line, col, value)
+                msg = f'{msg} [{line}:{col}: {value}]'
 
             if error and self.raiseExceptions and not neverraise:
-                if isinstance(error, urllib_HTTPError) or isinstance(error, urllib_URLError):
+                if isinstance(error, (urllib_HTTPError, urllib_URLError)):
                     raise
                 elif issubclass(error, xml.dom.DOMException):
                     error.line = line

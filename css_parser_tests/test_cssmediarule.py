@@ -132,7 +132,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
         for b, a in mls.items():
             if a is None:
                 a = b
-            tests['@media%s%s' % (b, style)] = '@media%s%s' % (a, style)
+            tests[f'@media{b}{style}'] = f'@media{a}{style}'
 
         self.do_equal_p(tests)
         self.do_equal_r(tests)
@@ -340,7 +340,7 @@ class CSSMediaRuleTestCase(test_cssrule.CSSRuleTestCase):
             b { color: blue; }
             c { color: green; }
         }'''
-        s1, s2, s3 = m.cssRules
+        _s1, s2, _s3 = m.cssRules
 
         r = css_parser.css.CSSStyleRule()
         self.assertRaises(xml.dom.IndexSizeErr, m.deleteRule, r)

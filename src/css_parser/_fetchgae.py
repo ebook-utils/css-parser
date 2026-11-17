@@ -55,7 +55,7 @@ def _defaultFetcher(url):
     try:
         r = urlfetch.fetch(url, method=urlfetch.GET)
     except urlfetch.Error as e:
-        log.warning('Error opening url=%r: %s' % (url, e),
+        log.warning(f'Error opening url={url!r}: {e}',
                  error=IOError)
     else:
         if r.status_code == 200:
@@ -68,10 +68,8 @@ def _defaultFetcher(url):
             except KeyError:
                 encoding = None
             if mimetype != 'text/css':
-                log.error('Expected "text/css" mime type for url %r but found: %r' %
-                          (url, mimetype), error=ValueError)
+                log.error(f'Expected "text/css" mime type for url {url!r} but found: {mimetype!r}', error=ValueError)
             return encoding, r.content
         else:
             # TODO: 301 etc
-            log.warning('Error opening url=%r: HTTP status %s' %
-                     (url, r.status_code), error=IOError)
+            log.warning(f'Error opening url={url!r}: HTTP status {r.status_code}', error=IOError)

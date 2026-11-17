@@ -181,7 +181,7 @@ class CSSNamespaceRuleTestCase(test_cssrule.CSSRuleTestCase):
         for prefix in valid:
             r.prefix = prefix
             self.assertEqual(r.prefix, prefix)
-            self.assertEqual('@namespace %s "u";' % prefix, r.cssText)
+            self.assertEqual(f'@namespace {prefix} "u";', r.cssText)
 
         invalid = ('1', ' x', ' ', ',')
         for prefix in invalid:

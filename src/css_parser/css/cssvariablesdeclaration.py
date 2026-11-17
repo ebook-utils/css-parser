@@ -59,13 +59,10 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(cssText=%r)" % (self.__class__.__name__, self.cssText)
+        return f"css_parser.css.{self.__class__.__name__}(cssText={self.cssText!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object length=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.length,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object length={self.length!r} at 0x{id(self):x}>"
 
     def __contains__(self, variableName):
         """Check if a variable is in variable declaration block.
@@ -89,8 +86,7 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
 
     def __iter__(self):
         """Iterator of names of set variables."""
-        for name in as_list(self.keys()):
-            yield name
+        yield from as_list(self.keys())
 
     def keys(self):
         """Analoguous to standard dict returns variable names which are set in
@@ -156,7 +152,7 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
                          PreDef.char(';', ';', toSeq=False, optional=True)
                          )
         # parse
-        wellformed, seq, store, notused = \
+        wellformed, seq, _store, _notused = \
             ProdParser().parse(cssText,
                                'CSSVariableDeclaration',
                                prods,
@@ -277,13 +273,12 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
         self._checkReadonly()
 
         # check name
-        wellformed, seq, store, unused = \
+        wellformed, _seq, _store, _unused = \
             ProdParser().parse(normalize(variableName),
                                'variableName',
                                Sequence(PreDef.ident()))
         if not wellformed:
-            self._log.error('Invalid variableName: %r: %r'
-                            % (variableName, value))
+            self._log.error(f'Invalid variableName: {variableName!r}: {value!r}')
         else:
             # check value
             if isinstance(value, PropertyValue):
@@ -292,8 +287,7 @@ class CSSVariablesDeclaration(css_parser.util._NewBase):
                 v = PropertyValue(cssText=value, parent=self)
 
             if not v.wellformed:
-                self._log.error('Invalid variable value: %r: %r'
-                                % (variableName, value))
+                self._log.error(f'Invalid variable value: {variableName!r}: {value!r}')
             else:
                 # update seq
                 self.seq._readonly = False

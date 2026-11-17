@@ -1,7 +1,6 @@
 """Testcases for css_parser.css.property._Property."""
 
 import copy
-import sys
 
 import css_parser
 from css_parser.css.property import Property
@@ -12,8 +11,7 @@ __version__ = '$Id: test_property.py 1529 2008-11-30 15:12:01Z cthedot $'
 
 
 debug = False
-if sys.version_info.major > 2:
-    basestring = str
+basestring = str
 
 
 class PropertiesTestCase(basetest.BaseTestCase):
@@ -139,8 +137,8 @@ class PropertiesTestCase(basetest.BaseTestCase):
                                                 '"a", b',
                                                 r'a\{b',
                                                 r'a\ b',
-                                                'a b'
-                                                'a b, c  d  , e'
+                                                ('a b'
+                                                'a b, c  d  , e')
                                                 ]),
             # 'src': ('STRING',),
 

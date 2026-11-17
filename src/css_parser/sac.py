@@ -65,17 +65,17 @@ class DocumentHandler:
 
     def __init__(self):
         def log(msg):
-            sys.stderr.write('INFO\t%s\n' % msg)
+            sys.stderr.write(f'INFO\t{msg}\n')
         self._log = log
 
     def comment(self, text, line=None, col=None):
         "Receive notification of a comment."
-        self._log("comment %r at [%s, %s]" % (text, line, col))
+        self._log(f"comment {text!r} at [{line}, {col}]")
 
     def startDocument(self, encoding):
         "Receive notification of the beginning of a style sheet."
         # source
-        self._log("startDocument encoding=%s" % encoding)
+        self._log(f"startDocument encoding={encoding}")
 
     def endDocument(self, source=None, line=None, col=None):
         "Receive notification of the end of a document."
@@ -84,30 +84,30 @@ class DocumentHandler:
     def importStyle(self, uri, media, name, line=None, col=None):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
-        self._log("importStyle at [%s, %s]" % (line, col))
+        self._log(f"importStyle at [{line}, {col}]")
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
         # prefix might be None!
-        self._log("namespaceDeclaration at [%s, %s]" % (line, col))
+        self._log(f"namespaceDeclaration at [{line}, {col}]")
 
     def startSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the beginning of a rule statement."
         # TODO selectorList!
-        self._log("startSelector at [%s, %s]" % (line, col))
+        self._log(f"startSelector at [{line}, {col}]")
 
     def endSelector(self, selectors=None, line=None, col=None):
         "Receive notification of the end of a rule statement."
-        self._log("endSelector at [%s, %s]" % (line, col))
+        self._log(f"endSelector at [{line}, {col}]")
 
     def property(self, name, value='TODO', important=False, line=None, col=None):
         "Receive notification of a declaration."
         # TODO: value is LexicalValue?
-        self._log("property %r at [%s, %s]" % (name, line, col))
+        self._log(f"property {name!r} at [{line}, {col}]")
 
     def ignorableAtRule(self, atRule, line=None, col=None):
         "Receive notification of an unknown rule t-rule not supported by this parser."
-        self._log("ignorableAtRule %r at [%s, %s]" % (atRule, line, col))
+        self._log(f"ignorableAtRule {atRule!r} at [{line}, {col}]")
 
 
 class EchoHandler(DocumentHandler):
@@ -122,7 +122,7 @@ class EchoHandler(DocumentHandler):
     def startDocument(self, encoding):
         super().startDocument(encoding)
         if 'utf-8' != encoding:
-            self._out.append('@charset "%s";\n' % encoding)
+            self._out.append(f'@charset "{encoding}";\n')
 
 #    def comment(self, text, line=None, col=None):
 #        self._out.append(u'/*%s*/' % text)
@@ -131,14 +131,14 @@ class EchoHandler(DocumentHandler):
         "Receive notification of a import statement in the style sheet."
         # defaultNamespaceURI???
         super().importStyle(uri, media, name, line, col)
-        self._out.append('@import %s%s%s;\n' % (helper.string(uri),
-                                                '%s ' % media if media else '',
-                                                '%s ' % name if name else '')
+        self._out.append('@import {}{}{};\n'.format(helper.string(uri),
+                                                f'{media} ' if media else '',
+                                                f'{name} ' if name else '')
                          )
 
     def namespaceDeclaration(self, prefix, uri, line=None, col=None):
         super().namespaceDeclaration(prefix, uri, line, col)
-        self._out.append('@namespace %s%s;\n' % ('%s ' % prefix if prefix else '',
+        self._out.append('@namespace {}{};\n'.format(f'{prefix} ' if prefix else '',
                                                  helper.string(uri)))
 
     def startSelector(self, selectors=None, line=None, col=None):
@@ -152,7 +152,7 @@ class EchoHandler(DocumentHandler):
 
     def property(self, name, value, important=False, line=None, col=None):
         super().property(name, value,  line, col)
-        self._out.append('    %s: %s%s;\n' % (name, value,
+        self._out.append('    {}: {}{};\n'.format(name, value,
                                               ' !important' if important else ''))
 
 
@@ -286,8 +286,7 @@ class Parser:
                         self._handler.importStyle(uri, media, name)
                     else:
                         self._errorHandler.error('Invalid @import'
-                                                 ' declaration at %r'
-                                                 % (start,))
+                                                 f' declaration at {start!r}')
 
                 elif 'NAMESPACE_SYM' == type_:
                     prefix, uri = None, None
@@ -306,8 +305,7 @@ class Parser:
                         self._handler.namespaceDeclaration(prefix, uri, *start)
                     else:
                         self._errorHandler.error('Invalid @namespace'
-                                                 ' declaration at %r'
-                                                 % (start,))
+                                                 f' declaration at {start!r}')
 
                 else:
                     # CSSSTYLERULE
@@ -362,9 +360,9 @@ class Parser:
                                 end = val
                                 break
                             else:
-                                self._errorHandler.error('unexpected property name token %r' % val, t)
+                                self._errorHandler.error(f'unexpected property name token {val!r}', t)
 
-                        while not ';' == end and not '}' == end:
+                        while ';' != end and '}' != end:
                             # value !;}
                             t = next(tokens)
                             type_, val, line, col = t
@@ -395,7 +393,7 @@ class Parser:
                                 end = val
                                 break
                             else:
-                                self._errorHandler.error('unexpected priority token %r' % val)
+                                self._errorHandler.error(f'unexpected priority token {val!r}')
 
                         if name and value:
                             self._handler.property(name, value, important)

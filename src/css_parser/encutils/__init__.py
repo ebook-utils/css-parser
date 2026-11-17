@@ -106,7 +106,7 @@ class _MetaHTMLParser(htmlparser_HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag == 'meta' and not self.content_type:
-            atts = dict([(a.lower(), v.lower()) for a, v in attrs])
+            atts = {a.lower(): v.lower() for a, v in attrs}
             if atts.get('http-equiv', '').strip() == 'content-type':
                 self.content_type = atts.get('content')
 
@@ -179,9 +179,7 @@ class EncodingInfo:
             return ''
 
     def __repr__(self):
-        return "<%s.%s object encoding=%r mismatch=%s at 0x%x>" % (
-            self.__class__.__module__, self.__class__.__name__, self.encoding,
-            self.mismatch, id(self))
+        return f"<{self.__class__.__module__}.{self.__class__.__name__} object encoding={self.encoding!r} mismatch={self.mismatch} at 0x{id(self):x}>"
 
 
 def buildlog(logname='encutils',
@@ -413,7 +411,7 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
     # if BOM detected, we're done :-)
     if bomDetection:
         if log:
-            log.info('XML BOM encoding: %s' % bomDetection)
+            log.info(f'XML BOM encoding: {bomDetection}')
         fp.seek(oldFP)
         return bomDetection
 
@@ -448,7 +446,7 @@ def detectXMLEncoding(fp, log=None, includeDefault=True):
     if match:
         enc = match.group("encstr").lower()
         if log:
-            log.info('XML encoding="%s"' % enc)
+            log.info(f'XML encoding="{enc}"')
         return enc
     else:
         if includeDefault:
@@ -664,29 +662,25 @@ def getEncodingInfo(response=None, text='', log=None, url=None):
             encinfo.encoding = tryEncodings(text)
 
     #   text/... + xml or text/*
-    elif texttype == _XML_TEXT_TYPE or texttype == _TEXT_TYPE or texttype == _TEXT_UTF8:
-        if not encinfo.encoding:
-            encinfo.encoding = encodingByMediaType(encinfo.http_media_type)
+    elif (texttype == _XML_TEXT_TYPE or texttype == _TEXT_TYPE or texttype == _TEXT_UTF8) and not encinfo.encoding:
+        encinfo.encoding = encodingByMediaType(encinfo.http_media_type)
 
     # possible mismatches, checks if present at all and then if equal
     # HTTP + XML
     if encinfo.http_encoding and encinfo.xml_encoding and\
        encinfo.http_encoding != encinfo.xml_encoding:
         encinfo.mismatch = True
-        log.warning('"%s" (HTTP) != "%s" (XML) encoding mismatch' %
-                    (encinfo.http_encoding, encinfo.xml_encoding))
+        log.warning(f'"{encinfo.http_encoding}" (HTTP) != "{encinfo.xml_encoding}" (XML) encoding mismatch')
     # HTTP + Meta
     if encinfo.http_encoding and encinfo.meta_encoding and\
             encinfo.http_encoding != encinfo.meta_encoding:
         encinfo.mismatch = True
-        log.warning('"%s" (HTTP) != "%s" (HTML <meta>) encoding mismatch' %
-                    (encinfo.http_encoding, encinfo.meta_encoding))
+        log.warning(f'"{encinfo.http_encoding}" (HTTP) != "{encinfo.meta_encoding}" (HTML <meta>) encoding mismatch')
     # XML + Meta
     if encinfo.xml_encoding and encinfo.meta_encoding and\
             encinfo.xml_encoding != encinfo.meta_encoding:
         encinfo.mismatch = True
-        log.warning('"%s" (XML) != "%s" (HTML <meta>) encoding mismatch' %
-                    (encinfo.xml_encoding, encinfo.meta_encoding))
+        log.warning(f'"{encinfo.xml_encoding}" (XML) != "{encinfo.meta_encoding}" (HTML <meta>) encoding mismatch')
 
     log.info('Encoding (probably): %s (Mismatch: %s)', encinfo.encoding,
              encinfo.mismatch)

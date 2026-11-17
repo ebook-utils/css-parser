@@ -186,20 +186,16 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
             super().__setattr__(n, v)
         else:
             raise AttributeError('Unknown CSS Property, '
-                                 '``CSSStyleDeclaration.setProperty("%s", '
-                                 '...)`` MUST be used.' % n)
+                                 f'``CSSStyleDeclaration.setProperty("{n}", '
+                                 '...)`` MUST be used.')
 
     def __repr__(self):
-        return "css_parser.css.%s(cssText=%r)" % (
+        return "css_parser.css.{}(cssText={!r})".format(
             self.__class__.__name__,
             self.getCssText(separator=' '))
 
     def __str__(self):
-        return "<css_parser.css.%s object length=%r (all: %r) at 0x%x>" % (
-            self.__class__.__name__,
-            self.length,
-            len(self.getProperties(all=True)),
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object length={self.length!r} (all: {len(self.getProperties(all=True))!r}) at 0x{id(self):x}>"
 
     def __nnames(self):
         """Return iterator for all different names in order as set
@@ -302,7 +298,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
                 seq.append(property, 'Property')
             else:
                 self._log.error('CSSStyleDeclaration: Syntax Error in '
-                                'Property: %s' % self._valuestr(tokens))
+                                f'Property: {self._valuestr(tokens)}')
             # does not matter in this case
             return expected
 
@@ -312,7 +308,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
                 self._tokensupto2(tokenizer,
                                   propertyvalueendonly=True))
             self._log.error('CSSStyleDeclaration: Unexpected token, ignoring '
-                            'upto %r.' % ignored, token)
+                            f'upto {ignored!r}.', token)
             # does not matter in this case
             return expected
 
@@ -320,14 +316,14 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
             # a standalone ; or error...
             if self._tokenvalue(token) == ';':
                 self._log.info('CSSStyleDeclaration: Stripped standalone semicolon'
-                               ': %s' % self._valuestr([token]), neverraise=True)
+                               f': {self._valuestr([token])}', neverraise=True)
                 return expected
             else:
                 return unexpected(expected, seq, token, tokenizer)
 
         # [Property: Value;]* Property: Value?
         newseq = self._tempSeq()
-        wellformed, expected = self._parse(expected=None,
+        _wellformed, _expected = self._parse(expected=None,
                                            seq=newseq, tokenizer=tokenizer,
                                            productions={'IDENT': ident, 'CHAR': char},
                                            default=unexpected)
@@ -421,12 +417,11 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
         found = None
         for item in reversed(self.seq):
             val = item.value
-            if isinstance(val, Property):
-                if (normalize and nname == val.name) or name == val.literalname:
-                    if val.priority:
-                        return val
-                    elif not found:
-                        found = val
+            if isinstance(val, Property) and ((normalize and nname == val.name) or name == val.literalname):
+                if val.priority:
+                    return val
+                elif not found:
+                    found = val
         return found
 
     def getPropertyCSSValue(self, name, normalize=True):
@@ -461,9 +456,8 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
         """
         nname = self._normalize(name)
         if nname in self._SHORTHANDPROPERTIES:
-            self._log.info('CSSValue for shorthand property "%s" should be '
-                           'None, this may be implemented later.' %
-                           nname, neverraise=True)
+            self._log.info(f'CSSValue for shorthand property "{nname}" should be '
+                           'None, this may be implemented later.', neverraise=True)
 
         p = self.getProperty(name, normalize)
         if p:
@@ -633,8 +627,7 @@ class CSSStyleDeclaration(CSS2Properties, css_parser.util.Base2):
             self.seq._readonly = True
 
         else:
-            self._log.warn('Invalid Property: %s: %s %s'
-                           % (name, value, priority))
+            self._log.warn(f'Invalid Property: {name}: {value} {priority}')
 
     def item(self, index):
         r"""(DOM) Retrieve the properties that have been explicitly set in

@@ -88,17 +88,10 @@ class CSSNamespaceRule(cssrule.CSSRule):
         self._readonly = readonly
 
     def __repr__(self):
-        return "css_parser.css.%s(namespaceURI=%r, prefix=%r)" % (
-            self.__class__.__name__,
-            self.namespaceURI,
-            self.prefix)
+        return f"css_parser.css.{self.__class__.__name__}(namespaceURI={self.namespaceURI!r}, prefix={self.prefix!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object namespaceURI=%r prefix=%r at 0x%x>" % (
-            self.__class__.__name__,
-            self.namespaceURI,
-            self.prefix,
-            id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object namespaceURI={self.namespaceURI!r} prefix={self.prefix!r} at 0x{id(self):x}>"
 
     def _getCssText(self):
         """Return serialized property cssText"""
@@ -124,8 +117,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
         tokenizer = self._tokenize2(cssText)
         attoken = self._nexttoken(tokenizer, None)
         if self._type(attoken) != self._prods.NAMESPACE_SYM:
-            self._log.error('CSSNamespaceRule: No CSSNamespaceRule found: %s' %
-                            self._valuestr(cssText),
+            self._log.error(f'CSSNamespaceRule: No CSSNamespaceRule found: {self._valuestr(cssText)}',
                             error=xml.dom.InvalidModificationErr)
         else:
             # for closures: must be a mutable
@@ -200,13 +192,11 @@ class CSSNamespaceRule(cssrule.CSSRule):
             # post conditions
             if new['uri'] is None:
                 wellformed = False
-                self._log.error('CSSNamespaceRule: No namespace URI found: %s'
-                                % self._valuestr(cssText))
+                self._log.error(f'CSSNamespaceRule: No namespace URI found: {self._valuestr(cssText)}')
 
             if expected != 'EOF':
                 wellformed = False
-                self._log.error('CSSNamespaceRule: No ";" found: %s' %
-                                self._valuestr(cssText))
+                self._log.error(f'CSSNamespaceRule: No ";" found: {self._valuestr(cssText)}')
 
             # set all
             if wellformed:
@@ -271,8 +261,7 @@ class CSSNamespaceRule(cssrule.CSSRule):
             tokenizer = self._tokenize2(prefix)
             prefixtoken = self._nexttoken(tokenizer, None)
             if not prefixtoken or self._type(prefixtoken) != self._prods.IDENT:
-                self._log.error('CSSNamespaceRule: No valid prefix "%s".' %
-                                self._valuestr(prefix),
+                self._log.error(f'CSSNamespaceRule: No valid prefix "{self._valuestr(prefix)}".',
                                 error=xml.dom.SyntaxErr)
                 return
             else:

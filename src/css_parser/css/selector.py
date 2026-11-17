@@ -40,7 +40,7 @@ def _collect_tokens_to_closing_paren(tokenizer):
     depth = 1
     tokens = []
     for token in tokenizer:
-        typ, val, lin, col = token
+        typ, val, _lin, _col = token
         if typ == 'FUNCTION' or val == '(':
             depth += 1
         elif typ in ('pseudo-class', 'pseudo-element') and val.endswith('('):
@@ -79,8 +79,7 @@ class SelectorPseudoFunction:
         self.combinators = combinators
 
     def __repr__(self):
-        return 'SelectorPseudoFunction(%r, %r, %r)' % (
-            self.name, self.selector_list, self.combinators)
+        return f'SelectorPseudoFunction({self.name!r}, {self.selector_list!r}, {self.combinators!r})'
 
 
 def _split_relative_selectors(tokens):
@@ -260,15 +259,11 @@ class Selector(css_parser.util.Base2):
             st = (self.selectorText, self._getUsedNamespaces())
         else:
             st = self.selectorText
-        return "css_parser.css.%s(selectorText=%r)" % (self.__class__.__name__, st)
+        return f"css_parser.css.{self.__class__.__name__}(selectorText={st!r})"
 
     def __str__(self):
-        return "<css_parser.css.%s object selectorText=%r specificity=%r" \
-               " _namespaces=%r at 0x%x>" % (self.__class__.__name__,
-                                             self.selectorText,
-                                             self.specificity,
-                                             self._getUsedNamespaces(),
-                                             id(self))
+        return f"<css_parser.css.{self.__class__.__name__} object selectorText={self.selectorText!r} specificity={self.specificity!r}" \
+               f" _namespaces={self._getUsedNamespaces()!r} at 0x{id(self):x}>"
 
     def _getUsedUris(self):
         "Return list of actually used URIs in this Selector."
@@ -480,7 +475,7 @@ class Selector(css_parser.util.Base2):
                         if namespaceURI is None:
                             new['wellformed'] = False
                             self._log.error('Selector: No namespaceURI found '
-                                            'for prefix %r' % prefix,
+                                            f'for prefix {prefix!r}',
                                             token=token,
                                             error=xml.dom.NamespaceErr)
                             return
@@ -601,7 +596,7 @@ class Selector(css_parser.util.Base2):
                         if not found_close:
                             new['wellformed'] = False
                             self._log.error(
-                                'Selector: Missing closing ")" for %s' % val,
+                                f'Selector: Missing closing ")" for {val}',
                                 token=token)
                             return expected
 
@@ -615,7 +610,7 @@ class Selector(css_parser.util.Base2):
                             if inner_tokens is None:
                                 new['wellformed'] = False
                                 self._log.error(
-                                    'Selector: Empty relative selector in %s' % val,
+                                    f'Selector: Empty relative selector in {val}',
                                     token=token,
                                     error=xml.dom.SyntaxErr)
                                 return expected
@@ -627,7 +622,7 @@ class Selector(css_parser.util.Base2):
                         if not selector_list.wellformed:
                             new['wellformed'] = False
                             self._log.error(
-                                'Selector: Invalid selector list in %s' % val,
+                                f'Selector: Invalid selector list in {val}',
                                 token=token,
                                 error=xml.dom.SyntaxErr)
                             return expected
@@ -697,7 +692,7 @@ class Selector(css_parser.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        'Selector: Unexpected %s.' % typ, token=token)
+                        f'Selector: Unexpected {typ}.', token=token)
                     return expected
 
             def _attcombinator(expected, seq, token, tokenizer=None):
@@ -713,7 +708,7 @@ class Selector(css_parser.util.Base2):
                 else:
                     new['wellformed'] = False
                     self._log.error(
-                        'Selector: Unexpected %s.' % typ, token=token)
+                        f'Selector: Unexpected {typ}.', token=token)
                     return expected
 
             def _string(expected, seq, token, tokenizer=None):
@@ -909,18 +904,15 @@ class Selector(css_parser.util.Base2):
             # post condition
             if len(new['context']) > 1 or not newseq:
                 wellformed = False
-                self._log.error('Selector: Invalid or incomplete selector: %s'
-                                % self._valuestr(selectorText))
+                self._log.error(f'Selector: Invalid or incomplete selector: {self._valuestr(selectorText)}')
 
             if expected == 'element_name':
                 wellformed = False
-                self._log.error('Selector: No element name found: %s'
-                                % self._valuestr(selectorText))
+                self._log.error(f'Selector: No element name found: {self._valuestr(selectorText)}')
 
             if expected == simple_selector_sequence and newseq:
                 wellformed = False
-                self._log.error('Selector: Cannot end with combinator: %s'
-                                % self._valuestr(selectorText))
+                self._log.error(f'Selector: Cannot end with combinator: {self._valuestr(selectorText)}')
 
             if newseq and hasattr(newseq[-1].value, 'strip') \
                and newseq[-1].value.strip() == '':

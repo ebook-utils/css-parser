@@ -28,27 +28,25 @@ def _defaultFetcher(url):
     try:
         request = urllib_Request(url)
         request.add_header('User-agent',
-                           'css_parser %s (http://www.cthedot.de/css_parser/)' % VERSION)
+                           f'css_parser {VERSION} (http://www.cthedot.de/css_parser/)')
         res = urllib_urlopen(request)
     except urllib_HTTPError as e:
         # http error, e.g. 404, e can be raised
-        log.warning('HTTPError opening url=%s: %s %s' %
-                 (url, e.code, e.msg), error=e)
+        log.warning(f'HTTPError opening url={url}: {e.code} {e.msg}', error=e)
     except urllib_URLError as e:
         # URLError like mailto: or other IO errors, e can be raised
-        log.warning('URLError, %s' % e.reason, error=e)
+        log.warning(f'URLError, {e.reason}', error=e)
     except OSError as e:
         # e.g if file URL and not found
         log.warning(e, error=OSError)
     except ValueError as e:
         # invalid url, e.g. "1"
-        log.warning('ValueError, %s' % e.args[0], error=ValueError)
+        log.warning(f'ValueError, {e.args[0]}', error=ValueError)
     else:
         if res:
             mimeType, encoding = encutils.getHTTPInfo(res)
             if mimeType != 'text/css':
-                log.error('Expected "text/css" mime type for url=%r but found: %r' %
-                          (url, mimeType), error=ValueError)
+                log.error(f'Expected "text/css" mime type for url={url!r} but found: {mimeType!r}', error=ValueError)
             content = res.read()
             if hasattr(res, 'close'):
                 res.close()
